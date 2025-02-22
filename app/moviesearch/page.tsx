@@ -2,8 +2,9 @@
 import { getSearchURLResponse } from '@/utils/TMDBSearchByName';
 import { TMDBMovie } from '@/types/TMDB';
 import { usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { debounce } from 'lodash';
 
 export default function Home() {
   const [movies, setMovies] = useState<TMDBMovie[]>([]);
@@ -11,18 +12,25 @@ export default function Home() {
   const [movieQuery, setMovieQuery] = useState('');
   const pathname = usePathname();
 
-  useEffect(() => {
-    async function fetchMovies() {
+  const debouncedSearch = useCallback(
+    debounce(async (query: string) => {
+      if (!query) return;
       try {
-        const json = await getSearchURLResponse(movieQuery);
+        const json = await getSearchURLResponse(query);
         setMovies(json.results);
       } catch (err) {
         console.error(err);
       }
-    }
+    }, 500),
+    []
+  );
 
-    fetchMovies();
-  }, [movieQuery]);
+  useEffect(() => {
+    debouncedSearch(movieQuery);
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [movieQuery, debouncedSearch]);
 
   return (
     <main className="p-10">
