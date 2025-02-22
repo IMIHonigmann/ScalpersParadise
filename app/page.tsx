@@ -3,14 +3,30 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
 export default function Home() {
-  const [movies, setMovies] = useState<{ id: number; title: string }[]>([]);
+  const [movies, setMovies] = useState([]);
   const [inputValue, setInputValue] = useState('');
+  const [movieQuery, setMovieQuery] = useState('');
 
   useEffect(() => {
     const RAT = process.env.NEXT_PUBLIC_TMDB_RAT;
     const APIKEY = process.env.NEXT_PUBLIC_TMDB_APIKEY;
+    const params = {
+      query: movieQuery,
+      include_adult: 'true',
+      language: 'en-US',
+      primary_release_year: '', // Empty
+      page: '1',
+      region: '',
+      year: '',
+      api_key: APIKEY,
+    };
 
-    const url = `https://api.themoviedb.org/3/find/1399?external_source=imdb_id&language=en-US&api_key=${APIKEY}`;
+    const queryString = Object.entries(params)
+      .filter(([, value]) => value)
+      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+      .join('&');
+
+    const url = `https://api.themoviedb.org/3/search/movie?${queryString}`;
     const options = {
       method: 'GET',
       headers: {
@@ -22,7 +38,7 @@ export default function Home() {
       try {
         const res = await fetch(url, options);
         const json = await res.json();
-        console.log(json);
+        console.log(url);
         setMovies(json.results || []);
       } catch (err) {
         console.error(err);
@@ -30,15 +46,22 @@ export default function Home() {
     }
 
     fetchMovies();
-  }, []);
+  }, [movieQuery]);
 
   return (
     <main className="p-10">
       <h1 className="text-2xl font-bold mb-4">Popular Movies</h1>
+      <input
+        type="text"
+        placeholder="Search for movies"
+        value={movieQuery}
+        onChange={e => setMovieQuery(e.target.value)}
+        className="border p-2 mb-4 text-black"
+      />
       <ul>
         {movies.map(movie => (
           <li key={movie.id} className="mb-2">
-            {movie.title}
+            {movie.title} ({movie.release_date.substring(0, 4)})
           </li>
         ))}
       </ul>
