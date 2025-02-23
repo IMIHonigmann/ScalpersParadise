@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { debounce } from 'lodash';
+import { HighlightMatch } from '@/components/SearchHighlightHelper';
 
 export default function Home() {
   const [movies, setMovies] = useState<TMDBMovie[]>([]);
@@ -50,7 +51,8 @@ export default function Home() {
                 pathname: `${pathname}/${movie.id}`,
               }}
             >
-              {movie.title} ({movie.release_date.substring(0, 4)})
+              <HighlightMatch text={movie.title} query={movieQuery} /> (
+              {movie.release_date.substring(0, 4)})
             </Link>
           </li>
         ))}
