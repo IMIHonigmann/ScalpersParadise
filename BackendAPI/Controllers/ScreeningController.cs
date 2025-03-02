@@ -13,7 +13,7 @@ public class ScreeningController(Client supabase) : ControllerBase
     [HttpGet("getScreeningsByMovieId")]
     public async Task<IActionResult> GetScreeningsByMovieId(
     [FromQuery] int movieId
-)
+    )
     {
         var result = await _supabase
             .From<Screening>()
@@ -38,5 +38,56 @@ public class ScreeningController(Client supabase) : ControllerBase
         }).ToArray();
 
         return Ok(screeningDTO);
+    }
+
+    [HttpGet("getScreeningSeatingDetails")]
+    public async Task<IActionResult> getScreeningSeatingDetails(
+    [FromQuery] int screeningId
+    )
+    {
+        var result = await _supabase
+            .From<Screening>()
+            .Select("*, Auditorium:Auditoriums!inner(*)")
+            .Where(x => x.ScreeningId == screeningId)
+            .Get();
+
+        Screening? selectedScreening = result.Models.FirstOrDefault();
+
+        if (selectedScreening is null)
+        {
+            return NotFound($"Screening {screeningId} doesn't exist");
+        }
+
+        var seatsResult = await _supabase
+        .From<Seat>()
+        .Where(x => x.AuditoriumId == selectedScreening.AuditoriumId)
+        .Get();
+
+        Seat[] seats = seatsResult.Models.ToArray();
+
+        if (seats is null || seats.Length == 0)
+        {
+            return NotFound($"No seats found for screeningID {selectedScreening.AuditoriumId}");
+        }
+
+        var screeningSeatsDTO = new
+        {
+            selectedScreening.ScreeningId,
+            selectedScreening.MovieId,
+            selectedScreening.AuditoriumId,
+            selectedScreening.ScreeningTime,
+            selectedScreening.Auditorium.AuditoriumType,
+            seats = seats.Select(singleSeat => new
+            {
+                singleSeat.SeatId,
+                singleSeat.AuditoriumId,
+                singleSeat.RowNumber,
+                singleSeat.SeatNumber,
+                singleSeat.SeatType
+            })
+        };
+
+
+        return Ok(screeningSeatsDTO);
     }
 }

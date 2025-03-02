@@ -16,5 +16,7 @@ namespace BackendAPI.Models
         public Guid UserId { get; set; }
         [Column("screening_id")]
         public int ScreeningId { get; set; }
+        public Seat Seat { get; set; } = new();
+        public Screening Screening { get; set; } = new();
     }
 }

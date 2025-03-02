@@ -3,7 +3,7 @@ using Supabase.Postgrest.Models;
 
 namespace BackendAPI.Models
 {
-    [Table("Seat")]
+    [Table("Seats")]
     public class Seat : BaseModel
     {
         [PrimaryKey("seat_id", true)]
@@ -20,5 +20,6 @@ namespace BackendAPI.Models
 
         [Column("seat_type")]
         public string SeatType { get; set; } = string.Empty;
+        public Screening Screening { get; set; } = new();
     }
 }
