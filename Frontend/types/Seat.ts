@@ -4,4 +4,5 @@ export interface Seat {
   rowNumber: string;
   seatNumber: 1;
   seatType: string;
+  reservationId: number | null;
 }

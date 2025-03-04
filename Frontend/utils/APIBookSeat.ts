@@ -15,10 +15,8 @@ export async function bookSeat(screeningId: number, seatId: number) {
     }),
   });
 
-  console.log(res);
-
   if (!res.ok) {
-    throw new Error(`Failed to fetch: ${res.status}`);
+    throw new Error(`Failed to fetch: Error Code: ${res.status}`);
   }
 
   return res.json();

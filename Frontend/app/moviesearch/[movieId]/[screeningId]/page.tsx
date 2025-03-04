@@ -42,7 +42,7 @@ function generateRowsWithBoxes() {
         normalizedValue = 1 - distanceFromMiddle / maxDistance;
       }
 
-      const color = normalizedValue >= 0 ? normalizedValue * 5 : 0;
+      const color = normalizedValue >= 0 ? normalizedValue * 2 : 0;
 
       rowBoxes.push({
         id: id++,
@@ -69,7 +69,6 @@ export default function BoxGrid() {
   const rows = generateRowsWithBoxes();
   const boxSize = 80;
 
-  // Fetch screening details when component mounts
   useEffect(() => {
     const fetchDetails = async () => {
       try {
@@ -85,13 +84,21 @@ export default function BoxGrid() {
     fetchDetails();
   }, [screeningId]);
 
+  const isSeatBooked = (boxId: number) => {
+    if (!screeningDetails?.seats?.length) return;
+    return screeningDetails?.seats[boxId].reservationId !== null;
+  };
+
   const handleSeatBooking = async (boxId: number) => {
     if (!screeningDetails?.seats?.length) return;
 
     try {
-      const seatId = screeningDetails.seats[0].seatId - 1 + boxId;
+      const seatId = screeningDetails.seats[0].seatId + boxId;
       await bookSeat(screeningId, seatId);
       alert(`Seat ${boxId} booked successfully!`);
+
+      const updatedDetails = await getScreeningDetails(screeningId);
+      setScreeningDetails(updatedDetails);
     } catch (error) {
       console.error('Failed to book seat:', error);
       alert('Failed to book seat. Please try again.');
@@ -180,6 +187,7 @@ export default function BoxGrid() {
                     fill
                     style={{
                       objectFit: 'contain',
+                      transform: isSeatBooked(box.id) ? 'scale(1)' : 'scale(0)',
                     }}
                   />
                 </div>

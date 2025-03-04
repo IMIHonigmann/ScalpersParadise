@@ -41,7 +41,7 @@ public class ScreeningController(Client supabase) : ControllerBase
     }
 
     [HttpGet("getScreeningSeatingDetails")]
-    public async Task<IActionResult> getScreeningSeatingDetails(
+    public async Task<IActionResult> GetScreeningSeatingDetails(
     [FromQuery] int screeningId
     )
     {
@@ -60,6 +60,7 @@ public class ScreeningController(Client supabase) : ControllerBase
 
         var seatsResult = await _supabase
         .From<Seat>()
+        .Select("*, UserReservation:userreservations!left(*)")
         .Where(x => x.AuditoriumId == selectedScreening.AuditoriumId)
         .Get();
 
@@ -77,13 +78,14 @@ public class ScreeningController(Client supabase) : ControllerBase
             selectedScreening.AuditoriumId,
             selectedScreening.ScreeningTime,
             selectedScreening.Auditorium.AuditoriumType,
-            seats = seats.Select(singleSeat => new
+            seats = seats.Select(xSeat => new
             {
-                singleSeat.SeatId,
-                singleSeat.AuditoriumId,
-                singleSeat.RowNumber,
-                singleSeat.SeatNumber,
-                singleSeat.SeatType
+                xSeat.SeatId,
+                xSeat.AuditoriumId,
+                xSeat.RowNumber,
+                xSeat.SeatNumber,
+                xSeat.SeatType,
+                xSeat.UserReservation?.FirstOrDefault()?.ReservationId
             })
         };
 

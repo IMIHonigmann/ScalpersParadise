@@ -1,15 +1,9 @@
 'use server';
 
-import { ScreeningDetails } from '@/types/ScreeningDetails';
-
-export async function getScreeningDetails(
-  screeningId: number
-): Promise<ScreeningDetails> {
-  if (!screeningId) return {} as ScreeningDetails;
-
+export async function getScreeningBookings(screeningId: number) {
   const JWT = ``;
   const res = await fetch(
-    `http://localhost:5118/Screening/getScreeningSeatingDetails?screeningId=${screeningId}`,
+    `http://localhost:5118/Reservation/checkBookedSeatsOfRoom?screeningId=${screeningId}`,
     {
       method: 'GET',
       headers: {
