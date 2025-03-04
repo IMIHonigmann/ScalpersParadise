@@ -1,7 +1,7 @@
 'use client';
 
 import { ScreeningDetails } from '@/types/ScreeningDetails';
-import { bookSeat } from '@/utils/APIBookSeat';
+import { checkAndBookSeatIfEmpty } from '@/utils/APIBookSeat';
 import { getScreeningDetails } from '@/utils/APIGetScreeningDetails';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
@@ -94,9 +94,14 @@ export default function BoxGrid() {
 
     try {
       const seatId = screeningDetails.seats[0].seatId + boxId;
-      await bookSeat(screeningId, seatId);
-      alert(`Seat ${boxId} booked successfully!`);
-
+      const isSeatBookedResult = await checkAndBookSeatIfEmpty(
+        screeningId,
+        seatId
+      );
+      const message = isSeatBookedResult
+        ? `Seat ${boxId} booked successfully!`
+        : `Seat ${boxId} is already reserved by someone else!`;
+      alert(message);
       const updatedDetails = await getScreeningDetails(screeningId);
       setScreeningDetails(updatedDetails);
     } catch (error) {

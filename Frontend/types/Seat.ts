@@ -3,6 +3,8 @@ export interface Seat {
   auditoriumid: number;
   rowNumber: string;
   seatNumber: 1;
-  seatType: string;
+  seatType: SeatType;
   reservationId: number | null;
 }
+
+export type SeatType = 'Regular' | 'VIP' | 'FirstClass';

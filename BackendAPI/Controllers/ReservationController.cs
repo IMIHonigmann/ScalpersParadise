@@ -15,15 +15,26 @@ public class ReservationController(Client supabase) : ControllerBase
     [HttpPost("bookSeat")]
     public async Task<IActionResult> BookSeat([FromBody] BookSeatRequest request)
     {
-        UserReservation model = new()
-        {
-            SeatId = request.SeatId,
-            UserId = Guid.Parse(_testUserId),
-            ScreeningId = request.ScreeningId
-        };
-
         try
         {
+            var existingReservation = await _supabase
+            .From<UserReservation>()
+            .Select("*")
+            .Where(x => x.SeatId == request.SeatId)
+            .Get();
+
+            if (existingReservation.Models.Any())
+            {
+                return Conflict(new { message = "This seat is already booked" });
+            }
+
+            UserReservation model = new()
+            {
+                SeatId = request.SeatId,
+                UserId = Guid.Parse(_testUserId),
+                ScreeningId = request.ScreeningId
+            };
+
             await _supabase.From<UserReservation>().Insert(model);
             return Ok(new { message = "Seat booked successfully" });
         }
