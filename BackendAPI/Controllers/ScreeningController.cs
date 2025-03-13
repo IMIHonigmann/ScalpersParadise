@@ -60,7 +60,11 @@ public class ScreeningController(Client supabase) : ControllerBase
 
         var seatsResult = await _supabase
         .From<Seat>()
-        .Select("*, UserReservation:userreservations!left(*)")
+        .Select(@"*,
+                UserReservation:userreservations!left(*),
+                Auditorium:Auditoriums!inner(*, 
+                    AuditoriumPrice:AuditoriumPrices!inner(*)),
+                SeatPrice:SeatPrices!inner(*)")
         .Where(x => x.AuditoriumId == selectedScreening.AuditoriumId)
         .Get();
 
@@ -78,6 +82,7 @@ public class ScreeningController(Client supabase) : ControllerBase
             selectedScreening.AuditoriumId,
             selectedScreening.ScreeningTime,
             selectedScreening.Auditorium.AuditoriumType,
+
             seats = seats.Select(xSeat => new
             {
                 xSeat.SeatId,
@@ -85,7 +90,8 @@ public class ScreeningController(Client supabase) : ControllerBase
                 xSeat.RowNumber,
                 xSeat.SeatNumber,
                 xSeat.SeatType,
-                xSeat.UserReservation?.FirstOrDefault()?.ReservationId
+                SeatPrice = xSeat.Auditorium.AuditoriumPrice.Price * xSeat.SeatPrice.PriceModifier,
+                xSeat.UserReservation?.FirstOrDefault()?.ReservationId,
             })
         };
 

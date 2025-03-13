@@ -7,7 +7,7 @@ namespace BackendAPI.Models
     public class SeatPrice : BaseModel
     {
         [PrimaryKey("seat_type", false)]
-        public required string SeatType { get; set; }
+        public string SeatType { get; set; } = string.Empty;
 
         [Column("price_modifier")]
         public float PriceModifier { get; set; }

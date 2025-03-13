@@ -10,6 +10,7 @@ namespace BackendAPI.Models
         public int AuditoriumId { get; set; }
 
         [Column("auditorium_type")]
-        public required string AuditoriumType { get; set; }
+        public string AuditoriumType { get; set; } = string.Empty;
+        public AuditoriumPrice AuditoriumPrice { get; set; } = new();
     }
 }

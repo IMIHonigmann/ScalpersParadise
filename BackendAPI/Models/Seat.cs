@@ -21,6 +21,8 @@ namespace BackendAPI.Models
         [Column("seat_type")]
         public string SeatType { get; set; } = string.Empty;
         public Screening Screening { get; set; } = new();
+        public Auditorium Auditorium { get; set; } = new();
+        public SeatPrice SeatPrice { get; set; } = new();
         public ICollection<UserReservation>? UserReservation { get; set; }
     }
 }

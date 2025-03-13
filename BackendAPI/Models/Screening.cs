@@ -14,6 +14,6 @@ namespace BackendAPI.Models
         public int AuditoriumId { get; set; }
         [Column("screening_time")]
         public DateTime ScreeningTime { get; set; }
-        public Auditorium Auditorium { get; set; } = new Auditorium { AuditoriumType = "Classic" };
+        public Auditorium Auditorium { get; set; } = new();
     }
 }

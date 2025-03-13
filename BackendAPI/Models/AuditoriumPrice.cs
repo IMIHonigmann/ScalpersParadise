@@ -7,7 +7,7 @@ namespace BackendAPI.Models
     public class AuditoriumPrice : BaseModel
     {
         [PrimaryKey("id", false)]
-        public required string AuditoriumType { get; set; }
+        public string AuditoriumType { get; set; } = string.Empty;
 
         [Column("price")]
         public float Price { get; set; }
