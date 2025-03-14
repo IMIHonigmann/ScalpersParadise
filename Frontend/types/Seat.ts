@@ -4,6 +4,7 @@ export interface Seat {
   rowNumber: string;
   seatNumber: 1;
   seatType: SeatType;
+  seatPrice: number;
   reservationId: number | null;
 }
 

@@ -66,6 +66,7 @@ export default function BoxGrid() {
   const [screeningDetails, setScreeningDetails] =
     useState<ScreeningDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [hoveredSeatPrice, setHoveredSeatPrice] = useState('0.00');
   const rows = generateRowsWithBoxes();
   const boxSize = 80;
 
@@ -83,6 +84,12 @@ export default function BoxGrid() {
 
     fetchDetails();
   }, [screeningId]);
+
+  function getSeatByBoxId(boxId: number) {
+    return screeningDetails?.seats.find(
+      seat => seat.seatId === screeningDetails.seats[0].seatId + boxId
+    );
+  }
 
   const isSeatBooked = (boxId: number) => {
     if (!screeningDetails?.seats?.length) return;
@@ -177,6 +184,9 @@ export default function BoxGrid() {
                   e.currentTarget.style.transform = 'scale(1.05)';
                   e.currentTarget.style.boxShadow =
                     '0 5px 10px rgba(0,0,0,0.3)';
+                  setHoveredSeatPrice(
+                    getSeatByBoxId(box.id)?.seatPrice.toFixed(2) || '0.00'
+                  );
                 }}
                 onMouseLeave={e => {
                   e.currentTarget.style.transform = 'scale(1)';
@@ -197,6 +207,7 @@ export default function BoxGrid() {
                   />
                 </div>
                 <div style={{ fontSize: '0.7rem', marginTop: '2px' }}>
+                  {getSeatByBoxId(box.id)?.seatType}
                   {box.id}
                 </div>
               </button>
@@ -204,6 +215,7 @@ export default function BoxGrid() {
           </div>
         </div>
       ))}
+      <p> {hoveredSeatPrice} </p>
     </div>
   );
 }
