@@ -1,10 +1,10 @@
 using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
 
-namespace BackendAPI.Models
+namespace BackendAPI.Models.DataTransferObjects
 {
     [Table("userreservations")]
-    public class UserReservation : BaseModel
+    public class UserReservationInsertionDTO : BaseModel
     {
         [PrimaryKey("reservation_id", false)]
         public int ReservationId { get; set; }
@@ -18,7 +18,5 @@ namespace BackendAPI.Models
         public DateTime BoughtAt { get; set; }
         [Column("price_paid")]
         public float PricePaid { get; set; }
-        public Seat Seat { get; set; } = new();
-        public Screening Screening { get; set; } = new();
     }
 }

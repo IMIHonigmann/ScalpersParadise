@@ -2,7 +2,8 @@
 
 export async function checkAndBookSeatIfEmpty(
   screeningId: number,
-  seatId: number
+  seatId: number,
+  pricePaid: number
 ) {
   const JWT = ``;
   const res = await fetch(`http://localhost:5118/Reservation/bookSeat`, {
@@ -15,6 +16,7 @@ export async function checkAndBookSeatIfEmpty(
     body: JSON.stringify({
       ScreeningId: screeningId,
       SeatId: seatId,
+      PricePaid: pricePaid,
     }),
   });
 

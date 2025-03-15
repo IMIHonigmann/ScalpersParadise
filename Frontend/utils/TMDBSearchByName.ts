@@ -1,7 +1,11 @@
 'use server';
 
-export async function getSearchURLResponse(query: string) {
-  if (!query) return { results: [] };
+import { TMDBMovie } from '@/types/TMDB';
+
+export async function getSearchURLResponse(
+  query: string
+): Promise<TMDBMovie[]> {
+  // if (!query) return { results: [] };
 
   const APIKEY = process.env.TMDB_APIKEY;
   const RAT = process.env.TMDB_RAT;

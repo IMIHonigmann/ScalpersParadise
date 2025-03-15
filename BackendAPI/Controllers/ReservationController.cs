@@ -1,4 +1,5 @@
 using BackendAPI.Models;
+using BackendAPI.Models.DataTransferObjects;
 using BackendAPI.Models.RequestModels;
 using Microsoft.AspNetCore.Mvc;
 using Supabase;
@@ -28,14 +29,17 @@ public class ReservationController(Client supabase) : ControllerBase
                 return Conflict(new { message = "This seat is already booked" });
             }
 
-            UserReservation model = new()
+            UserReservationInsertionDTO model = new()
             {
                 SeatId = request.SeatId,
-                UserId = Guid.Parse(_testUserId),
-                ScreeningId = request.ScreeningId
+                UserId = _testUserId,
+                ScreeningId = request.ScreeningId,
+                PricePaid = request.PricePaid,
+                BoughtAt = DateTime.Now
             };
 
-            await _supabase.From<UserReservation>().Insert(model);
+            await _supabase.From<UserReservationInsertionDTO>().Insert(model);
+
             return Ok(new { message = "Seat booked successfully" });
         }
         catch (Exception ex)
