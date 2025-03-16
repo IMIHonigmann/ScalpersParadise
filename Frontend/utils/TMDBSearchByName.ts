@@ -5,7 +5,7 @@ import { TMDBMovie } from '@/types/TMDB';
 export async function getSearchURLResponse(
   query: string
 ): Promise<TMDBMovie[]> {
-  // if (!query) return { results: [] };
+  if (!query) return [];
 
   const APIKEY = process.env.TMDB_APIKEY;
   const RAT = process.env.TMDB_RAT;

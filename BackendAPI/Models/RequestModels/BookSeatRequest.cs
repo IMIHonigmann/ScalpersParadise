@@ -4,6 +4,5 @@ namespace BackendAPI.Models.RequestModels
     {
         public int SeatId { get; set; }
         public int ScreeningId { get; set; }
-        public float PricePaid { get; set; }
     }
 }

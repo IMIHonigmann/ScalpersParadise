@@ -103,8 +103,7 @@ export default function BoxGrid() {
       const seatId = screeningDetails.seats[0].seatId + boxId;
       const isSeatBookedResult = await checkAndBookSeatIfEmpty(
         screeningId,
-        seatId,
-        screeningDetails.seats.find(seat => seat.seatId === seatId)!.seatPrice
+        seatId
       );
       const message = isSeatBookedResult
         ? `Seat ${boxId} booked successfully!`

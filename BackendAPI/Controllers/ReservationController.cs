@@ -24,9 +24,38 @@ public class ReservationController(Client supabase) : ControllerBase
             .Where(x => x.SeatId == request.SeatId)
             .Get();
 
-            if (existingReservation.Models.Any())
+            if (existingReservation.Model != null)
             {
                 return Conflict(new { message = "This seat is already booked" });
+            }
+
+            var seatWithPriceProperties = await _supabase.
+            From<Seat>()
+            .Select(@"*, Auditorium:Auditoriums!inner(*, 
+                            AuditoriumPrice:AuditoriumPrices!inner(*)),
+                         SeatPrice:SeatPrices!inner(*)")
+            .Where(x => x.SeatId == request.SeatId)
+            .Limit(1)
+            .Get();
+
+            if (seatWithPriceProperties.Model == null)
+            {
+                return NotFound(new { message = "Seat cannot be found" });
+            }
+
+            var userBalance = await _supabase
+            .From<UserBalance>()
+            .Select("*")
+            .Where(ub => ub.UserId == _testUserId)
+            .Limit(1)
+            .Get();
+
+            float calculatedSeatPrice = seatWithPriceProperties.Model.Auditorium.AuditoriumPrice.Price *
+                                        seatWithPriceProperties.Model.SeatPrice.PriceModifier;
+
+            if (userBalance.Model!.Balance < calculatedSeatPrice)
+            {
+                return StatusCode(422, new { message = "Insufficient balance to complete this reservation" });
             }
 
             UserReservationInsertionDTO model = new()
@@ -34,9 +63,16 @@ public class ReservationController(Client supabase) : ControllerBase
                 SeatId = request.SeatId,
                 UserId = _testUserId,
                 ScreeningId = request.ScreeningId,
-                PricePaid = request.PricePaid,
+                PricePaid = calculatedSeatPrice,
                 BoughtAt = DateTime.Now
             };
+
+            float newBalance = userBalance.Model!.Balance - calculatedSeatPrice;
+            var update = await _supabase
+                .From<UserBalance>()
+                .Where(x => x.UserId == _testUserId)
+                .Set(x => x.Balance, newBalance)
+                .Update();
 
             await _supabase.From<UserReservationInsertionDTO>().Insert(model);
 
