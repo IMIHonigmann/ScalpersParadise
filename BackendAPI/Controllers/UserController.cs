@@ -1,6 +1,4 @@
 using BackendAPI.Models;
-using BackendAPI.Models.Enums;
-using BackendAPI.Models.RequestModels;
 using Microsoft.AspNetCore.Mvc;
 using Sprache;
 using Supabase;
@@ -19,7 +17,7 @@ public class UserController(Client supabase) : ControllerBase
     {
         try
         {
-            var result = await _supabase
+            var reservationsTask = _supabase
             .From<UserReservation>()
             .Select(@"*,
                 Seat:Seats!inner(*,
@@ -30,33 +28,51 @@ public class UserController(Client supabase) : ControllerBase
             .Where(x => x.UserId == _testUserId)
             .Get();
 
-            UserReservation[] userReservations = result.Models.ToArray();
+            var userBalanceTask = _supabase
+            .From<UserBalance>()
+            .Select("*")
+            .Where(x => x.UserId == _testUserId)
+            .Get();
+
+            await Task.WhenAll(reservationsTask, userBalanceTask);
+
+            var resultReservations = await reservationsTask;
+            var resultUserBalance = await userBalanceTask;
+
+            UserReservation[] userReservations = resultReservations.Models.ToArray();
+            UserBalance userBalance = resultUserBalance.Model!;
+
 
             if (userReservations is null || userReservations.Length == 0)
             {
                 return NotFound(new { message = "No reservations found for the current user" });
             }
 
-            var reservationsDTO = userReservations.Select(reservation => new
+
+            var reservationsDTO = new
             {
-                reservation.ReservationId,
-                reservation.UserId,
-                reservation.SeatId,
-                reservation.ScreeningId,
-                reservation.BoughtAt,
-                reservation.PricePaid,
+                userReservations[0].UserId,
+                userBalance.Balance,
+                Reservations = userReservations.Select(reservation => new
+                {
+                    reservation.ReservationId,
+                    reservation.SeatId,
+                    reservation.ScreeningId,
+                    reservation.BoughtAt,
+                    reservation.PricePaid,
 
-                reservation.Seat.RowNumber,
-                reservation.Seat.SeatNumber,
-                reservation.Seat.SeatType,
+                    reservation.Seat.RowNumber,
+                    reservation.Seat.SeatNumber,
+                    reservation.Seat.SeatType,
 
-                reservation.Screening.MovieId,
-                reservation.Screening.AuditoriumId,
+                    reservation.Screening.MovieId,
+                    reservation.Screening.AuditoriumId,
 
-                reservation.Screening.Auditorium.AuditoriumType,
+                    reservation.Screening.Auditorium.AuditoriumType,
 
-                TicketValue = reservation.Screening.Auditorium.AuditoriumPrice.Price * reservation.Seat.SeatPrice.PriceModifier,
-            });
+                    TicketValue = reservation.Screening.Auditorium.AuditoriumPrice.Price * reservation.Seat.SeatPrice.PriceModifier,
+                })
+            };
 
             return Ok(reservationsDTO);
         }

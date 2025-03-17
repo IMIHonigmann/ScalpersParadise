@@ -20,5 +20,7 @@ namespace BackendAPI.Models
         public float PricePaid { get; set; }
         public Seat Seat { get; set; } = new();
         public Screening Screening { get; set; } = new();
+        public AuthenticatedUserSimplified User { get; set; } = new();
+
     }
 }

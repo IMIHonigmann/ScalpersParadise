@@ -1,17 +1,16 @@
 'use client';
 
-import { Reservation } from '@/types/Reservation';
-import { getUserReservations } from '@/utils/APIGetUserReservations';
+import { UserDetails } from '@/types/UserDetails';
+import { getUserUserDetails } from '@/utils/APIGetUserDetails';
 import { useEffect, useState } from 'react';
 
 export default function ProfilePage() {
-  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [userDetails, setUserDetails] = useState<UserDetails>();
 
   useEffect(() => {
-    (async function fetchReservations() {
-      const reservationPromises = await getUserReservations();
-      const resolvedReservations = await Promise.all(reservationPromises);
-      setReservations(resolvedReservations);
+    (async function fetchuserDetails() {
+      const reservationPromises = await getUserUserDetails();
+      setUserDetails(reservationPromises);
     })();
   }, []);
 
@@ -19,10 +18,10 @@ export default function ProfilePage() {
     <div>
       <h1>My Profile</h1>
       <br />
-      <h2>My Reservations</h2>
+      <h2>My Current Balance: {userDetails?.balance}$</h2>
       <br />
 
-      {reservations.map(reservation => (
+      {userDetails?.reservations.map(reservation => (
         <div key={reservation.reservationId}>
           <p>Movie: {reservation.movieName}</p>
           <p>Screening Date: {}</p>
@@ -53,7 +52,7 @@ export default function ProfilePage() {
         </div>
       ))}
 
-      {reservations.length === 0 && <p>No reservations found.</p>}
+      {userDetails?.reservations.length === 0 && <p>No reservations found.</p>}
     </div>
   );
 }

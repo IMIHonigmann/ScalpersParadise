@@ -1,6 +1,11 @@
+export interface UserDetails {
+  userId: string;
+  balance: number;
+  reservations: Reservation[];
+}
+
 export interface Reservation {
   reservationId: number;
-  userId: string;
   seatId: number;
   screeningId: number;
   boughtAt: Date;
