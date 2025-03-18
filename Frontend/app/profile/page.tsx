@@ -1,7 +1,7 @@
 'use client';
 
 import { UserDetails } from '@/types/UserDetails';
-import { getUserUserDetails } from '@/utils/APIGetUserDetails';
+import { getUserUserDetails } from '@/actions/APIGetUserDetails';
 import { useEffect, useState } from 'react';
 
 export default function ProfilePage() {

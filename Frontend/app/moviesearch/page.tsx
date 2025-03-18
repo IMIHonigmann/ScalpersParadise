@@ -1,5 +1,5 @@
 'use client';
-import { getSearchURLResponse } from '@/utils/TMDBSearchByName';
+import { getSearchURLResponse } from '@/actions/TMDBSearchByName';
 import { TMDBMovie } from '@/types/TMDB';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';

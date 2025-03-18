@@ -1,21 +1,27 @@
+using BackendAPI.Hubs;
 using BackendAPI.Models;
 using BackendAPI.Models.DataTransferObjects;
 using BackendAPI.Models.RequestModels;
+using BackendAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Supabase;
 
 namespace BackendAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ReservationController(Client supabase) : ControllerBase
+public class ReservationController(Client supabase, IHubContext<ReservationHub> hubContext, IReservationNotificationService notificationService) : ControllerBase
 {
     private readonly Client _supabase = supabase;
     private readonly string _testUserId = Environment.GetEnvironmentVariable("TEST_USERID")!;
+    private readonly IHubContext<ReservationHub> _hubContext = hubContext;
+    private readonly IReservationNotificationService _notificationService = notificationService;
 
     [HttpPost("bookSeat")]
     public async Task<IActionResult> BookSeat([FromBody] BookSeatRequest request)
     {
+
         try
         {
             var existingReservation = await _supabase
@@ -58,7 +64,7 @@ public class ReservationController(Client supabase) : ControllerBase
                 return StatusCode(422, new { message = "Insufficient balance to complete this reservation" });
             }
 
-            UserReservationInsertionDTO model = new()
+            UserReservationInsertionDTO insertedReservation = new()
             {
                 SeatId = request.SeatId,
                 UserId = _testUserId,
@@ -74,7 +80,8 @@ public class ReservationController(Client supabase) : ControllerBase
                 .Set(x => x.Balance, newBalance)
                 .Update();
 
-            await _supabase.From<UserReservationInsertionDTO>().Insert(model);
+            await _supabase.From<UserReservationInsertionDTO>().Insert(insertedReservation);
+            await _notificationService.NotifyNewReservation(insertedReservation);
 
             return Ok(new { message = "Seat booked successfully" });
         }
