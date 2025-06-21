@@ -7,6 +7,8 @@ import { Oswald } from 'next/font/google';
 import { CiSearch } from 'react-icons/ci';
 import { PiTextAlignLeft } from 'react-icons/pi';
 import { FaRegCirclePlay } from 'react-icons/fa6';
+import { TfiPlus } from 'react-icons/tfi';
+import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -145,10 +147,24 @@ function CurrentScreeningsComponent({
   );
 }
 
-export default function TestLayoutComponent() {
+export default async function TestLayoutComponent({
+  params,
+}: {
+  params: { movieId: string };
+}) {
+  const { movieId } = await params;
+  const movie = await getMovie(movieId);
+  console.log(movie);
+  const screenings = await getThisWeeksScreenings(movie);
   return (
-    <>
-      <div className="flex justify-between text-right items-start w-full p-5">
+    <div className={`${bebasNeue.className} tracking-widest`}>
+      <div className={`flex justify-between text-right items-start w-full p-8`}>
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat -z-10 opacity-50"
+          style={{
+            backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
+          }}
+        />
         <span className="font-bold text-5xl p-2 relative group cursor-pointer">
           <span className="transition-transform group-hover:translate-x-2 group-hover:-translate-y-2 duration-300 absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-gray-300" />
           <span className="transition-transform group-hover:-translate-x-2 group-hover:translate-y-2 duration-300 absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-gray-300" />
@@ -157,8 +173,8 @@ export default function TestLayoutComponent() {
           <br />
           0OL
         </span>
-        <nav className="w-1/6">
-          <ul className="flex flex-col space-y-1 text-xs uppercase tracking-wider">
+        <nav className="w-[10%]">
+          <ul className="flex flex-col space-y-0 text-xl uppercase">
             <li>
               <span className="hover:opacity-70 transition-opacity cursor-pointer">
                 Home
@@ -176,11 +192,6 @@ export default function TestLayoutComponent() {
             </li>
             <li>
               <span className="hover:opacity-70 transition-opacity cursor-pointer">
-                About
-              </span>
-            </li>
-            <li>
-              <span className="hover:opacity-70 transition-opacity cursor-pointer">
                 Contact
               </span>
             </li>
@@ -188,7 +199,7 @@ export default function TestLayoutComponent() {
         </nav>
         <div className="flex-[2]" />
         <span
-          className="w-3/5
+          className="w-3/4  
           flex justify-between items-center relative
         after:content-[''] after:absolute after:-bottom-3 after:left-1/2 after:-translate-x-1/2 after:w-[98%] after:h-px after:bg-current"
         >
@@ -207,23 +218,25 @@ export default function TestLayoutComponent() {
         </span>
       </div>
 
-      <div className="absolute bottom-0 left-0 p-16 w-full md:w-1/2 xl:w-1/3">
+      <div className="absolute bottom-0 left-0 px-16 py-12 w-full md:w-1/2 xl:w-1/3">
         <div className="flex justify-between mb-2">
-          <span className="text-6xl font-bold opacity-30">J</span>
-          <span className="text-6xl font-bold opacity-30">O</span>
-          <span className="text-6xl font-bold opacity-30">K</span>
-          <span className="text-6xl font-bold opacity-30">E</span>
-          <span className="text-6xl font-bold opacity-30">R</span>
+          <span className="text-9xl font-bold opacity-30 scale-x-[80%]">J</span>
+          <span className="text-9xl font-bold opacity-30 scale-x-[80%]">O</span>
+          <span className="text-9xl font-bold opacity-30 scale-x-[80%]">K</span>
+          <span className="text-9xl font-bold opacity-30 scale-x-[80%]">E</span>
+          <span className="text-9xl font-bold opacity-30 scale-x-[80%]">R</span>
         </div>
 
         <div className="grid grid-cols-3 gap-8 mt-4">
           <div>
-            <p className="text-xs uppercase tracking-widest">
+            <p className="uppercase tracking-widest">
               Origin Story of the Iconic Villain
             </p>
           </div>
           <div className="col-span-2">
-            <p className="text-sm text-gray-400">
+            <p
+              className={`text-sm text-gray-400 ${oswald.className} tracking-normal leading-relaxed`}
+            >
               Joker is a 2019 American psychological thriller film directed by
               Todd Phillips, who co-wrote the screenplay with Scott Silver. The
               film, based on DC Comics characters, stars Joaquin Phoenix as the
@@ -235,21 +248,42 @@ export default function TestLayoutComponent() {
           grid grid-cols-3 gap-8"
           >
             <button
-              className="place-self-center bg-red-600 text-white px-8 py-3 text-sm rounded whitespace-nowrap
+              className="place-self-center bg-red-600 text-white px-12 py-4 text-sm rounded whitespace-nowrap
             col-span-2"
             >
               Take a Ticket
             </button>
             <a
               href="#"
-              className="place-self-center text-sm underline
-              flex items-center gap-2"
+              className={`place-self-center text-sm
+              flex items-center gap-2 text-gray-400 hover:text-white transition-colors`}
             >
               <FaRegCirclePlay className="text-3xl" /> Trailer
             </a>
           </div>
         </div>
       </div>
-    </>
+      <div className="absolute bottom-0 right-1/3  w-1/5 flex justify-between items-center p-4 py-8 gap-16   uppercase">
+        <span>
+          <div className="text-lg opacity-60 mb-2">Joaquin</div>
+          <div className="text-2xl">Pheonix</div>
+        </span>
+        <span>
+          <div className="text-lg opacity-60 mb-2">Joaquin</div>
+          <div className="text-2xl">Pheonix</div>
+        </span>
+        <span>
+          <div className="text-lg opacity-60 mb-2">Joaquin</div>
+          <div className="text-2xl">Pheonix</div>
+        </span>
+      </div>
+      <div className="absolute bottom-1/2 right-8 transform translate-y-1/2 text-5xl text-gray-400">
+        <TfiPlus />
+      </div>
+      <div className="absolute bottom-0 right-0 p-12 text-3xl">
+        <MdNavigateBefore className="inline p-1 text-gray-400" />
+        <MdNavigateNext className="inline ml-4 border border-gray-400 rounded-full p-1 cursor-pointer" />
+      </div>
+    </div>
   );
 }
