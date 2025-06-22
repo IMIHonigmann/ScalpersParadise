@@ -1,10 +1,10 @@
 'use server';
 
-import { TMDBMovie } from '@/types/TMDB';
+import { TMDBMovieDetails } from '@/types/TMDB';
 
 export async function getSearchURLResponse(
   query: string
-): Promise<TMDBMovie[]> {
+): Promise<TMDBMovieDetails[]> {
   if (!query) return [];
 
   const APIKEY = process.env.TMDB_APIKEY;

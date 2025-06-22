@@ -1,11 +1,9 @@
-import { TMDBMovieDetails } from '@/types/TMDB';
-
-export async function getMovieById(movieId: number): Promise<TMDBMovieDetails> {
-  if (!movieId) return {} as TMDBMovieDetails;
+export async function getCreditsByMovieId(movieId: number) {
+  if (!movieId) return {};
 
   const APIKEY = process.env.TMDB_APIKEY;
   const RAT = process.env.TMDB_RAT;
-  const url = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${APIKEY}`;
+  const url = `https://api.themoviedb.org/3/movie/${movieId}/credits?language=en-US&api_key=${APIKEY}`;
 
   const res = await fetch(url, {
     method: 'GET',

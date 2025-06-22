@@ -1,6 +1,6 @@
 'use client';
 import { getSearchURLResponse } from '@/actions/TMDBSearchByName';
-import { TMDBMovie } from '@/types/TMDB';
+import { TMDBMovieDetails } from '@/types/TMDB';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
@@ -8,7 +8,7 @@ import { debounce } from 'lodash';
 import { HighlightMatch } from '@/components/SearchHighlightHelper';
 
 export default function Home() {
-  const [movies, setMovies] = useState<TMDBMovie[]>([]);
+  const [movies, setMovies] = useState<TMDBMovieDetails[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [movieQuery, setMovieQuery] = useState('');
   const pathname = usePathname();
