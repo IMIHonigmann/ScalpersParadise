@@ -1,5 +1,5 @@
 import { Screening } from '@/types/Screening';
-import { TMDBMovieDetails } from '@/types/TMDB';
+import { TMDBCredits, TMDBMovieDetails, TMDBVideos } from '@/types/TMDB';
 import { Fragment } from 'react';
 import { Bebas_Neue } from 'next/font/google';
 import { Oswald } from 'next/font/google';
@@ -11,6 +11,7 @@ import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
 import { getMovieById } from '@/actions/TMDBGetMovieById';
 import { getCreditsByMovieId } from '@/actions/TMDBGetCreditsByMovieId';
 import { HomeLogo } from '@/components/HomeLogo';
+import Link from 'next/link';
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -91,113 +92,124 @@ export default async function TestLayoutComponent({
 }) {
   const { movieId } = await params;
   const movie = await getMovie(parseInt(movieId, 10));
-  const credits = await getCreditsByMovieId(parseInt(movieId, 10));
+  const credits: TMDBCredits = await getCreditsByMovieId(parseInt(movieId, 10));
   console.log(movie);
   const screenings = await getThisWeeksScreenings(movie);
-  const navLabels = ['Shop', 'Unlimited', 'Lucky', 'Rent'];
+  const navItems = [
+    { label: 'Shop', path: '/shop' },
+    { label: 'Unlimited', path: '/unlimited' },
+    { label: 'Lucky', path: '/random' },
+    { label: 'Rent', path: '/rent' },
+  ];
 
   return (
-    <div className={`${bebasNeue.className} tracking-widest`}>
-      <div className={`flex justify-between text-right items-start w-full p-8`}>
+    <>
+      <div className={`${bebasNeue.className} tracking-widest`}>
+        <div
+          className={`flex justify-between text-right items-start w-full p-8`}
+        >
+          <HomeLogo />
+          <nav className="w-[10%]">
+            <ul className="flex flex-col space-y-0 text-xl uppercase">
+              {navItems.map((item, index) => (
+                <li
+                  key={index}
+                  className="hover:opacity-70 transition-opacity cursor-pointer"
+                >
+                  <Link href={item.path}>{item.label}</Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <div className="flex-[2]" />
+          <span
+            className="w-3/4
+            flex justify-between items-center relative
+          after:content-[''] after:absolute after:-bottom-3 after:left-1/2 after:-translate-x-1/2 after:w-[98%] after:h-px after:bg-current"
+          >
+            <span>
+              <CiSearch className="text-3xl inline mr-[0.5em]" />
+              <Fragment>
+                {' '}
+                <input
+                  type="text"
+                  placeholder="Search movies..."
+                  className="bg-transparent border-none outline-none text-inherit placeholder-gray-400"
+                />
+              </Fragment>
+            </span>
+            <PiTextAlignLeft className="text-3xl" />
+          </span>
+        </div>
+        <div className="absolute bottom-0 left-0 px-16 py-12 w-full md:w-1/2 xl:w-1/3">
+          <div className="flex justify-between mb-2 text-yellow-400 font-bold text-9xl">
+            {movie.title.split('').map((char: string, index: number) => (
+              <span key={index} className="scale-x-[80%]">
+                {char === ' ' ? '\u00A0' : char}
+              </span>
+            ))}
+          </div>
+          <div className="grid grid-cols-3 gap-8 mt-4">
+            <div>
+              <p className="uppercase tracking-widest">{movie.tagline}</p>
+            </div>
+            <div className="col-span-2">
+              <p
+                className={`text-sm text-gray-400 ${oswald.className} tracking-normal leading-relaxed`}
+              >
+                {movie.overview}
+              </p>
+            </div>
+            <div
+              className="col-span-2 col-start-2 row-start-2
+            grid grid-cols-3 gap-8"
+            >
+              <button
+                className="place-self-center bg-red-600 text-white px-12 py-4 text-sm rounded whitespace-nowrap
+              col-span-2"
+              >
+                Take a Ticket
+              </button>
+              <a
+                href="#"
+                className={`place-self-center text-sm
+                flex items-center gap-2 text-gray-400 hover:text-white transition-colors`}
+              >
+                <FaRegCirclePlay className="text-3xl" /> Trailer
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="absolute bottom-0 right-1/3  w-1/5 flex justify-between items-center p-4 py-8 gap-16 uppercase">
+          {credits.cast.slice(0, 3).map(actor => (
+            <span key={actor.id}>
+              <div className="text-lg opacity-60 mb-2">
+                {actor.name.split(' ')[0]}
+              </div>
+              <div className="text-2xl whitespace-nowrap">
+                {actor.name.includes(' ')
+                  ? actor.name.substring(actor.name.indexOf(' ')).trim()
+                  : ''}
+              </div>
+            </span>
+          ))}
+        </div>
+        <div className="absolute bottom-1/2 right-8 transform translate-y-1/2 text-5xl text-gray-400">
+          <TfiPlus />
+        </div>
+        <div className="absolute bottom-0 right-0 p-12 text-3xl">
+          <MdNavigateBefore className="inline p-1 text-gray-400" />
+          <MdNavigateNext className="inline ml-4 border border-gray-400 rounded-full p-1 cursor-pointer" />
+        </div>
+      </div>
+      <div className="pointer-events-none fixed inset-0 h-screen w-screen border-0 z-[-20] overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat -z-10 opacity-50"
           style={{
             backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
           }}
         />
-        <HomeLogo />
-        <nav className="w-[10%]">
-          <ul className="flex flex-col space-y-0 text-xl uppercase">
-            {navLabels.map((label, index) => (
-              <li
-                key={index}
-                className="hover:opacity-70 transition-opacity cursor-pointer"
-              >
-                {label}
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <div className="flex-[2]" />
-        <span
-          className="w-3/4  
-          flex justify-between items-center relative
-        after:content-[''] after:absolute after:-bottom-3 after:left-1/2 after:-translate-x-1/2 after:w-[98%] after:h-px after:bg-current"
-        >
-          <span>
-            <CiSearch className="text-3xl inline mr-[0.5em]" />
-            <Fragment>
-              {' '}
-              <input
-                type="text"
-                placeholder="Search movies..."
-                className="bg-transparent border-none outline-none text-inherit placeholder-gray-400"
-              />
-            </Fragment>
-          </span>
-          <PiTextAlignLeft className="text-3xl" />
-        </span>
       </div>
-
-      <div className="absolute bottom-0 left-0 px-16 py-12 w-full md:w-1/2 xl:w-1/3">
-        <div className="flex justify-between mb-2 text-yellow-400 font-bold text-9xl">
-          {movie.title.split('').map((char: string, index: number) => (
-            <span key={index} className="scale-x-[80%]">
-              {char === ' ' ? '\u00A0' : char}
-            </span>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-3 gap-8 mt-4">
-          <div>
-            <p className="uppercase tracking-widest">{movie.tagline}</p>
-          </div>
-          <div className="col-span-2">
-            <p
-              className={`text-sm text-gray-400 ${oswald.className} tracking-normal leading-relaxed`}
-            >
-              {movie.overview}
-            </p>
-          </div>
-          <div
-            className="col-span-2 col-start-2 row-start-2
-          grid grid-cols-3 gap-8"
-          >
-            <button
-              className="place-self-center bg-red-600 text-white px-12 py-4 text-sm rounded whitespace-nowrap
-            col-span-2"
-            >
-              Take a Ticket
-            </button>
-            <a
-              href="#"
-              className={`place-self-center text-sm
-              flex items-center gap-2 text-gray-400 hover:text-white transition-colors`}
-            >
-              <FaRegCirclePlay className="text-3xl" /> Trailer
-            </a>
-          </div>
-        </div>
-      </div>
-      <div className="absolute bottom-0 right-1/3  w-1/5 flex justify-between items-center p-4 py-8 gap-16   uppercase">
-        {credits.cast.slice(0, 3).map((name: string, index: number) => (
-          <span key={index}>
-            <div className="text-lg opacity-60 mb-2">
-              {credits.cast[index].name.split(' ')[0]}
-            </div>
-            <div className="text-2xl whitespace-nowrap">
-              {credits.cast[index].name.split(' ').slice(1).join(' ')}
-            </div>
-          </span>
-        ))}
-      </div>
-      <div className="absolute bottom-1/2 right-8 transform translate-y-1/2 text-5xl text-gray-400">
-        <TfiPlus />
-      </div>
-      <div className="absolute bottom-0 right-0 p-12 text-3xl">
-        <MdNavigateBefore className="inline p-1 text-gray-400" />
-        <MdNavigateNext className="inline ml-4 border border-gray-400 rounded-full p-1 cursor-pointer" />
-      </div>
-    </div>
+    </>
   );
 }
