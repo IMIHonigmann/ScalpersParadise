@@ -9,10 +9,8 @@ import { FaRegCirclePlay } from 'react-icons/fa6';
 import { TfiPlus } from 'react-icons/tfi';
 import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
 import { getMovieById } from '@/actions/TMDBGetMovieById';
-import {
-  getCreditsById,
-  getCreditsByMovieId,
-} from '@/actions/TMDBGetCreditsByMovieId';
+import { getCreditsByMovieId } from '@/actions/TMDBGetCreditsByMovieId';
+import { HomeLogo } from '@/components/HomeLogo';
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -96,6 +94,7 @@ export default async function TestLayoutComponent({
   const credits = await getCreditsByMovieId(parseInt(movieId, 10));
   console.log(movie);
   const screenings = await getThisWeeksScreenings(movie);
+  const navLabels = ['Shop', 'Unlimited', 'Lucky', 'Rent'];
 
   return (
     <div className={`${bebasNeue.className} tracking-widest`}>
@@ -106,36 +105,17 @@ export default async function TestLayoutComponent({
             backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
           }}
         />
-        <span className="font-bold text-5xl p-2 relative group cursor-pointer">
-          <span className="transition-transform group-hover:translate-x-2 group-hover:-translate-y-2 duration-300 absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-gray-300" />
-          <span className="transition-transform group-hover:-translate-x-2 group-hover:translate-y-2 duration-300 absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-gray-300" />
-          <span className="transition-all group-hover:opacity-100 group-hover:translate-x-2 group-hover:translate-y-2 delay-300 duration-150 absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-gray-300" />
-          CO0
-          <br />
-          0OL
-        </span>
+        <HomeLogo />
         <nav className="w-[10%]">
           <ul className="flex flex-col space-y-0 text-xl uppercase">
-            <li>
-              <span className="hover:opacity-70 transition-opacity cursor-pointer">
-                Home
-              </span>
-            </li>
-            <li>
-              <span className="hover:opacity-70 transition-opacity cursor-pointer">
-                Movies
-              </span>
-            </li>
-            <li>
-              <span className="hover:opacity-70 transition-opacity cursor-pointer">
-                Screenings
-              </span>
-            </li>
-            <li>
-              <span className="hover:opacity-70 transition-opacity cursor-pointer">
-                Contact
-              </span>
-            </li>
+            {navLabels.map((label, index) => (
+              <li
+                key={index}
+                className="hover:opacity-70 transition-opacity cursor-pointer"
+              >
+                {label}
+              </li>
+            ))}
           </ul>
         </nav>
         <div className="flex-[2]" />
@@ -146,14 +126,14 @@ export default async function TestLayoutComponent({
         >
           <span>
             <CiSearch className="text-3xl inline mr-[0.5em]" />
-            <span>
+            <Fragment>
               {' '}
               <input
                 type="text"
                 placeholder="Search movies..."
                 className="bg-transparent border-none outline-none text-inherit placeholder-gray-400"
               />
-            </span>
+            </Fragment>
           </span>
           <PiTextAlignLeft className="text-3xl" />
         </span>
@@ -200,30 +180,16 @@ export default async function TestLayoutComponent({
         </div>
       </div>
       <div className="absolute bottom-0 right-1/3  w-1/5 flex justify-between items-center p-4 py-8 gap-16   uppercase">
-        <span>
-          <div className="text-lg opacity-60 mb-2">
-            {credits.cast[0].name.split(' ')[0]}
-          </div>
-          <div className="text-2xl whitespace-nowrap">
-            {credits.cast[0].name.split(' ').slice(1).join(' ')}
-          </div>
-        </span>
-        <span>
-          <div className="text-lg opacity-60 mb-2">
-            {credits.cast[1].name.split(' ')[0]}
-          </div>
-          <div className="text-2xl whitespace-nowrap">
-            {credits.cast[1].name.split(' ').slice(1).join(' ')}
-          </div>
-        </span>
-        <span>
-          <div className="text-lg opacity-60 mb-2">
-            {credits.cast[2].name.split(' ')[0]}
-          </div>
-          <div className="text-2xl whitespace-nowrap">
-            {credits.cast[2].name.split(' ').slice(1).join(' ')}
-          </div>
-        </span>
+        {credits.cast.slice(0, 3).map((name: string, index: number) => (
+          <span key={index}>
+            <div className="text-lg opacity-60 mb-2">
+              {credits.cast[index].name.split(' ')[0]}
+            </div>
+            <div className="text-2xl whitespace-nowrap">
+              {credits.cast[index].name.split(' ').slice(1).join(' ')}
+            </div>
+          </span>
+        ))}
       </div>
       <div className="absolute bottom-1/2 right-8 transform translate-y-1/2 text-5xl text-gray-400">
         <TfiPlus />
