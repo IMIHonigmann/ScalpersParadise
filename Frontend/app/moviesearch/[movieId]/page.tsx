@@ -12,6 +12,8 @@ import { getMovieById } from '@/actions/TMDBGetMovieById';
 import { getCreditsByMovieId } from '@/actions/TMDBGetCreditsByMovieId';
 import { HomeLogo } from '@/components/HomeLogo';
 import Link from 'next/link';
+import { getTrailerByMovieId } from '@/actions/TMDBGetTrailerByMovieId';
+import Background from './Background';
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -101,6 +103,7 @@ export default async function TestLayoutComponent({
     { label: 'Lucky', path: '/random' },
     { label: 'Rent', path: '/rent' },
   ];
+  const videos: TMDBVideos = await getTrailerByMovieId(parseInt(movieId, 10));
 
   return (
     <>
@@ -202,13 +205,11 @@ export default async function TestLayoutComponent({
           <MdNavigateNext className="inline ml-4 border border-gray-400 rounded-full p-1 cursor-pointer" />
         </div>
       </div>
-      <div className="pointer-events-none fixed inset-0 h-screen w-screen border-0 z-[-20] overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat -z-10 opacity-50"
-          style={{
-            backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
-          }}
-        />
+      <div
+        className="pointer-events-none absolute top-0 left-0 h-[98vh] w-screen opacity-75 border-0 z-[-20] overflow-hidden p-10 md:p-13 lg:p-16
+      md:aspect-auto"
+      >
+        <Background videoId={videoId} movie={movie} />
       </div>
     </>
   );
