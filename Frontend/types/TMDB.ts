@@ -99,3 +99,15 @@ export interface TMDBVideo {
   published_at: string;
   id: string;
 }
+
+export interface TMDBRatings {
+  id: number;
+  results: TMDBRating[];
+}
+
+export interface TMDBRating {
+  iso_3166_1: string;
+  certification: string;
+  meaning: string;
+  order: number;
+}

@@ -14,6 +14,7 @@ import { HomeLogo } from '@/components/HomeLogo';
 import Link from 'next/link';
 import { getTrailerByMovieId } from '@/actions/TMDBGetTrailerByMovieId';
 import Background from './Background';
+import { getAgeRatingByMovieId } from '@/actions/TMDBGetAgeRatingByMovieId';
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -95,7 +96,8 @@ export default async function TestLayoutComponent({
   const { movieId } = await params;
   const movie = await getMovie(parseInt(movieId, 10));
   const credits: TMDBCredits = await getCreditsByMovieId(parseInt(movieId, 10));
-  console.log(movie);
+  const videos: TMDBVideos = await getTrailerByMovieId(parseInt(movieId, 10));
+  const ageRating = await getAgeRatingByMovieId(parseInt(movieId, 10));
   const screenings = await getThisWeeksScreenings(movie);
   const navItems = [
     { label: 'Shop', path: '/shop' },
@@ -103,7 +105,14 @@ export default async function TestLayoutComponent({
     { label: 'Lucky', path: '/random' },
     { label: 'Rent', path: '/rent' },
   ];
-  const videos: TMDBVideos = await getTrailerByMovieId(parseInt(movieId, 10));
+  const ratingColors = {
+    0: '#000000',
+    6: '#FFE500',
+    12: '#13A538',
+    16: '#00A0DE',
+    18: '#E20512',
+  };
+  const videoId = videos.results.find(video => video.type === 'Trailer')?.key;
 
   return (
     <>
@@ -151,6 +160,17 @@ export default async function TestLayoutComponent({
                 {char === ' ' ? '\u00A0' : char}
               </span>
             ))}
+            <span
+              className="text-6xl px-4"
+              style={{
+                color:
+                  ratingColors[
+                    ageRating.certification as keyof typeof ratingColors
+                  ] || '#FFFFFF',
+              }}
+            >
+              FSK{ageRating.certification}
+            </span>
           </div>
           <div className="grid grid-cols-3 gap-8 mt-4">
             <div>
@@ -173,10 +193,12 @@ export default async function TestLayoutComponent({
               >
                 Take a Ticket
               </button>
+
               <a
-                href="#"
-                className={`place-self-center text-sm
-                flex items-center gap-2 text-gray-400 hover:text-white transition-colors`}
+                href={`https://www.youtube.com/watch?v=${videoId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
               >
                 <FaRegCirclePlay className="text-3xl" /> Trailer
               </a>
