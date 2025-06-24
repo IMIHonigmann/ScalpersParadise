@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { getTrailerByMovieId } from '@/actions/TMDBGetTrailerByMovieId';
 import Background from './Background';
 import { getAgeRatingByMovieId } from '@/actions/TMDBGetAgeRatingByMovieId';
+import MovieSearcher from './MovieSearcher';
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -139,22 +140,18 @@ export default async function TestLayoutComponent({
             flex justify-between items-center relative
           after:content-[''] after:absolute after:-bottom-3 after:left-1/2 after:-translate-x-1/2 after:w-[98%] after:h-px after:bg-current"
           >
-            <span>
-              <CiSearch className="text-3xl inline mr-[0.5em]" />
-              <Fragment>
-                {' '}
-                <input
-                  type="text"
-                  placeholder="Search movies..."
-                  className="bg-transparent border-none outline-none text-inherit placeholder-gray-400"
-                />
-              </Fragment>
+            <span className="flex items-center">
+              <CiSearch className="text-3xl mr-[0.5em]" />
+              <MovieSearcher />
             </span>
             <PiTextAlignLeft className="text-3xl" />
           </span>
         </div>
         <div className="absolute bottom-0 left-0 px-16 py-12 w-full md:w-1/2 xl:w-1/3">
-          <div className="flex justify-between mb-2 text-yellow-400 font-bold text-9xl">
+          <div
+            className="flex justify-between mb-2 text-yellow-400 font-bold text-9xl"
+            style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
+          >
             {movie.title.split('').map((char: string, index: number) => (
               <span key={index} className="scale-x-[80%]">
                 {char === ' ' ? '\u00A0' : char}
@@ -167,6 +164,7 @@ export default async function TestLayoutComponent({
                   ratingColors[
                     ageRating.certification as keyof typeof ratingColors
                   ] || '#FFFFFF',
+                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
               }}
             >
               FSK{ageRating.certification}

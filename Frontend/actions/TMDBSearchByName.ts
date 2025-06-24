@@ -4,15 +4,15 @@ import { TMDBMovieDetails } from '@/types/TMDB';
 
 export async function getSearchURLResponse(
   query: string
-): Promise<TMDBMovieDetails[]> {
-  if (!query) return [];
+): Promise<{ results: TMDBMovieDetails[] }> {
+  if (!query) return { results: [] };
 
   const APIKEY = process.env.TMDB_APIKEY;
   const RAT = process.env.TMDB_RAT;
 
   const params = {
     query,
-    include_adult: 'true',
+    include_adult: 'false',
     language: 'en-US',
     page: '1',
     api_key: APIKEY,
@@ -37,5 +37,8 @@ export async function getSearchURLResponse(
     throw new Error(`Failed to fetch: Error Code: ${res.status}`);
   }
 
-  return res.json();
+  const data = res.json();
+  console.log(data);
+
+  return data;
 }

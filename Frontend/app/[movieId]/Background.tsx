@@ -8,9 +8,14 @@ import { TMDBMovieDetails } from '@/types/TMDB';
 type BackgroundProps = {
   videoId: string | undefined;
   movie: TMDBMovieDetails;
+  changeToVideo?: boolean;
 };
 
-export default function Background({ videoId, movie }: BackgroundProps) {
+export default function Background({
+  videoId,
+  movie,
+  changeToVideo = false,
+}: BackgroundProps) {
   const iFrameRef = useRef<HTMLIFrameElement>(null);
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -39,7 +44,13 @@ export default function Background({ videoId, movie }: BackgroundProps) {
         className="absolute w-[135%] h-[135%] left-1/2 top-1/2 transition-opacity duration-500"
         onLoad={() => {
           setTimeout(() => {
-            if (!iFrameRef.current || !divRef.current || !videoId) return;
+            if (
+              !iFrameRef.current ||
+              !divRef.current ||
+              !videoId ||
+              !changeToVideo
+            )
+              return;
             iFrameRef.current.style.opacity = '1';
             divRef.current.style.opacity = '0';
           }, 750);
