@@ -8,14 +8,9 @@ import { TMDBMovieDetails } from '@/types/TMDB';
 type BackgroundProps = {
   videoId: string | undefined;
   movie: TMDBMovieDetails;
-  changeToVideo?: boolean;
 };
 
-export default function Background({
-  videoId,
-  movie,
-  changeToVideo = false,
-}: BackgroundProps) {
+export default function Background({ videoId, movie }: BackgroundProps) {
   const iFrameRef = useRef<HTMLIFrameElement>(null);
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -29,7 +24,6 @@ export default function Background({
         quality={90}
         priority
       />
-
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat -z-10 transition-opacity duration-500"
         style={{
@@ -44,13 +38,7 @@ export default function Background({
         className="absolute w-[135%] h-[135%] left-1/2 top-1/2 transition-opacity duration-500"
         onLoad={() => {
           setTimeout(() => {
-            if (
-              !iFrameRef.current ||
-              !divRef.current ||
-              !videoId ||
-              !changeToVideo
-            )
-              return;
+            if (!iFrameRef.current || !divRef.current || !videoId) return;
             iFrameRef.current.style.opacity = '1';
             divRef.current.style.opacity = '0';
           }, 750);

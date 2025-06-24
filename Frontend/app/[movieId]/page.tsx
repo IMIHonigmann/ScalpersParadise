@@ -12,6 +12,7 @@ import { getMovieById } from '@/actions/TMDBGetMovieById';
 import { getCreditsByMovieId } from '@/actions/TMDBGetCreditsByMovieId';
 import { HomeLogo } from '@/components/HomeLogo';
 import Link from 'next/link';
+import Image from 'next/image';
 import { getTrailerByMovieId } from '@/actions/TMDBGetTrailerByMovieId';
 import Background from './Background';
 import { getAgeRatingByMovieId } from '@/actions/TMDBGetAgeRatingByMovieId';
@@ -89,12 +90,16 @@ function CurrentScreeningsComponent({
   );
 }
 
-export default async function TestLayoutComponent({
+export default async function MoviePreview({
   params,
+  searchParams,
 }: {
   params: { movieId: string };
+  searchParams: { playVideo?: string };
 }) {
   const { movieId } = await params;
+  const { playVideo = 'false' } = await searchParams;
+  const shouldPlayVideo = playVideo === 'true';
   const movie = await getMovie(parseInt(movieId, 10));
   const credits: TMDBCredits = await getCreditsByMovieId(parseInt(movieId, 10));
   const videos: TMDBVideos = await getTrailerByMovieId(parseInt(movieId, 10));
@@ -123,7 +128,7 @@ export default async function TestLayoutComponent({
         >
           <HomeLogo />
           <nav className="w-[10%]">
-            <ul className="flex flex-col space-y-0 text-xl uppercase">
+            <ul className="flex flex-col space-y-0 text-xl">
               {navItems.map((item, index) => (
                 <li
                   key={index}
@@ -140,7 +145,9 @@ export default async function TestLayoutComponent({
             flex justify-between items-center relative
           after:content-[''] after:absolute after:-bottom-3 after:left-1/2 after:-translate-x-1/2 after:w-[98%] after:h-px after:bg-current"
           >
-            <span className="flex items-center">
+            <span
+              className={`flex items-center w-full text-left normal-case ${oswald.className} tracking-normal`}
+            >
               <CiSearch className="text-3xl mr-[0.5em]" />
               <MovieSearcher />
             </span>
@@ -158,7 +165,7 @@ export default async function TestLayoutComponent({
               </span>
             ))}
             <span
-              className="text-6xl px-4"
+              className="text-6xl px-4 whitespace-nowrap"
               style={{
                 color:
                   ratingColors[
@@ -167,12 +174,19 @@ export default async function TestLayoutComponent({
                 textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
               }}
             >
-              FSK{ageRating.certification}
+              FSK{' '}
+              {ageRating.certification !== 'Not Rated'
+                ? ageRating.certification
+                : 'NR'}
+              {console.log(
+                ageRating.certification,
+                typeof ageRating.certification
+              )}
             </span>
           </div>
           <div className="grid grid-cols-3 gap-8 mt-4">
             <div>
-              <p className="uppercase tracking-widest">{movie.tagline}</p>
+              <p className="tracking-widest">{movie.tagline}</p>
             </div>
             <div className="col-span-2">
               <p
@@ -203,7 +217,7 @@ export default async function TestLayoutComponent({
             </div>
           </div>
         </div>
-        <div className="absolute bottom-0 right-1/3  w-1/5 flex justify-between items-center p-4 py-8 gap-16 uppercase">
+        <div className="absolute bottom-0 right-1/3  w-1/5 flex justify-between items-center p-4 py-8 gap-16">
           {credits.cast.slice(0, 3).map(actor => (
             <span key={actor.id}>
               <div className="text-lg opacity-60 mb-2">
@@ -229,7 +243,18 @@ export default async function TestLayoutComponent({
         className="pointer-events-none absolute top-0 left-0 h-[98vh] w-screen opacity-75 border-0 z-[-20] overflow-hidden p-10 md:p-13 lg:p-16
       md:aspect-auto"
       >
-        <Background videoId={videoId} movie={movie} />
+        {shouldPlayVideo ? (
+          <Background videoId={videoId} movie={movie} />
+        ) : (
+          <Image
+            src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+            alt={`${movie.title} backdrop`}
+            fill
+            className="object-cover opacity-100"
+            quality={90}
+            priority
+          />
+        )}
       </div>
     </>
   );

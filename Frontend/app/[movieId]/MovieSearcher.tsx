@@ -37,14 +37,17 @@ export default function MovieSearcher() {
   }, [movieQuery, debouncedSearch]);
 
   return (
-    <main className="text-left">
+    <>
       <input
         type="text"
         placeholder="Search for movies"
         value={movieQuery}
         onChange={e => setMovieQuery(e.target.value)}
         onBlur={() => setTimeout(() => setListIsFocused(false), 60)}
-        onFocus={() => setListIsFocused(true)}
+        onFocus={e => {
+          setListIsFocused(true);
+          e.target.select();
+        }}
         className="bg-transparent border-none outline-none text-inherit placeholder-gray-400 w-full"
       />
       <ul
@@ -59,7 +62,9 @@ export default function MovieSearcher() {
             <Link
               href={{
                 pathname: `/${movie.id}`,
+                query: { playVideo: 'false' },
               }}
+              onClick={() => setListIsFocused(true)}
               className="mb-2 transition-colors hover:bg-red-950 p-2 flex items-center"
             >
               <div className="relative w-24 h-32 mr-4">
@@ -85,6 +90,6 @@ export default function MovieSearcher() {
           </li>
         ))}
       </ul>
-    </main>
+    </>
   );
 }
