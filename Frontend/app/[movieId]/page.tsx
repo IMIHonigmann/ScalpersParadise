@@ -240,20 +240,24 @@ export default async function MoviePreview({
         </div>
       </div>
       <div
-        className="pointer-events-none absolute top-0 left-0 h-[98vh] w-screen opacity-75 border-0 z-[-20] overflow-hidden p-10 md:p-13 lg:p-16
+        className="pointer-events-none absolute top-0 left-0 h-[98vh] w-screen border-0 z-[-20] overflow-hidden p-10 md:p-13 lg:p-16
       md:aspect-auto"
       >
         {shouldPlayVideo ? (
           <Background videoId={videoId} movie={movie} />
         ) : (
-          <Image
-            src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-            alt={`${movie.title} backdrop`}
-            fill
-            className="object-cover opacity-100"
-            quality={90}
-            priority
-          />
+          <>
+            <Image
+              src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+              alt={`${movie.title} backdrop`}
+              fill
+              className="object-cover"
+              quality={80}
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black via-black/10 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
+          </>
         )}
       </div>
     </>

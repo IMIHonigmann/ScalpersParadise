@@ -46,6 +46,8 @@ export default function Background({ videoId, movie }: BackgroundProps) {
         style={{ transform: 'translate(-50%, -50%)', opacity: 0 }}
         ref={iFrameRef}
       ></iframe>
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-black/10 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
     </>
   );
 }
