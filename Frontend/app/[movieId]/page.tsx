@@ -17,6 +17,7 @@ import { getTrailerByMovieId } from '@/actions/TMDBGetTrailerByMovieId';
 import Background from './Background';
 import { getAgeRatingByMovieId } from '@/actions/TMDBGetAgeRatingByMovieId';
 import MovieSearcher from './MovieSearcher';
+import PlayButton from './PlayButton';
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -137,6 +138,7 @@ export async function MoviePreview({
         <Background videoId={videoId} movie={movie} />
       ) : (
         <>
+          <PlayButton />
           <Image
             src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
             alt={`${movie.title} backdrop`}

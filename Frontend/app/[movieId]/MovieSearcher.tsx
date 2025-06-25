@@ -51,7 +51,7 @@ export default function MovieSearcher() {
         className="bg-transparent border-none outline-none text-inherit placeholder-gray-400 w-full"
       />
       <ul
-        className={`absolute left-3.5 top-full mt-4 rounded shadow-lg max-h-[50vh] overflow-y-auto z-10 bg-zinc-900 bg-opacity-75 w-[92%] transition-opacity duration-200
+        className={`absolute left-3.5 top-full mt-4 rounded shadow-lg max-h-[50vh] overflow-y-auto z-50 bg-zinc-900 bg-opacity-75 w-[92%] transition-opacity duration-200
         ${listIsFocused ? '' : 'opacity-0 pointer-events-none'}`}
       >
         {movies.map(movie => (
