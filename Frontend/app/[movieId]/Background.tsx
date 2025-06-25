@@ -32,7 +32,7 @@ export default function Background({ videoId, movie }: BackgroundProps) {
         ref={divRef}
       />
       <iframe
-        src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&playsinline=1`}
+        src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&playsinline=1&start=15`}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowFullScreen
         className="absolute w-[135%] h-[135%] left-1/2 top-1/2 transition-opacity duration-500"

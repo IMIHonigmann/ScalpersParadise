@@ -5,7 +5,7 @@ import { Bebas_Neue } from 'next/font/google';
 import { Oswald } from 'next/font/google';
 import { CiSearch } from 'react-icons/ci';
 import { PiTextAlignLeft } from 'react-icons/pi';
-import { FaRegCirclePlay } from 'react-icons/fa6';
+import { FaChevronDown, FaRegCirclePlay } from 'react-icons/fa6';
 import { TfiPlus } from 'react-icons/tfi';
 import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
 import { getMovieById } from '@/actions/TMDBGetMovieById';
@@ -65,7 +65,7 @@ function CurrentScreeningsComponent({
   screenings: Screening[];
 }) {
   return (
-    <Fragment>
+    <>
       <p>Screenings this week:</p>
       <br />
       <br />
@@ -86,25 +86,25 @@ function CurrentScreeningsComponent({
           </span>
         );
       })}
-    </Fragment>
+    </>
   );
 }
 
-export default async function MoviePreview({
+export async function MoviePreview({
   params,
   searchParams,
+  movie,
 }: {
   params: { movieId: string };
   searchParams: { playVideo?: string };
+  movie: TMDBMovieDetails;
 }) {
   const { movieId } = await params;
   const { playVideo = 'false' } = await searchParams;
   const shouldPlayVideo = playVideo === 'true';
-  const movie = await getMovie(parseInt(movieId, 10));
   const credits: TMDBCredits = await getCreditsByMovieId(parseInt(movieId, 10));
   const videos: TMDBVideos = await getTrailerByMovieId(parseInt(movieId, 10));
   const ageRating = await getAgeRatingByMovieId(parseInt(movieId, 10));
-  const screenings = await getThisWeeksScreenings(movie);
   const navItems = [
     { label: 'Shop', path: '/shop' },
     { label: 'Unlimited', path: '/unlimited' },
@@ -112,7 +112,7 @@ export default async function MoviePreview({
     { label: 'Rent', path: '/rent' },
   ];
   const ratingColors = {
-    0: '#000000',
+    0: '#FFFFFF',
     6: '#FFE500',
     12: '#13A538',
     16: '#00A0DE',
@@ -120,11 +120,38 @@ export default async function MoviePreview({
   };
   const videoId = videos.results.find(video => video.type === 'Trailer')?.key;
 
+  function keepFirstSentence(text: string) {
+    const idx = text.indexOf('.');
+    if (idx === -1) return text;
+
+    const firstSentence = text.substring(0, idx + 1);
+    return idx + 1 < text.length ? firstSentence + '..' : firstSentence;
+  }
+
   return (
-    <>
+    <div
+      className="relative top-0 left-0 h-[95vh] border-0 overflow-hidden
+      md:aspect-auto object-cover"
+    >
+      {shouldPlayVideo ? (
+        <Background videoId={videoId} movie={movie} />
+      ) : (
+        <>
+          <Image
+            src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+            alt={`${movie.title} backdrop`}
+            fill
+            className="object-cover"
+            quality={80}
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/10 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+        </>
+      )}
       <div className={`${bebasNeue.className} tracking-widest`}>
         <div
-          className={`flex justify-between text-right items-start w-full p-8`}
+          className={`flex justify-between relative text-right items-start w-full p-8`}
         >
           <HomeLogo />
           <nav className="w-[10%]">
@@ -186,7 +213,9 @@ export default async function MoviePreview({
           </div>
           <div className="grid grid-cols-3 gap-8 mt-4">
             <div>
-              <p className="tracking-widest">{movie.tagline}</p>
+              <p className="tracking-widest">
+                {keepFirstSentence(movie.tagline)}
+              </p>
             </div>
             <div className="col-span-2">
               <p
@@ -239,25 +268,33 @@ export default async function MoviePreview({
           <MdNavigateNext className="inline ml-4 border border-gray-400 rounded-full p-1 cursor-pointer" />
         </div>
       </div>
-      <div
-        className="pointer-events-none absolute top-0 left-0 h-[98vh] w-screen border-0 z-[-20] overflow-hidden p-10 md:p-13 lg:p-16
-      md:aspect-auto"
-      >
-        {shouldPlayVideo ? (
-          <Background videoId={videoId} movie={movie} />
+    </div>
+  );
+}
+
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: { movieId: string };
+  searchParams: { playVideo?: string };
+}) {
+  const { movieId } = await params;
+  const movie = await getMovie(parseInt(movieId, 10));
+  const screenings = await getThisWeeksScreenings(movie);
+  return (
+    <>
+      <MoviePreview params={params} searchParams={searchParams} movie={movie} />
+      <div className="bg-zinc-900">
+        <div className="flex justify-center items-center w-full">
+          <FaChevronDown className="text-5xl flex-grow-1" />
+        </div>
+        {typeof screenings === 'string' ? (
+          <p>No screenings for this week</p>
         ) : (
-          <>
-            <Image
-              src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-              alt={`${movie.title} backdrop`}
-              fill
-              className="object-cover"
-              quality={80}
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-black via-black/10 to-transparent pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
-          </>
+          <div className="min-h-screen">
+            <CurrentScreeningsComponent screenings={screenings} />
+          </div>
         )}
       </div>
     </>
