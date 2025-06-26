@@ -89,21 +89,10 @@ export default function BoxGrid() {
         alignItems: 'center',
       }}
     >
-      <Image
-        src="/moviescreen.svg"
-        alt="Cinema Screen"
-        width={900}
-        height={500}
-        style={{
-          position: 'relative',
-          opacity: 0.7,
-          zIndex: 1,
-          marginTop: '-20px',
-          marginBottom: '20px',
-          border: '1px solid #ccc',
-        }}
-      />
-
+      <div className="w-full flex flex-col items-center mb-8 mt-16">
+        <div className="w-3/4 h-3 bg-gray-300 rounded-t-full shadow-lg mb-2"></div>
+        <div className="text-sm text-gray-600 font-semibold">SCREEN</div>
+      </div>
       {rows.map(row => (
         <div
           key={row.rowId}
