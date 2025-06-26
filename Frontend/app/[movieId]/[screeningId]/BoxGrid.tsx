@@ -117,7 +117,10 @@ export default function BoxGrid() {
               return (
                 <button
                   className={isBooked ? 'booked' : 'notbooked'}
-                  onClick={() => handleSeatBooking(box.id)}
+                  onClick={() => {
+                    if (isBooked) return;
+                    handleSeatBooking(box.id);
+                  }}
                   key={box.id}
                   style={{
                     width: `${boxSize}px`,
