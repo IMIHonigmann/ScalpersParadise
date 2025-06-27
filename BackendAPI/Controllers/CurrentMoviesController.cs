@@ -40,7 +40,9 @@ public class CurrentMoviesController(Client supabase) : ControllerBase
             s.AuditoriumId,
             s.ScreeningTime,
             s.Auditorium.AuditoriumType,
-        }).ToArray();
+        })
+        .DistinctBy(s => s.MovieName)
+        .ToArray();
 
         return Ok(moviesDTO);
     }
