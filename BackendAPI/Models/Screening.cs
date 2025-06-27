@@ -10,6 +10,8 @@ namespace BackendAPI.Models
         public int ScreeningId { get; set; }
         [Column("movie_id")]
         public int MovieId { get; set; }
+        [Column("movie_name")]
+        public string MovieName { get; set; } = string.Empty;
         [Column("auditorium_id")]
         public int AuditoriumId { get; set; }
         [Column("screening_time")]
