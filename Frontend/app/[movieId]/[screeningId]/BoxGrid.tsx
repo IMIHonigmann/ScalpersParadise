@@ -90,7 +90,7 @@ export default function BoxGrid() {
       }}
     >
       <div className="w-full flex flex-col items-center mb-8 mt-16">
-        <div className="w-3/4 h-3 bg-gray-300 rounded-t-full shadow-lg mb-2"></div>
+        <div className="w-3/4 h-3 bg-gray-300 rounded-t-full shadow-lg shadow-white mb-4" />
         <div className="text-sm text-gray-600 font-semibold">SCREEN</div>
       </div>
       {rows.map(row => (
@@ -134,10 +134,13 @@ export default function BoxGrid() {
                     borderRadius: '4px',
                     boxShadow: '0 3px 5px rgba(0,0,0,0.2)',
                     transition: 'transform 0.2s, box-shadow 0.2s',
-                    cursor: 'pointer',
+                    cursor: 'auto',
                   }}
                   onMouseEnter={e => {
-                    e.currentTarget.style.transform = 'scale(1.05)';
+                    if (isBooked) return;
+                    e.currentTarget.style.cursor = 'pointer';
+                    e.currentTarget.style.transform =
+                      'scale(1.05) translateY(-0.25rem)';
                     e.currentTarget.style.boxShadow =
                       '0 5px 10px rgba(0,0,0,0.3)';
                     setHoveredSeatPrice(
@@ -145,6 +148,7 @@ export default function BoxGrid() {
                     );
                   }}
                   onMouseLeave={e => {
+                    e.currentTarget.style.cursor = 'auto';
                     e.currentTarget.style.transform = 'scale(1)';
                     e.currentTarget.style.boxShadow =
                       '0 3px 5px rgba(0,0,0,0.2)';
