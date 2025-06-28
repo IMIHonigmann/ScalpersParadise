@@ -5,7 +5,7 @@ using Supabase;
 namespace BackendAPI.Controllers;
 
 [ApiController]
-[Route("ligmer")]
+[Route("[controller]")]
 public class CurrentMoviesController(Client supabase) : ControllerBase
 {
     private readonly Client _supabase = supabase;
@@ -41,7 +41,7 @@ public class CurrentMoviesController(Client supabase) : ControllerBase
             s.ScreeningTime,
             s.Auditorium.AuditoriumType,
         })
-        .DistinctBy(s => s.MovieName)
+        .DistinctBy(s => s.MovieId)
         .ToArray();
 
         return Ok(moviesDTO);
