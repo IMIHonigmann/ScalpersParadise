@@ -15,6 +15,8 @@ public class CurrentMoviesController(Client supabase) : ControllerBase
     {
         var result = await _supabase
             .From<UniqueMovieIds>()
+            .Select("*")
+            .Order(x => x.MovieId, Supabase.Postgrest.Constants.Ordering.Descending)
             .Get();
 
         var ids = result.Models.ToArray();
