@@ -3,12 +3,10 @@
 import { type TMDBMovieDetails } from '@/types/TMDB';
 import { getMovieById } from './TMDBGetMovieById';
 
-export async function getCurrentMoviesByName(movieName?: string) {
+export async function getCurrentMovies() {
   const JWT = ``;
   const res = await fetch(
-    `http://localhost:5118/CurrentMovies/getCurrentMoviesByName${
-      movieName ? `?movieName=${movieName}` : ''
-    }`,
+    `http://localhost:5118/CurrentMovies/GetCurrentMovieIds`,
     {
       method: 'GET',
       headers: {
@@ -22,10 +20,10 @@ export async function getCurrentMoviesByName(movieName?: string) {
     throw new Error(`Failed to fetch: Error Code: ${res.status}`);
   }
 
-  const currentMovies = await res.json();
+  const currentMovieIds: number[] = await res.json();
 
   const movieDetailsResults = await Promise.allSettled(
-    currentMovies.map(async movie => await getMovieById(movie.movieId))
+    currentMovieIds.map(async id => await getMovieById(id))
   );
   const TMDBMovieDetails: TMDBMovieDetails[] = movieDetailsResults
     .filter(result => result.status === 'fulfilled')

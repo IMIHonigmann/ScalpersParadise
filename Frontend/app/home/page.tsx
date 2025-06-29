@@ -1,10 +1,10 @@
-import { getCurrentMoviesByName } from '@/actions/APIGetCurrentMovies';
+import { getCurrentMovies } from '@/actions/APIGetCurrentMovies';
 import Image from 'next/image';
 
 type Props = {};
 
 export default async function Home({}: Props) {
-  const currentMovies = await getCurrentMoviesByName();
+  const currentMovies = await getCurrentMovies();
   console.log('bruh', currentMovies);
   return (
     <div className="flex min-h-screen items-center justify-center">
