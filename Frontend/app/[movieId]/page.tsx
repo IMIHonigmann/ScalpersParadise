@@ -1,5 +1,5 @@
 import { Screening } from '@/types/Screening';
-import { TMDBCredits, TMDBMovieDetails, TMDBVideos } from '@/types/TMDB';
+import { TMDBMovieDetails } from '@/types/TMDB';
 import { Bebas_Neue } from 'next/font/google';
 import { Oswald } from 'next/font/google';
 import { CiSearch } from 'react-icons/ci';
@@ -103,10 +103,12 @@ export async function MoviePreview({
   const { movieId } = await params;
   const { playVideo = 'false' } = await searchParams;
   const shouldPlayVideo = playVideo === 'true';
-  const credits: TMDBCredits = await getCreditsByMovieId(parseInt(movieId, 10));
-  const videos: TMDBVideos = await getTrailerByMovieId(parseInt(movieId, 10));
-  const ageRating = await getAgeRatingByMovieId(parseInt(movieId, 10));
-  const currentMovieIds = await getCurrentMovieIds();
+  const [credits, videos, ageRating, currentMovieIds] = await Promise.all([
+    await getCreditsByMovieId(parseInt(movieId, 10)),
+    await getTrailerByMovieId(parseInt(movieId, 10)),
+    await getAgeRatingByMovieId(parseInt(movieId, 10)),
+    await getCurrentMovieIds(),
+  ]);
 
   const navItems = [
     { label: 'Shop', path: '/shop' },

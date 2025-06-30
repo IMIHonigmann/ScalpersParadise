@@ -1,5 +1,9 @@
-export async function getCreditsByMovieId(movieId: number) {
-  if (!movieId) return {};
+import { type TMDBCredits } from '@/types/TMDB';
+
+export async function getCreditsByMovieId(
+  movieId: number
+): Promise<TMDBCredits> {
+  if (!movieId) return {} as TMDBCredits;
 
   const APIKEY = process.env.TMDB_APIKEY;
   const RAT = process.env.TMDB_RAT;

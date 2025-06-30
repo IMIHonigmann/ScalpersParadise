@@ -1,5 +1,9 @@
-export async function getTrailerByMovieId(movieId: number) {
-  if (!movieId) return {};
+import { type TMDBVideos } from '@/types/TMDB';
+
+export async function getTrailerByMovieId(
+  movieId: number
+): Promise<TMDBVideos> {
+  if (!movieId) return {} as TMDBVideos;
 
   const APIKEY = process.env.TMDB_APIKEY;
   const RAT = process.env.TMDB_RAT;
