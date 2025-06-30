@@ -271,20 +271,46 @@ export async function MoviePreview({
           <TfiPlus />
         </div>
         <div className="absolute bottom-0 right-0 p-12 text-3xl">
-          <MdNavigateBefore
+          <Link
+            href={{
+              pathname: `/${
+                currentMovieIds[
+                  Math.max(
+                    0,
+                    currentMovieIds.indexOf(parseInt(movieId, 10)) - 1
+                  )
+                ]
+              }`,
+              query: { playVideo: 'false' },
+            }}
             className={`${
               parseInt(movieId, 10) === currentMovieIds.at(0)
-                ? 'inline p-1 text-gray-400'
+                ? 'inline p-1 text-gray-400 cursor-default'
                 : CLICKABLE_NAVIGATION_CLASSES
             }`}
-          />
-          <MdNavigateNext
+          >
+            <MdNavigateBefore />
+          </Link>
+          <Link
+            href={{
+              pathname: `/${
+                currentMovieIds[
+                  Math.min(
+                    currentMovieIds.indexOf(parseInt(movieId, 10)) + 1,
+                    currentMovieIds.length - 1
+                  )
+                ]
+              }`,
+              query: { playVideo: 'false' },
+            }}
             className={`${
               parseInt(movieId, 10) === currentMovieIds.at(-1)
-                ? 'inline p-1 text-gray-400'
+                ? 'inline p-1 text-gray-400 cursor-default'
                 : CLICKABLE_NAVIGATION_CLASSES
             }`}
-          />
+          >
+            <MdNavigateNext />
+          </Link>
         </div>
       </div>
     </div>
