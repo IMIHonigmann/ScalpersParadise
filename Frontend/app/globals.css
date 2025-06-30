@@ -43,3 +43,22 @@ body {
     opacity: 0;
   }
 }
+
+.grow-on-hold:active {
+  --grow-shrink-duration: 0.03s;
+  animation: grow var(--grow-shrink-duration) forwards ease-out;
+  -o-animation: grow var(--grow-shrink-duration) forwards;
+  -ms-animation: grow var(--grow-shrink-duration) forwards;
+  -webkit-animation: grow var(--grow-shrink-duration) forwards;
+  -moz-animation: grow var(--grow-shrink-duration) forwards;
+}
+
+@keyframes grow {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.4);
+    color: greenyellow;
+  }
+}

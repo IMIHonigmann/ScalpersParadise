@@ -108,9 +108,6 @@ export async function MoviePreview({
   const ageRating = await getAgeRatingByMovieId(parseInt(movieId, 10));
   const currentMovieIds = await getCurrentMovieIds();
 
-  const CLICKABLE_NAVIGATION_CLASSES =
-    'inline ml-4 border border-gray-400 rounded-full p-1 cursor-pointer';
-
   const navItems = [
     { label: 'Shop', path: '/shop' },
     { label: 'Unlimited', path: '/unlimited' },
@@ -270,7 +267,7 @@ export async function MoviePreview({
         <div className="absolute bottom-1/2 right-8 transform translate-y-1/2 text-5xl text-gray-400">
           <TfiPlus />
         </div>
-        <div className="absolute bottom-0 right-0 p-12 text-3xl">
+        <div className="flex justify-center absolute bottom-0 right-0 p-12 text-3xl">
           <Link
             href={{
               pathname: `/${
@@ -286,7 +283,7 @@ export async function MoviePreview({
             className={`${
               parseInt(movieId, 10) === currentMovieIds.at(0)
                 ? 'inline p-1 text-gray-400 cursor-default'
-                : CLICKABLE_NAVIGATION_CLASSES
+                : 'inline ml-4 border border-gray-400 rounded-full p-1 cursor-pointer grow-on-hold'
             }`}
           >
             <MdNavigateBefore />
@@ -305,8 +302,8 @@ export async function MoviePreview({
             }}
             className={`${
               parseInt(movieId, 10) === currentMovieIds.at(-1)
-                ? 'inline p-1 text-gray-400 cursor-default'
-                : CLICKABLE_NAVIGATION_CLASSES
+                ? 'inline p-1 text-gray-400 ml-4 cursor-default'
+                : 'inline ml-4 border border-gray-400 rounded-full p-1 cursor-pointer grow-on-hold'
             }`}
           >
             <MdNavigateNext />
