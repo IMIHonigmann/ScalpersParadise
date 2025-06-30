@@ -31,3 +31,25 @@ export async function getCurrentMovies() {
 
   return TMDBMovieDetails;
 }
+
+export async function getCurrentMovieIds() {
+  const JWT = ``;
+  const res = await fetch(
+    `http://localhost:5118/CurrentMovies/GetCurrentMovieIds`,
+    {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${JWT}`,
+      },
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch: Error Code: ${res.status}`);
+  }
+
+  const currentMovieIds: number[] = await res.json();
+
+  return currentMovieIds;
+}

@@ -1,6 +1,5 @@
 import { Screening } from '@/types/Screening';
 import { TMDBCredits, TMDBMovieDetails, TMDBVideos } from '@/types/TMDB';
-import { Fragment } from 'react';
 import { Bebas_Neue } from 'next/font/google';
 import { Oswald } from 'next/font/google';
 import { CiSearch } from 'react-icons/ci';
@@ -18,6 +17,7 @@ import Background from './Background';
 import { getAgeRatingByMovieId } from '@/actions/TMDBGetAgeRatingByMovieId';
 import MovieSearcher from './MovieSearcher';
 import PlayButton from './PlayButton';
+import { getCurrentMovieIds } from '@/actions/APIGetCurrentMovies';
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -106,6 +106,11 @@ export async function MoviePreview({
   const credits: TMDBCredits = await getCreditsByMovieId(parseInt(movieId, 10));
   const videos: TMDBVideos = await getTrailerByMovieId(parseInt(movieId, 10));
   const ageRating = await getAgeRatingByMovieId(parseInt(movieId, 10));
+  const currentMovieIds = await getCurrentMovieIds();
+
+  const CLICKABLE_NAVIGATION_CLASSES =
+    'inline ml-4 border border-gray-400 rounded-full p-1 cursor-pointer';
+
   const navItems = [
     { label: 'Shop', path: '/shop' },
     { label: 'Unlimited', path: '/unlimited' },
@@ -266,8 +271,20 @@ export async function MoviePreview({
           <TfiPlus />
         </div>
         <div className="absolute bottom-0 right-0 p-12 text-3xl">
-          <MdNavigateBefore className="inline p-1 text-gray-400" />
-          <MdNavigateNext className="inline ml-4 border border-gray-400 rounded-full p-1 cursor-pointer" />
+          <MdNavigateBefore
+            className={`${
+              parseInt(movieId, 10) === currentMovieIds.at(0)
+                ? 'inline p-1 text-gray-400'
+                : CLICKABLE_NAVIGATION_CLASSES
+            }`}
+          />
+          <MdNavigateNext
+            className={`${
+              parseInt(movieId, 10) === currentMovieIds.at(-1)
+                ? 'inline p-1 text-gray-400'
+                : CLICKABLE_NAVIGATION_CLASSES
+            }`}
+          />
         </div>
       </div>
     </div>
@@ -284,6 +301,7 @@ export default async function Page({
   const { movieId } = await params;
   const movie = await getMovie(parseInt(movieId, 10));
   const screenings = await getThisWeeksScreenings(movie);
+
   return (
     <>
       <MoviePreview params={params} searchParams={searchParams} movie={movie} />
