@@ -1,5 +1,6 @@
 import { getCurrentMovies } from '@/actions/APIGetCurrentMovies';
 import Image from 'next/image';
+import Link from 'next/link';
 
 type Props = {};
 
@@ -10,7 +11,7 @@ export default async function Home({}: Props) {
     <div className="flex min-h-screen items-center justify-center">
       <div className="flex gap-4">
         {currentMovies.map((movie, index: number) => (
-          <div className="text-center" key={index}>
+          <Link href={`/${movie.id}`} key={index} className="text-center">
             <Image
               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
               alt={''}
@@ -18,7 +19,7 @@ export default async function Home({}: Props) {
               height={500}
             />
             <div>{movie.title}</div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
