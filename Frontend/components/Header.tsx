@@ -23,7 +23,7 @@ export default function Header() {
 
   return (
     <div
-      className={`flex justify-between relative text-right items-start w-full p-8`}
+      className={`flex justify-between relative text-right items-start w-full p-8 tracking-widest`}
     >
       <HomeLogo />
       <nav className="w-[10%]">

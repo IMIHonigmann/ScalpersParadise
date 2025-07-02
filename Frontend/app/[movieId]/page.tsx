@@ -1,6 +1,5 @@
 import { Screening } from '@/types/Screening';
 import { TMDBMovieDetails } from '@/types/TMDB';
-import { Bebas_Neue } from 'next/font/google';
 import { Oswald } from 'next/font/google';
 import { FaChevronDown, FaRegCirclePlay } from 'react-icons/fa6';
 import { TfiPlus } from 'react-icons/tfi';
@@ -15,12 +14,6 @@ import { getAgeRatingByMovieId } from '@/actions/TMDBGetAgeRatingByMovieId';
 import PlayButton from './PlayButton';
 import { getCurrentMovieIds } from '@/actions/APIGetCurrentMovies';
 import Header from '@/components/Header';
-
-const bebasNeue = Bebas_Neue({
-  weight: '400',
-  subsets: ['latin'],
-  display: 'swap',
-});
 
 const oswald = Oswald({
   weight: ['400', '500', '700'], // Add any weights you need
@@ -146,7 +139,7 @@ export async function MoviePreview({
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
         </>
       )}
-      <div className={`${bebasNeue.className} tracking-widest`}>
+      <div>
         <Header />
         <div className="absolute bottom-0 left-0 px-16 py-12 w-full md:w-1/2 xl:w-1/3">
           <div
