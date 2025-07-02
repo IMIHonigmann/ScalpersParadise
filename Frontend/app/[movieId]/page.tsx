@@ -2,22 +2,19 @@ import { Screening } from '@/types/Screening';
 import { TMDBMovieDetails } from '@/types/TMDB';
 import { Bebas_Neue } from 'next/font/google';
 import { Oswald } from 'next/font/google';
-import { CiSearch } from 'react-icons/ci';
-import { PiTextAlignLeft } from 'react-icons/pi';
 import { FaChevronDown, FaRegCirclePlay } from 'react-icons/fa6';
 import { TfiPlus } from 'react-icons/tfi';
 import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
 import { getMovieById } from '@/actions/TMDBGetMovieById';
 import { getCreditsByMovieId } from '@/actions/TMDBGetCreditsByMovieId';
-import { HomeLogo } from '@/components/HomeLogo';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getTrailerByMovieId } from '@/actions/TMDBGetTrailerByMovieId';
 import Background from './Background';
 import { getAgeRatingByMovieId } from '@/actions/TMDBGetAgeRatingByMovieId';
-import MovieSearcher from './MovieSearcher';
 import PlayButton from './PlayButton';
 import { getCurrentMovieIds } from '@/actions/APIGetCurrentMovies';
+import Header from '@/components/Header';
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -110,12 +107,6 @@ export async function MoviePreview({
     await getCurrentMovieIds(),
   ]);
 
-  const navItems = [
-    { label: 'Shop', path: '/shop' },
-    { label: 'Unlimited', path: '/unlimited' },
-    { label: 'Lucky', path: '/random' },
-    { label: 'Rent', path: '/rent' },
-  ];
   const ratingColors = {
     0: '#FFFFFF',
     6: '#FFE500',
@@ -156,37 +147,7 @@ export async function MoviePreview({
         </>
       )}
       <div className={`${bebasNeue.className} tracking-widest`}>
-        <div
-          className={`flex justify-between relative text-right items-start w-full p-8`}
-        >
-          <HomeLogo />
-          <nav className="w-[10%]">
-            <ul className="flex flex-col space-y-0 text-xl">
-              {navItems.map((item, index) => (
-                <li
-                  key={index}
-                  className="hover:opacity-70 transition-opacity cursor-pointer"
-                >
-                  <Link href={item.path}>{item.label}</Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-          <div className="flex-[2]" />
-          <span
-            className="w-3/4
-            flex justify-between items-center relative
-          after:content-[''] after:absolute after:-bottom-3 after:left-1/2 after:-translate-x-1/2 after:w-[98%] after:h-px after:bg-current"
-          >
-            <span
-              className={`flex items-center w-full text-left normal-case ${oswald.className} tracking-normal`}
-            >
-              <CiSearch className="text-3xl mr-[0.5em]" />
-              <MovieSearcher />
-            </span>
-            <PiTextAlignLeft className="text-3xl" />
-          </span>
-        </div>
+        <Header />
         <div className="absolute bottom-0 left-0 px-16 py-12 w-full md:w-1/2 xl:w-1/3">
           <div
             className="flex justify-between mb-2 text-yellow-400 font-bold text-9xl"
