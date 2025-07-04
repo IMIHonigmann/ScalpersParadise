@@ -146,11 +146,9 @@ export async function MoviePreview({
             className="flex justify-between mb-2 text-yellow-400 font-bold text-9xl"
             style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
           >
-            {movie.title.split('').map((char: string, index: number) => (
-              <span key={index} className="scale-x-[80%]">
-                {char === ' ' ? '\u00A0' : char}
-              </span>
-            ))}
+            <h1 className="text-yellow-400 font-bold text-9xl whitespace-nowrap">
+              {movie.title}
+            </h1>
             <span
               className="text-6xl px-4 whitespace-nowrap"
               style={{
