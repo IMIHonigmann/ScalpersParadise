@@ -7,7 +7,6 @@ type Props = {};
 
 export default async function Home({}: Props) {
   const currentMovies = await getCurrentMovies();
-  console.log('bruh', currentMovies);
   return (
     <>
       <Header />
