@@ -1,3 +1,5 @@
+'use server';
+
 import { type TMDBCredits } from '@/types/TMDB';
 
 export async function getCreditsByMovieId(

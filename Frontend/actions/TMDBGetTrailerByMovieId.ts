@@ -1,3 +1,5 @@
+'use server';
+
 import { type TMDBVideos } from '@/types/TMDB';
 
 export async function getTrailerByMovieId(

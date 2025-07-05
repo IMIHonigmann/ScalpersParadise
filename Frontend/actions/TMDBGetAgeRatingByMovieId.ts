@@ -1,3 +1,5 @@
+'use server';
+
 export async function getAgeRatingByMovieId(movieId: number) {
   if (!movieId) return {};
 

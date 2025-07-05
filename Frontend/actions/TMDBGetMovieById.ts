@@ -1,3 +1,5 @@
+'use server';
+
 import { TMDBMovieDetails } from '@/types/TMDB';
 
 export async function getMovieById(movieId: number): Promise<TMDBMovieDetails> {
