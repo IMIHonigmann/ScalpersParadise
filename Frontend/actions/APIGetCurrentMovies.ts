@@ -13,6 +13,7 @@ export async function getCurrentMovies() {
         accept: 'application/json',
         Authorization: `Bearer ${JWT}`,
       },
+      next: { revalidate: 86400 },
     }
   );
 
@@ -42,6 +43,7 @@ export async function getCurrentMovieIds() {
         accept: 'application/json',
         Authorization: `Bearer ${JWT}`,
       },
+      next: { revalidate: 86400 }, // 24h
     }
   );
 

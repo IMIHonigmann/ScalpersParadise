@@ -15,6 +15,7 @@ export async function getMovieById(movieId: number): Promise<TMDBMovieDetails> {
       accept: 'application/json',
       Authorization: `Bearer ${RAT}`,
     },
+    next: { revalidate: 10 * 86400 },
   });
 
   if (!res.ok) {

@@ -17,6 +17,7 @@ export async function getCreditsByMovieId(
       accept: 'application/json',
       Authorization: `Bearer ${RAT}`,
     },
+    next: { revalidate: 10 * 86400 },
   });
 
   if (!res.ok) {
