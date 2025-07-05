@@ -139,10 +139,6 @@ export async function MoviePreview({
               {ageRating.certification !== 'Not Rated'
                 ? ageRating.certification
                 : 'NR'}
-              {console.log(
-                ageRating.certification,
-                typeof ageRating.certification
-              )}
             </span>
           </div>
           <div className="grid grid-cols-3 gap-8 mt-4">

@@ -23,7 +23,6 @@ export async function getMovieById(movieId: number): Promise<TMDBMovieDetails> {
   }
 
   const data = await res.json();
-  console.log(data);
 
   return data;
 }

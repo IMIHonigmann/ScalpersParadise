@@ -25,7 +25,5 @@ export async function getCreditsByMovieId(
   }
 
   const data = await res.json();
-  console.log(data);
-
   return data;
 }
