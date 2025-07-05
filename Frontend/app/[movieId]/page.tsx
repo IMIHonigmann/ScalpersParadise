@@ -14,6 +14,7 @@ import { getAgeRatingByMovieId } from '@/actions/TMDBGetAgeRatingByMovieId';
 import PlayButton from './PlayButton';
 import { getCurrentMovieIds } from '@/actions/APIGetCurrentMovies';
 import Header from '@/components/Header';
+import { getThisWeeksScreenings } from '@/actions/APIGetScreeningDetails';
 
 const oswald = Oswald({
   weight: ['400', '500', '700'], // Add any weights you need
@@ -24,31 +25,6 @@ const oswald = Oswald({
 });
 
 const getMovie = await getMovieById;
-
-async function getThisWeeksScreenings(
-  movie: TMDBMovieDetails
-): Promise<Screening[] | string> {
-  const JWT = ``; // Authentication isn't implemented yet
-  const url = `http://localhost:5118/Screening/getScreeningsByMovieId?movieId=${movie.id}`;
-  const res = await fetch(url, {
-    headers: {
-      accept: 'application/json',
-      Authorization: `Bearer ${JWT}`,
-    },
-  });
-
-  if (res.status === 404) {
-    return 'This movie has no screenings scheduled this week';
-  }
-
-  if (!res.ok) {
-    throw new Error(
-      `Failed to fetch screenings for the movie ${movie.title} with id: ${movie.id}`
-    );
-  }
-
-  return res.json();
-}
 
 function CurrentScreeningsComponent({
   screenings,
