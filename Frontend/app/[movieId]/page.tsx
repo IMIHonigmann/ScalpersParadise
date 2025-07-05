@@ -1,3 +1,6 @@
+import Link from 'next/link';
+import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import { Screening } from '@/types/Screening';
 import { TMDBMovieDetails } from '@/types/TMDB';
 import { Oswald } from 'next/font/google';
@@ -6,16 +9,15 @@ import { TfiPlus } from 'react-icons/tfi';
 import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
 import { getMovieById } from '@/actions/TMDBGetMovieById';
 import { getCreditsByMovieId } from '@/actions/TMDBGetCreditsByMovieId';
-import Link from 'next/link';
-import Image from 'next/image';
 import { getTrailerByMovieId } from '@/actions/TMDBGetTrailerByMovieId';
-import Background from './Background';
 import { getAgeRatingByMovieId } from '@/actions/TMDBGetAgeRatingByMovieId';
-import PlayButton from './PlayButton';
 import { getCurrentMovieIds } from '@/actions/APIGetCurrentMovies';
 import Header from '@/components/Header';
 import { getThisWeeksScreenings } from '@/actions/APIGetScreeningDetails';
 import { Suspense } from 'react';
+
+const Background = dynamic(() => import('./Background'));
+const PlayButton = dynamic(() => import('./PlayButton'));
 
 const oswald = Oswald({
   weight: ['400', '500', '700'], // Add any weights you need
