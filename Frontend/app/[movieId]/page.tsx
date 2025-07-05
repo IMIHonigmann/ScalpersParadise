@@ -108,7 +108,6 @@ export async function MoviePreview({
             alt={`${movie.title} backdrop`}
             fill
             className="object-cover"
-            quality={80}
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black via-black/10 to-transparent" />
