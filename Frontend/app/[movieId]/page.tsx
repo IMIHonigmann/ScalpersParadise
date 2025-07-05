@@ -215,6 +215,7 @@ export async function MoviePreview({
                 ? 'inline p-1 text-gray-400 cursor-default'
                 : 'inline ml-4 border border-gray-400 rounded-full p-1 cursor-pointer grow-on-hold'
             }`}
+            aria-label="Go to the last page"
           >
             <MdNavigateBefore />
           </Link>
@@ -235,6 +236,7 @@ export async function MoviePreview({
                 ? 'inline p-1 text-gray-400 ml-4 cursor-default'
                 : 'inline ml-4 border border-gray-400 rounded-full p-1 cursor-pointer grow-on-hold'
             }`}
+            aria-label="Go to the next page"
           >
             <MdNavigateNext />
           </Link>

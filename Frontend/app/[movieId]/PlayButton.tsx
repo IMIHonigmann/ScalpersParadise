@@ -32,6 +32,7 @@ export default function PlayButton() {
               e.currentTarget.classList.remove('hover:!opacity-75');
               e.currentTarget.classList.add('grow-shrink-click');
             }}
+            aria-label="Play Video"
           >
             <LuCirclePlay />
           </button>
