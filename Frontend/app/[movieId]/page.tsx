@@ -277,3 +277,16 @@ export async function ScreeningsOrNothing({
     </div>
   );
 }
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { movieId: string };
+}) {
+  const { movieId } = await params;
+  const movie = await getMovie(movieId);
+  return {
+    title: `Watch ${movie.title} together | ScalpersParadise`,
+    description: `Showtimes, cast, and details for "${movie.title}" at ScalpersParadise.`,
+  };
+}
