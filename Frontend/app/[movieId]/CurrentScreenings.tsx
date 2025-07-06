@@ -21,6 +21,11 @@ export default function CurrentScreeningsComponent({
   screenings: Screening[];
 }) {
   const screeningsByDay = groupByDay(screenings);
+  const auditoriumColors = {
+    Classic: '#fff101',
+    IMAX: '#009edc',
+    '4DX': '#e2740b',
+  };
 
   return (
     <div className="flex items-center flex-wrap justify-center min-h-screen text-3xl">
@@ -34,7 +39,7 @@ export default function CurrentScreeningsComponent({
           return (
             <div
               key={day}
-              className="grid grid-cols-[0.125fr_1fr] items-center border rounded-lg p-10 m-5"
+              className="grid grid-cols-[0.125fr_1fr] items-center rounded-lg border-b p-10 m-5"
             >
               <strong className="flex flex-col mr-5">
                 {<span>{dayParts[0].substring(0, 3)}</span>}
@@ -44,8 +49,15 @@ export default function CurrentScreeningsComponent({
                 {dayScreenings.map(s => (
                   <Link
                     key={s.screeningId}
-                    className="border rounded-lg mr-5 p-2.5 transition-transform scale-100 translate-y-0 hover:scale-[102.5%] hover:-translate-y-0.5 ease-in-out"
+                    className="border rounded-lg mr-5 p-2.5 transition-[transition_color] scale-100 translate-y-0 hover:scale-[102.5%] hover:-translate-y-0.5 hover:saturate-[75%] ease-in-out"
                     href={`${s.movieId}/${s.auditoriumId}`}
+                    style={{
+                      backgroundColor:
+                        auditoriumColors[
+                          s.auditoriumType as keyof typeof auditoriumColors
+                        ],
+                      color: s.auditoriumType === 'Classic' ? 'black' : '',
+                    }}
                   >
                     {new Date(s.screeningTime).toLocaleTimeString([], {
                       hour: '2-digit',
