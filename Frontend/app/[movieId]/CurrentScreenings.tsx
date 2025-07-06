@@ -22,31 +22,40 @@ export default function CurrentScreeningsComponent({
   const screeningsByDay = groupByDay(screenings);
 
   return (
-    <div className="flex items-center justify-center min-h-screen text-3xl">
-      <div>
+    <div className="flex items-center flex-wrap justify-center min-h-screen text-3xl">
+      <div className="w-[95%]">
+        {' '}
         <p className="text-center">Screenings this week:</p>
         <br />
         <br />
-        {Object.entries(screeningsByDay).map(([day, dayScreenings]) => (
-          <div key={day} className="border rounded-lg p-10 m-5 w-full">
-            <strong>{day}</strong>
-            <br />
-            <div className="mt-5">
-              {dayScreenings.map(s => (
-                <span
-                  key={s.screeningId}
-                  className="border rounded-lg mr-5 p-2.5"
-                >
-                  Auditorium {s.auditoriumId} ({s.auditoriumType}){' - '}
-                  {new Date(s.screeningTime).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </span>
-              ))}
+        {Object.entries(screeningsByDay).map(([day, dayScreenings]) => {
+          const dayParts = day.split(', ');
+          return (
+            <div
+              key={day}
+              className="grid grid-cols-[0.125fr_1fr] items-center border rounded-lg p-10 m-5"
+            >
+              <strong className="flex flex-col mr-5">
+                {<span>{dayParts[0].substring(0, 3)}</span>}
+                {<span>{dayParts[1]}</span>}
+              </strong>
+              <div className="grid grid-cols-4 gap-y-4 mt-5">
+                {dayScreenings.map(s => (
+                  <span
+                    key={s.screeningId}
+                    className="border rounded-lg mr-5 p-2.5"
+                  >
+                    {new Date(s.screeningTime).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}{' '}
+                    <br />({s.auditoriumType}) TH{s.auditoriumId}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
