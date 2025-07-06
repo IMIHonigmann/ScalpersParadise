@@ -2,7 +2,7 @@
 
 import { TMDBMovieDetails } from '@/types/TMDB';
 
-export async function getMovieById(movieId: number): Promise<TMDBMovieDetails> {
+export async function getMovieById(movieId: string): Promise<TMDBMovieDetails> {
   if (!movieId) return {} as TMDBMovieDetails;
 
   const APIKEY = process.env.TMDB_APIKEY;

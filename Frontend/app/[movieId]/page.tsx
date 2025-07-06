@@ -1,8 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
-import { Screening } from '@/types/Screening';
-import { TMDBMovieDetails } from '@/types/TMDB';
 import { Oswald } from 'next/font/google';
 import { FaChevronDown, FaRegCirclePlay } from 'react-icons/fa6';
 import { TfiPlus } from 'react-icons/tfi';
@@ -12,12 +10,13 @@ import { getCreditsByMovieId } from '@/actions/TMDBGetCreditsByMovieId';
 import { getTrailerByMovieId } from '@/actions/TMDBGetTrailerByMovieId';
 import { getAgeRatingByMovieId } from '@/actions/TMDBGetAgeRatingByMovieId';
 import { getCurrentMovieIds } from '@/actions/APIGetCurrentMovies';
-import Header from '@/components/Header';
-import { getThisWeeksScreenings } from '@/actions/APIGetScreeningDetails';
 import { Suspense } from 'react';
+import { getThisWeeksScreenings } from '@/actions/APIGetScreeningDetails';
+import Header from '@/components/Header';
 
 const Background = dynamic(() => import('./Background'));
 const PlayButton = dynamic(() => import('./PlayButton'));
+const CurrentScreeningsComponent = dynamic(() => import('./CurrentScreenings'));
 
 const oswald = Oswald({
   weight: ['400', '500', '700'], // Add any weights you need
@@ -29,37 +28,6 @@ const oswald = Oswald({
 
 const getMovie = await getMovieById;
 
-function CurrentScreeningsComponent({
-  screenings,
-}: {
-  screenings: Screening[];
-}) {
-  return (
-    <>
-      <p>Screenings this week:</p>
-      <br />
-      <br />
-      {screenings.map(s => {
-        return (
-          <span key={s.screeningId}>
-            Auditorium {s.auditoriumId} ({s.auditoriumType}) <br />
-            {new Date(s.screeningTime).toLocaleString([], {
-              minute: '2-digit',
-              hour: '2-digit',
-              day: 'numeric',
-              weekday: 'long',
-              month: 'long',
-              year: 'numeric',
-            })}
-            <br />
-            <br />
-          </span>
-        );
-      })}
-    </>
-  );
-}
-
 export async function MovieDetails({
   movieId,
   children,
@@ -67,26 +35,35 @@ export async function MovieDetails({
   movieId: string;
   children: (data: any) => React.ReactNode;
 }) {
-  const [credits, videos, ageRating, currentMovieIds] = await Promise.all([
-    getCreditsByMovieId(parseInt(movieId, 10)),
-    getTrailerByMovieId(parseInt(movieId, 10)),
-    getAgeRatingByMovieId(parseInt(movieId, 10)),
-    getCurrentMovieIds(),
-  ]);
+  const [movie, credits, videos, ageRating, currentMovieIds] =
+    await Promise.all([
+      await getMovie(movieId),
+      getCreditsByMovieId(movieId),
+      getTrailerByMovieId(movieId),
+      getAgeRatingByMovieId(movieId),
+      getCurrentMovieIds(),
+    ]);
   const videoId = videos.results.find(video => video.type === 'Trailer')?.key;
   return (
-    <>{children({ credits, videos, videoId, ageRating, currentMovieIds })}</>
+    <>
+      {children({
+        movie,
+        credits,
+        videos,
+        videoId,
+        ageRating,
+        currentMovieIds,
+      })}
+    </>
   );
 }
 
 export async function MoviePreview({
   params,
   searchParams,
-  movie,
 }: {
   params: { movieId: string };
   searchParams: { playVideo?: string };
-  movie: TMDBMovieDetails;
 }) {
   const { movieId } = await params;
   const { playVideo = 'false' } = await searchParams;
@@ -115,7 +92,7 @@ export async function MoviePreview({
     >
       <Suspense fallback={<h2> Loading... </h2>}>
         <MovieDetails movieId={movieId}>
-          {({ credits, videoId, ageRating, currentMovieIds }) => (
+          {({ movie, credits, videoId, ageRating, currentMovieIds }) => (
             <>
               {shouldPlayVideo ? (
                 <Background videoId={videoId} movie={movie} />
@@ -269,25 +246,34 @@ export default async function Page({
   params: { movieId: string };
   searchParams: { playVideo?: string };
 }) {
-  const { movieId } = await params;
-  const movie = await getMovie(parseInt(movieId, 10));
-  const screenings = await getThisWeeksScreenings(movie);
-
   return (
     <>
-      <MoviePreview params={params} searchParams={searchParams} movie={movie} />
+      <MoviePreview params={params} searchParams={searchParams} />
       <div className="bg-zinc-900">
         <div className="flex justify-center items-center w-full">
           <FaChevronDown className="text-5xl flex-grow-1" />
         </div>
-        {typeof screenings === 'string' ? (
-          <p>No screenings for this week</p>
-        ) : (
-          <div className="min-h-screen">
-            <CurrentScreeningsComponent screenings={screenings} />
-          </div>
-        )}
+        <Suspense fallback={<h2>Loading...</h2>}>
+          <ScreeningsOrNothing params={params} />
+        </Suspense>
       </div>
     </>
+  );
+}
+
+export async function ScreeningsOrNothing({
+  params,
+}: {
+  params: { movieId: string };
+}) {
+  const { movieId } = await params;
+  const screenings = await getThisWeeksScreenings(movieId);
+
+  return typeof screenings === 'string' ? (
+    <p>No screenings for this week</p>
+  ) : (
+    <div className="min-h-screen">
+      <CurrentScreeningsComponent screenings={screenings} />
+    </div>
   );
 }

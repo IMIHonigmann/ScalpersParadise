@@ -2,7 +2,6 @@
 
 import { type Screening } from '@/types/Screening';
 import { type ScreeningDetails } from '@/types/ScreeningDetails';
-import { type TMDBMovieDetails } from '@/types/TMDB';
 
 export async function getScreeningDetails(
   screeningId: number
@@ -29,10 +28,10 @@ export async function getScreeningDetails(
 }
 
 export async function getThisWeeksScreenings(
-  movie: TMDBMovieDetails
+  movieId: string
 ): Promise<Screening[] | string> {
   const JWT = ``; // Authentication isn't implemented yet
-  const url = `http://localhost:5118/Screening/getScreeningsByMovieId?movieId=${movie.id}`;
+  const url = `http://localhost:5118/Screening/getScreeningsByMovieId?movieId=${movieId}`;
   const res = await fetch(url, {
     headers: {
       accept: 'application/json',
@@ -46,7 +45,7 @@ export async function getThisWeeksScreenings(
 
   if (!res.ok) {
     throw new Error(
-      `Failed to fetch screenings for the movie ${movie.title} with id: ${movie.id}`
+      `Failed to fetch screenings for the movie with id: ${movieId}`
     );
   }
 

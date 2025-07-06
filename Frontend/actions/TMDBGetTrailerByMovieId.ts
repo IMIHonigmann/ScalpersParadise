@@ -3,7 +3,7 @@
 import { type TMDBVideos } from '@/types/TMDB';
 
 export async function getTrailerByMovieId(
-  movieId: number
+  movieId: string
 ): Promise<TMDBVideos> {
   if (!movieId) return {} as TMDBVideos;
 

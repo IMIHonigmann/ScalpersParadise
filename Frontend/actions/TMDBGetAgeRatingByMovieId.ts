@@ -1,6 +1,6 @@
 'use server';
 
-export async function getAgeRatingByMovieId(movieId: number) {
+export async function getAgeRatingByMovieId(movieId: string) {
   if (!movieId) return {};
 
   const APIKEY = process.env.TMDB_APIKEY;

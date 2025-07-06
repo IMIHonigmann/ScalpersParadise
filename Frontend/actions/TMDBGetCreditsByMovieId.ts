@@ -3,7 +3,7 @@
 import { type TMDBCredits } from '@/types/TMDB';
 
 export async function getCreditsByMovieId(
-  movieId: number
+  movieId: string
 ): Promise<TMDBCredits> {
   if (!movieId) return {} as TMDBCredits;
 
