@@ -1,4 +1,5 @@
 import { type Screening } from '@/types/Screening';
+import Link from 'next/link';
 
 function groupByDay(screenings: Screening[]) {
   return screenings.reduce((acc, screening) => {
@@ -41,16 +42,17 @@ export default function CurrentScreeningsComponent({
               </strong>
               <div className="grid grid-cols-4 gap-y-4 mt-5">
                 {dayScreenings.map(s => (
-                  <span
+                  <Link
                     key={s.screeningId}
-                    className="border rounded-lg mr-5 p-2.5"
+                    className="border rounded-lg mr-5 p-2.5 transition-transform scale-100 translate-y-0 hover:scale-[102.5%] hover:-translate-y-0.5 ease-in-out"
+                    href={`${s.movieId}/${s.auditoriumId}`}
                   >
                     {new Date(s.screeningTime).toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
                     })}{' '}
                     <br />({s.auditoriumType}) TH{s.auditoriumId}
-                  </span>
+                  </Link>
                 ))}
               </div>
             </div>
