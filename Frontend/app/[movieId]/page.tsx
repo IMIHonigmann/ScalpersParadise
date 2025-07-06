@@ -251,7 +251,7 @@ export default async function Page({
       <MoviePreview params={params} searchParams={searchParams} />
       <div className="bg-zinc-900">
         <div className="flex justify-center items-center w-full">
-          <FaChevronDown className="text-5xl flex-grow-1" />
+          <FaChevronDown className="text-3xl flex-grow-1 mt-3" />
         </div>
         <Suspense fallback={<h2>Loading...</h2>}>
           <ScreeningsOrNothing params={params} />

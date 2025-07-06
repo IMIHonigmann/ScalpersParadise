@@ -31,7 +31,7 @@ export default function CurrentScreeningsComponent({
     <div className="flex items-center flex-wrap justify-center min-h-screen text-3xl">
       <div className="w-[95%]">
         {' '}
-        <p className="text-center">Screenings this week:</p>
+        <p className="text-center text-6xl">Screenings this week:</p>
         <br />
         <br />
         {Object.entries(screeningsByDay).map(([day, dayScreenings]) => {
