@@ -5,6 +5,8 @@ import * as THREE from 'three';
 import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, ThreeElements } from '@react-three/fiber';
 import type { TMDBMovieDetails } from '@/types/TMDB';
+import { CartridgeModel } from './Cartridge';
+import { Environment } from '@react-three/drei';
 
 function Box(
   props: ThreeElements['mesh'] & {
@@ -42,7 +44,7 @@ function Box(
       timeOutsideHover.current = 0;
       return;
     }
-    meshRef.current.rotation.y += delta * 0.1;
+    meshRef.current.rotation.y += delta * 0.5;
     meshRef.current.position.y =
       Math.sin(timeOutsideHover.current * 3.5) * 25.9;
   });
@@ -63,7 +65,7 @@ function Box(
       <boxGeometry args={[370, 700, 500]} />
       <meshStandardMaterial color={'red'} opacity={0} transparent={true} />
       <mesh ref={meshRef} scale={active ? 1.5 : 1}>
-        <boxGeometry args={[100, 100, 100]} />
+        <CartridgeModel poster_path={props.movie.poster_path} />
         <meshStandardMaterial color="#2f74c0" />
       </mesh>
     </mesh>
@@ -83,16 +85,13 @@ export function BoxCanvas({
         style={{ width: '100%', height: '30em' }}
         orthographic
       >
+        <Environment preset="sunset" background />
         <pointLight
-          position={[-250, -100, 100]}
+          position={[250, 400, 100]}
           decay={0}
           intensity={Math.PI * 4}
         />
-        <pointLight
-          position={[250, 100, 100]}
-          decay={0}
-          intensity={Math.PI * 4}
-        />
+        <directionalLight position={[0, 100, 100]} intensity={0.5} />
         {currentMovies.map((movie, index) => (
           <Box
             key={index}
