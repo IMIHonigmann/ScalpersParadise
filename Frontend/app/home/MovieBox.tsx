@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import * as THREE from 'three';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, ThreeElements } from '@react-three/fiber';
 import type { TMDBMovieDetails } from '@/types/TMDB';
 
@@ -16,31 +16,41 @@ function Box(
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
   const timeOutsideHover = useRef(0);
+  useEffect(() => {
+    if (!active) {
+    }
+  }, [active]);
   useFrame((state, delta) => {
     timeOutsideHover.current += delta;
-    if (hovered) {
-      meshRef.current.rotation.y += delta * 0.1;
-      meshRef.current.position.y =
-        Math.sin(state.clock.elapsedTime - timeOutsideHover.current * 3.5) *
-        25.9;
+    if (!hovered) {
+      meshRef.current.position.y = 0;
+      timeOutsideHover.current = 0;
+      return;
     }
+    meshRef.current.rotation.y += delta * 0.1;
+    meshRef.current.position.y =
+      Math.sin(timeOutsideHover.current * 3.5) * 25.9;
   });
   const router = useRouter();
   return (
     <mesh
       {...props}
-      ref={meshRef}
-      scale={active ? 1.5 : 1}
+      onPointerOver={() => setHover(true)}
+      onPointerOut={() => {
+        setHover(false);
+      }}
       onClick={() => {
         setActive(!active);
         props.setCamLoc((prev: number) => prev + 0.1);
         router.push(props.movie.id.toString());
       }}
-      onPointerOver={() => setHover(true)}
-      onPointerOut={() => setHover(false)}
     >
-      <boxGeometry args={[100, 100, 100]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : '#2f74c0'} />
+      <boxGeometry args={[370, 700, 500]} />
+      <meshStandardMaterial color={'red'} opacity={0} transparent={true} />
+      <mesh ref={meshRef} scale={active ? 1.5 : 1}>
+        <boxGeometry args={[100, 100, 100]} />
+        <meshStandardMaterial color={hovered ? 'hotpink' : '#2f74c0'} />
+      </mesh>
     </mesh>
   );
 }
