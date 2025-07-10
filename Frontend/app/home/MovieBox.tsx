@@ -4,17 +4,27 @@ import { useRouter } from 'next/navigation';
 import * as THREE from 'three';
 import React, { useRef, useState } from 'react';
 import { Canvas, useFrame, ThreeElements } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
+import type { TMDBMovieDetails } from '@/types/TMDB';
 
 function Box(
   props: ThreeElements['mesh'] & {
     setCamLoc: React.Dispatch<React.SetStateAction<number>>;
+    movie: TMDBMovieDetails;
   }
 ) {
   const meshRef = useRef<THREE.Mesh>(null!);
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
-  useFrame((state, delta) => (meshRef.current.rotation.x += delta * 0));
+  const timeOutsideHover = useRef(0);
+  useFrame((state, delta) => {
+    timeOutsideHover.current += delta;
+    if (hovered) {
+      meshRef.current.rotation.y += delta * 0.1;
+      meshRef.current.position.y =
+        Math.sin(state.clock.elapsedTime - timeOutsideHover.current * 3.5) *
+        25.9;
+    }
+  });
   const router = useRouter();
   return (
     <mesh
@@ -24,39 +34,48 @@ function Box(
       onClick={() => {
         setActive(!active);
         props.setCamLoc((prev: number) => prev + 0.1);
-        router.push('/test');
+        router.push(props.movie.id.toString());
       }}
       onPointerOver={() => setHover(true)}
       onPointerOut={() => setHover(false)}
     >
-      <boxGeometry args={[1, 1, 1]} />
+      <boxGeometry args={[100, 100, 100]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : '#2f74c0'} />
     </mesh>
   );
 }
 
-export function BoxCanvas() {
-  const [camLoc, setCamLoc] = useState(2.5);
+export function BoxCanvas({
+  currentMovies,
+}: {
+  currentMovies: TMDBMovieDetails[];
+}) {
+  const [camLoc, setCamLoc] = useState(375);
   return (
     <div className="flex justify-center items-center">
       <Canvas
-        camera={{ position: [0, 0, -2], fov: 75 }}
-        style={{ width: '100%', height: '300px' }}
+        camera={{ position: [0, -100, 500], fov: 75 }}
+        style={{ width: '100%', height: '30em' }}
+        orthographic
       >
-        <OrbitControls
-          minPolarAngle={Math.PI / 4}
-          maxPolarAngle={Math.PI / 2}
-          minAzimuthAngle={-Math.PI / 16}
-          maxAzimuthAngle={Math.PI / 16}
-          enablePan={false}
-          enableZoom={false}
+        <pointLight
+          position={[-250, -100, 100]}
+          decay={0}
+          intensity={Math.PI * 4}
         />
-        <pointLight position={[10, 10, 10]} decay={0} intensity={Math.PI * 4} />
-        <Box position={[camLoc * -2, 0, 0]} setCamLoc={setCamLoc} />
-        <Box position={[camLoc * -1, 0, 0]} setCamLoc={setCamLoc} />
-        <Box position={[camLoc * 0, 0, 0]} setCamLoc={setCamLoc} />
-        <Box position={[camLoc * 1, 0, 0]} setCamLoc={setCamLoc} />
-        <Box position={[camLoc * 2, 0, 0]} setCamLoc={setCamLoc} />
+        <pointLight
+          position={[250, 100, 100]}
+          decay={0}
+          intensity={Math.PI * 4}
+        />
+        {currentMovies.map((movie, index) => (
+          <Box
+            key={index}
+            position={[camLoc * (index - 2), 0, 0]}
+            setCamLoc={setCamLoc}
+            movie={movie}
+          />
+        ))}
       </Canvas>
     </div>
   );

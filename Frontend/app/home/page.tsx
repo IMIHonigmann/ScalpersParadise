@@ -11,7 +11,7 @@ export default async function Home({}: Props) {
   return (
     <>
       <Header />
-      <BoxCanvas />
+      <BoxCanvas currentMovies={currentMovies} />
       <div className="flex min-h-screen items-center justify-center">
         <div className="flex gap-4">
           {currentMovies.map((movie, index: number) => (
