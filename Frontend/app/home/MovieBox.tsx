@@ -22,8 +22,23 @@ function Box(
   }, [active]);
   useFrame((state, delta) => {
     timeOutsideHover.current += delta;
+    const targetColor = hovered
+      ? new THREE.Color('hotpink')
+      : new THREE.Color('#2f74c0');
+    const material = meshRef.current.material as THREE.MeshStandardMaterial;
+    material.color.lerp(targetColor, 0.05);
+
     if (!hovered) {
-      meshRef.current.position.y = 0;
+      meshRef.current.position.y = THREE.MathUtils.lerp(
+        meshRef.current.position.y,
+        0,
+        0.1
+      );
+      meshRef.current.rotation.y = THREE.MathUtils.lerp(
+        meshRef.current.rotation.y,
+        0,
+        0.1
+      );
       timeOutsideHover.current = 0;
       return;
     }
@@ -49,7 +64,7 @@ function Box(
       <meshStandardMaterial color={'red'} opacity={0} transparent={true} />
       <mesh ref={meshRef} scale={active ? 1.5 : 1}>
         <boxGeometry args={[100, 100, 100]} />
-        <meshStandardMaterial color={hovered ? 'hotpink' : '#2f74c0'} />
+        <meshStandardMaterial color="#2f74c0" />
       </mesh>
     </mesh>
   );
