@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, ThreeElements } from '@react-three/fiber';
 import type { TMDBMovieDetails } from '@/types/TMDB';
 import { CartridgeModel } from './Cartridge';
-import { Environment } from '@react-three/drei';
+import { Environment, OrbitControls } from '@react-three/drei';
 
 function Box(
   props: ThreeElements['mesh'] & {
@@ -85,9 +85,15 @@ export function BoxCanvas({
         style={{ width: '100%', height: '30em' }}
         orthographic
       >
+        <OrbitControls />
         <Environment preset="sunset" background />
         <pointLight
           position={[250, 400, 100]}
+          decay={0}
+          intensity={Math.PI * 4}
+        />
+        <pointLight
+          position={[-250, 100, -100]}
           decay={0}
           intensity={Math.PI * 4}
         />
