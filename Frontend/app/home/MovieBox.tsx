@@ -24,11 +24,6 @@ function Box(
   }, [active]);
   useFrame((state, delta) => {
     timeOutsideHover.current += delta;
-    const targetColor = hovered
-      ? new THREE.Color('hotpink')
-      : new THREE.Color('#2f74c0');
-    const material = meshRef.current.material as THREE.MeshStandardMaterial;
-    material.color.lerp(targetColor, 0.05);
 
     if (!hovered) {
       meshRef.current.position.y = THREE.MathUtils.lerp(
@@ -65,7 +60,9 @@ function Box(
       <boxGeometry args={[370, 700, 500]} />
       <meshStandardMaterial color={'red'} opacity={0} transparent={true} />
       <mesh ref={meshRef} scale={active ? 1.5 : 1}>
-        <CartridgeModel poster_path={props.movie.poster_path} />
+        <CartridgeModel
+          poster_path={`https://image.tmdb.org/t/p/w500${props.movie.poster_path}`}
+        />
         <meshStandardMaterial color="#2f74c0" />
       </mesh>
     </mesh>
