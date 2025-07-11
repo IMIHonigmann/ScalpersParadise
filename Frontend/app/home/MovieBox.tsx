@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import * as THREE from 'three';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Canvas, useFrame, ThreeElements } from '@react-three/fiber';
 import type { TMDBMovieDetails } from '@/types/TMDB';
 import { CartridgeModel } from './Cartridge';
@@ -18,10 +18,6 @@ function Box(
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
   const timeOutsideHover = useRef(0);
-  useEffect(() => {
-    if (!active) {
-    }
-  }, [active]);
   useFrame((state, delta) => {
     timeOutsideHover.current += delta;
 
@@ -36,19 +32,28 @@ function Box(
         0,
         0.1
       );
+      meshRef.current.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
       timeOutsideHover.current = 0;
       return;
     }
     meshRef.current.rotation.y += delta * 0.5;
-    meshRef.current.position.y =
-      Math.sin(timeOutsideHover.current * 3.5) * 25.9;
+    meshRef.current.position.y = Math.sin(timeOutsideHover.current * 2) * 10;
+    const targetScale = 1.15;
+    meshRef.current.scale.lerp(
+      new THREE.Vector3(targetScale, targetScale, targetScale),
+      0.1
+    );
   });
   const router = useRouter();
   return (
     <mesh
       {...props}
-      onPointerOver={() => setHover(true)}
+      onPointerOver={() => {
+        document.body.style.cursor = 'pointer';
+        setHover(true);
+      }}
       onPointerOut={() => {
+        document.body.style.cursor = 'default';
         setHover(false);
       }}
       onClick={() => {
@@ -59,9 +64,13 @@ function Box(
     >
       <boxGeometry args={[370, 700, 500]} />
       <meshStandardMaterial color={'red'} opacity={0} transparent={true} />
-      <mesh ref={meshRef} scale={active ? 1.5 : 1}>
+      <mesh ref={meshRef} scale={active ? 0.9 : 1}>
         <CartridgeModel
-          poster_path={`https://image.tmdb.org/t/p/w500${props.movie.poster_path}`}
+          poster_path={
+            props.movie.poster_path
+              ? `https://image.tmdb.org/t/p/w500${props.movie.poster_path}`
+              : '/Sotenboori3DFallback.png'
+          }
         />
         <meshStandardMaterial color="#2f74c0" />
       </mesh>
