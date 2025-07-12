@@ -13,7 +13,8 @@ import { getCurrentMovieIds } from '@/actions/APIGetCurrentMovies';
 import { Suspense } from 'react';
 import { getThisWeeksScreenings } from '@/actions/APIGetScreeningDetails';
 import Header from '@/components/Header';
-import TechList from './DetailList';
+import { SingleMovieCanvas } from './MiniPreview';
+import DetailList from './DetailList';
 
 const Background = dynamic(() => import('./Background'));
 const PlayButton = dynamic(() => import('./PlayButton'));
@@ -253,7 +254,12 @@ export default async function Page({
   const director = credits.crew.find(person => person.job === 'Director');
   const detailList = [
     { detail_name: movie.genres[0].name, detail_color: '#F03819' },
-    { detail_name: movie.genres[1].name, detail_color: '#FFFFFF' },
+    {
+      detail_name: movie.genres[1]
+        ? movie.genres[1].name
+        : movie.genres[0].name,
+      detail_color: '#FFFFFF',
+    },
     { detail_name: `A ${director!.name} film`, detail_color: '#FAD029' },
     { detail_name: movie.original_title, detail_color: '#8142E6' },
   ];
@@ -265,7 +271,15 @@ export default async function Page({
         <div className="flex justify-center items-center w-full">
           <FaChevronDown className="text-3xl flex-grow-1 mt-3" />
         </div>
-        <TechList items={detailList} heading={''} />
+
+        <div className="grid grid-cols-1 grid-rows-1 min-h-[40em] relative place-items-center">
+          <div className="col-start-1 row-start-1 z-10 w-full">
+            <SingleMovieCanvas movie={movie} />
+          </div>
+          <div className="col-start-1 row-start-1 z-0">
+            <DetailList items={detailList} heading={''} />
+          </div>
+        </div>
         <Suspense fallback={<h2>Loading...</h2>}>
           <ScreeningsOrNothing params={params} />
         </Suspense>

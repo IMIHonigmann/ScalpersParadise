@@ -12,10 +12,12 @@ export function InteractiveCartridge(
   props: ThreeElements['mesh'] & {
     setCamLoc: React.Dispatch<React.SetStateAction<number>>;
     movie: TMDBMovieDetails;
+    reverseHover?: boolean;
   }
 ) {
   const meshRef = useRef<THREE.Mesh>(null!);
-  const [hovered, setHover] = useState(false);
+  const [reverseHover] = useState(props.reverseHover ?? false);
+  const [hovered, setHover] = useState(reverseHover);
   const [active, setActive] = useState(false);
   const timeOutsideHover = useRef(0);
   useFrame((state, delta) => {
@@ -50,11 +52,11 @@ export function InteractiveCartridge(
       {...props}
       onPointerOver={() => {
         document.body.style.cursor = 'pointer';
-        setHover(true);
+        setHover(!reverseHover);
       }}
       onPointerOut={() => {
         document.body.style.cursor = 'default';
-        setHover(false);
+        setHover(reverseHover);
       }}
       onClick={() => {
         setActive(!active);
