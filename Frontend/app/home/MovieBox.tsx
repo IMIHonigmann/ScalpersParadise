@@ -97,17 +97,9 @@ export function BoxCanvas({
         orthographic
       >
         <Environment preset="sunset" background />
-        <pointLight
-          position={[250, 400, 100]}
-          decay={0}
-          intensity={Math.PI * 4}
-        />
-        <pointLight
-          position={[-250, 100, -100]}
-          decay={0}
-          intensity={Math.PI * 4}
-        />
-        <directionalLight position={[0, 100, 100]} intensity={0.5} />
+        <pointLight position={[250, 400, 100]} decay={0} intensity={5} />
+        <pointLight position={[-250, 100, -100]} decay={0} intensity={5} />
+        <directionalLight position={[0, 100, 100]} intensity={1.5} />
         {currentMovies.map((movie, index) => (
           <InteractiveCartridge
             key={index}

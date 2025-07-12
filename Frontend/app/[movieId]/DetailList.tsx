@@ -77,25 +77,45 @@ export default function DetailList({ heading, items }: DetailListProps) {
         >
           {Array(15)
             .fill(0)
-            .map((_, index) => (
-              <div key={index} className="flex items-center">
-                <span
-                  className="detail-item text-8xl font-extrabold uppercase"
-                  style={{
-                    color:
-                      index === 7 && item.detail_color
-                        ? item.detail_color
-                        : 'inherit',
-                    opacity: index === 7 && item.detail_color ? '100%' : '25%',
-                  }}
-                >
-                  {item.detail_name}
-                </span>
-                <span className="text-3xl ml-5 opacity-25">
-                  <FaCircle />
-                </span>
-              </div>
-            ))}
+            .map((_, index) => {
+              let rowOffset = 0;
+              switch (rowIndex) {
+                case 0:
+                  rowOffset = 1;
+                  break;
+                case 1:
+                  rowOffset = 0;
+                  break;
+                case 2:
+                case 3:
+                  rowOffset = 0;
+                  break;
+                default:
+                  rowOffset = 0;
+              }
+              return (
+                <div key={index} className="flex items-center">
+                  <span
+                    className="detail-item text-8xl font-extrabold uppercase"
+                    style={{
+                      color:
+                        index === 8 + rowOffset && item.detail_color
+                          ? item.detail_color
+                          : 'inherit',
+                      opacity:
+                        index === 8 + rowOffset && item.detail_color
+                          ? '100%'
+                          : '25%',
+                    }}
+                  >
+                    {item.detail_name}
+                  </span>
+                  <span className="text-3xl ml-5 opacity-25">
+                    <FaCircle />
+                  </span>
+                </div>
+              );
+            })}
         </div>
       ))}
     </section>

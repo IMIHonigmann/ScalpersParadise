@@ -260,8 +260,8 @@ export default async function Page({
         : movie.genres[0].name,
       detail_color: '#FFFFFF',
     },
-    { detail_name: `A ${director!.name} film`, detail_color: '#FAD029' },
-    { detail_name: movie.original_title, detail_color: '#8142E6' },
+    { detail_name: director!.name, detail_color: '#FAD029' },
+    { detail_name: movie.release_date, detail_color: '#8142E6' },
   ];
 
   return (
@@ -272,11 +272,11 @@ export default async function Page({
           <FaChevronDown className="text-3xl flex-grow-1 mt-3" />
         </div>
 
-        <div className="grid grid-cols-1 grid-rows-1 min-h-[40em] relative place-items-center">
+        <div className="grid grid-cols-1 grid-rows-1 min-h-[40em] relative place-items-center w-full overflow-x-hidden overflow-y-hidden">
           <div className="col-start-1 row-start-1 z-10 w-full">
             <SingleMovieCanvas movie={movie} />
           </div>
-          <div className="col-start-1 row-start-1 z-0 rotate-3 md:rotate-2 lg:rotate-3">
+          <div className="col-start-1 row-start-1 z-0 -rotate-3">
             <DetailList items={detailList} heading={''} />
           </div>
         </div>
