@@ -276,7 +276,7 @@ export default async function Page({
           <div className="col-start-1 row-start-1 z-10 w-full">
             <SingleMovieCanvas movie={movie} />
           </div>
-          <div className="col-start-1 row-start-1 z-0">
+          <div className="col-start-1 row-start-1 z-0 rotate-3 md:rotate-2 lg:rotate-3">
             <DetailList items={detailList} heading={''} />
           </div>
         </div>

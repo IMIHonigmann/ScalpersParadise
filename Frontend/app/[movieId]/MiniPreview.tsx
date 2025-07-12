@@ -32,7 +32,7 @@ export function SingleMovieCanvas({ movie }: { movie: TMDBMovieDetails }) {
           position={[0, 0, 0]}
           setCamLoc={setCamLoc}
           movie={movie}
-          reverseHover
+          restRotation={0.3}
         />
       </Canvas>
     </div>

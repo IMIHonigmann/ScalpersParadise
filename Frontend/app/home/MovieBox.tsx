@@ -13,38 +13,41 @@ export function InteractiveCartridge(
     setCamLoc: React.Dispatch<React.SetStateAction<number>>;
     movie: TMDBMovieDetails;
     reverseHover?: boolean;
+    restRotation?: number;
+    innerIndex?: number;
   }
 ) {
   const meshRef = useRef<THREE.Mesh>(null!);
-  const [reverseHover] = useState(props.reverseHover ?? false);
+  const reverseHover = props.reverseHover ?? false;
+  const innerIndex = props.innerIndex ?? 0;
+  const restRotation = props.restRotation ?? 0.25;
+
   const [hovered, setHover] = useState(reverseHover);
   const [active, setActive] = useState(false);
   const timeOutsideHover = useRef(0);
+  const floatHeight = 4;
+  const offsetDifference = 0.75;
   useFrame((state, delta) => {
     timeOutsideHover.current += delta;
 
-    if (!hovered) {
-      meshRef.current.position.y = THREE.MathUtils.lerp(
-        meshRef.current.position.y,
-        0,
+    meshRef.current.position.y =
+      Math.sin(timeOutsideHover.current * 2 + innerIndex * offsetDifference) *
+      floatHeight;
+    if (hovered) {
+      meshRef.current.rotation.y += delta * 0.5;
+      const targetScale = 1.15;
+      meshRef.current.scale.lerp(
+        new THREE.Vector3(targetScale, targetScale, targetScale),
         0.1
       );
+    } else {
       meshRef.current.rotation.y = THREE.MathUtils.lerp(
         meshRef.current.rotation.y,
-        0,
+        restRotation,
         0.1
       );
       meshRef.current.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
-      timeOutsideHover.current = 0;
-      return;
     }
-    meshRef.current.rotation.y += delta * 0.5;
-    meshRef.current.position.y = Math.sin(timeOutsideHover.current * 2) * 10;
-    const targetScale = 1.15;
-    meshRef.current.scale.lerp(
-      new THREE.Vector3(targetScale, targetScale, targetScale),
-      0.1
-    );
   });
   const router = useRouter();
   return (
@@ -109,6 +112,7 @@ export function BoxCanvas({
           <InteractiveCartridge
             key={index}
             position={[camLoc * (index - 2), 0, 0]}
+            innerIndex={index}
             setCamLoc={setCamLoc}
             movie={movie}
           />
