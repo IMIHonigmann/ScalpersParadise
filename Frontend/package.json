@@ -16,6 +16,7 @@
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.48.1",
     "@types/three": "^0.178.0",
+    "gsap": "^3.13.0",
     "lodash": "^4.17.21",
     "next": "^15.3.4",
     "react": "^19.1.0",

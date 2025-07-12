@@ -13,6 +13,7 @@ import { getCurrentMovieIds } from '@/actions/APIGetCurrentMovies';
 import { Suspense } from 'react';
 import { getThisWeeksScreenings } from '@/actions/APIGetScreeningDetails';
 import Header from '@/components/Header';
+import TechList from './DetailList';
 
 const Background = dynamic(() => import('./Background'));
 const PlayButton = dynamic(() => import('./PlayButton'));
@@ -246,6 +247,17 @@ export default async function Page({
   params: { movieId: string };
   searchParams: { playVideo?: string };
 }) {
+  const { movieId } = await params;
+  const movie = await getMovie(movieId);
+  const credits = await getCreditsByMovieId(movieId);
+  const director = credits.crew.find(person => person.job === 'Director');
+  const detailList = [
+    { detail_name: movie.genres[0].name, detail_color: '#F03819' },
+    { detail_name: movie.genres[1].name, detail_color: '#FFFFFF' },
+    { detail_name: `A ${director!.name} film`, detail_color: '#FAD029' },
+    { detail_name: movie.original_title, detail_color: '#8142E6' },
+  ];
+
   return (
     <>
       <MoviePreview params={params} searchParams={searchParams} />
@@ -253,6 +265,7 @@ export default async function Page({
         <div className="flex justify-center items-center w-full">
           <FaChevronDown className="text-3xl flex-grow-1 mt-3" />
         </div>
+        <TechList items={detailList} heading={''} />
         <Suspense fallback={<h2>Loading...</h2>}>
           <ScreeningsOrNothing params={params} />
         </Suspense>

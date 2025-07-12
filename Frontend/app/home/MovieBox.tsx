@@ -6,9 +6,9 @@ import React, { useRef, useState } from 'react';
 import { Canvas, useFrame, ThreeElements } from '@react-three/fiber';
 import type { TMDBMovieDetails } from '@/types/TMDB';
 import { CartridgeModel } from './Cartridge';
-import { Environment, OrbitControls } from '@react-three/drei';
+import { Environment } from '@react-three/drei';
 
-function Box(
+export function InteractiveCartridge(
   props: ThreeElements['mesh'] & {
     setCamLoc: React.Dispatch<React.SetStateAction<number>>;
     movie: TMDBMovieDetails;
@@ -91,7 +91,6 @@ export function BoxCanvas({
         style={{ width: '100%', height: '30em' }}
         orthographic
       >
-        <OrbitControls />
         <Environment preset="sunset" background />
         <pointLight
           position={[250, 400, 100]}
@@ -105,7 +104,7 @@ export function BoxCanvas({
         />
         <directionalLight position={[0, 100, 100]} intensity={0.5} />
         {currentMovies.map((movie, index) => (
-          <Box
+          <InteractiveCartridge
             key={index}
             position={[camLoc * (index - 2), 0, 0]}
             setCamLoc={setCamLoc}
