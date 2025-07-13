@@ -105,7 +105,7 @@ export default function DetailList({ heading, items }: DetailListProps) {
                       color: isHighlighted ? item.detail_color : 'inherit',
                       opacity: isHighlighted ? '100%' : '25%',
                       textShadow: isHighlighted
-                        ? '2px 2px 8px rgba(0,0,0,0.25)'
+                        ? '4px 4px 16px rgba(0,0,0,0.5)'
                         : '',
                     }}
                   >

@@ -279,7 +279,7 @@ export default async function Page({
 
         <div className="bg-background">
           <div
-            className="grid grid-cols-1 grid-rows-1 min-h-[40em] relative place-items-center w-full overflow-x-hidden overflow-y-hidden pb-60 bg-zinc-900 z-0"
+            className="grid grid-cols-1 grid-rows-1 min-h-[40em] relative place-items-center w-full overflow-x-hidden overflow-y-hidden pb-60 pt-4 bg-zinc-900 z-0"
             style={{
               clipPath: 'polygon(0 0, 100% 0, 100% 70%, 0 100%)',
             }}
