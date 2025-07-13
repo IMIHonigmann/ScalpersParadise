@@ -268,22 +268,35 @@ export default async function Page({
     <>
       <MoviePreview params={params} searchParams={searchParams} />
       <div className="bg-zinc-900">
-        <div className="flex justify-center items-center w-full">
+        <div
+          className="flex justify-center items-center w-full bg-black pb-48"
+          style={{
+            clipPath: 'polygon(0 0, 100% 0, 100% 10%, 0 100%)',
+          }}
+        >
           <FaChevronDown className="text-3xl flex-grow-1 mt-3" />
         </div>
 
-        <div className="grid grid-cols-1 grid-rows-1 min-h-[40em] relative place-items-center w-full overflow-x-hidden overflow-y-hidden">
-          <div className="col-start-1 row-start-1 z-10 w-full">
-            <SingleMovieCanvas movie={movie} />
-          </div>
-          <div className="col-start-1 row-start-1 z-0 -rotate-3">
-            <DetailList items={detailList} heading={''} />
+        <div className="bg-background">
+          <div
+            className="grid grid-cols-1 grid-rows-1 min-h-[40em] relative place-items-center w-full overflow-x-hidden overflow-y-hidden pb-60 bg-zinc-900 z-0"
+            style={{
+              clipPath: 'polygon(0 0, 100% 0, 100% 70%, 0 100%)',
+            }}
+          >
+            <div className="col-start-1 row-start-1 w-full relative">
+              <SingleMovieCanvas movie={movie} />
+              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent pointer-events-none" />
+            </div>
+            <div className="col-start-1 row-start-1 -rotate-3 pointer-events-none">
+              <DetailList items={detailList} heading={''} />
+            </div>
           </div>
         </div>
-        <Suspense fallback={<h2>Loading...</h2>}>
-          <ScreeningsOrNothing params={params} />
-        </Suspense>
       </div>
+      <Suspense fallback={<h2>Loading...</h2>}>
+        <ScreeningsOrNothing params={params} />
+      </Suspense>
     </>
   );
 }

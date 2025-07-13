@@ -81,36 +81,37 @@ export default function DetailList({ heading, items }: DetailListProps) {
               let rowOffset = 0;
               switch (rowIndex) {
                 case 0:
-                  rowOffset = 1;
+                  rowOffset = -3;
                   break;
                 case 1:
-                  rowOffset = 0;
+                  rowOffset = -2;
                   break;
                 case 2:
+                  rowOffset = -1;
+                  break;
                 case 3:
                   rowOffset = 0;
                   break;
                 default:
                   rowOffset = 0;
               }
+              const isHighlighted =
+                index === 8 + rowOffset && item.detail_color;
               return (
                 <div key={index} className="flex items-center">
                   <span
                     className="detail-item text-8xl font-extrabold uppercase"
                     style={{
-                      color:
-                        index === 8 + rowOffset && item.detail_color
-                          ? item.detail_color
-                          : 'inherit',
-                      opacity:
-                        index === 8 + rowOffset && item.detail_color
-                          ? '100%'
-                          : '25%',
+                      color: isHighlighted ? item.detail_color : 'inherit',
+                      opacity: isHighlighted ? '100%' : '25%',
+                      textShadow: isHighlighted
+                        ? '2px 2px 8px rgba(0,0,0,0.25)'
+                        : '',
                     }}
                   >
                     {item.detail_name}
                   </span>
-                  <span className="text-3xl ml-5 opacity-25">
+                  <span className="text-3xl ml-5 opacity-25 -z-10">
                     <FaCircle />
                   </span>
                 </div>
