@@ -312,7 +312,7 @@ export async function ScreeningsOrNothing({
   return typeof screenings === 'string' ? (
     <p>No screenings for this week</p>
   ) : (
-    <div className="min-h-screen">
+    <div className="min-h-[90vh]">
       <CurrentScreeningsComponent screenings={screenings} />
     </div>
   );
