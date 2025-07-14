@@ -109,16 +109,16 @@ function MovingLight(props: { hoveredIndex: number }) {
   return (
     <group>
       <pointLight
-        ref={backLightRef}
-        position={[-200, 100, -100]}
-        decay={0}
-        intensity={5}
-      />
-      <pointLight
         ref={frontLightRef}
         position={[250, 200, 100]}
         decay={0}
         intensity={7.5}
+      />
+      <pointLight
+        ref={backLightRef}
+        position={[-200, 100, -100]}
+        decay={0}
+        intensity={5}
       />
     </group>
   );

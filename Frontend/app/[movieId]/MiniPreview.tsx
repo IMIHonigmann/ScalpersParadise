@@ -17,8 +17,8 @@ export function SingleMovieCanvas({ movie }: { movie: TMDBMovieDetails }) {
         gl={{ alpha: true, antialias: true }}
       >
         <Environment preset="sunset" background />
-        <pointLight position={[250, 400, 100]} decay={0} intensity={5} />
-        <pointLight position={[-250, 100, -100]} decay={0} intensity={5} />
+        <pointLight position={[250, 200, 100]} decay={0} intensity={7.5} />
+        <pointLight position={[-200, 100, -100]} decay={0} intensity={5} />
         <directionalLight position={[0, 100, 100]} intensity={1} />
         <InteractiveCartridge
           position={[0, 0, 0]}
