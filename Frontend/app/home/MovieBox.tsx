@@ -83,12 +83,35 @@ export function InteractiveCartridge(
   );
 }
 
+function MovingLight(props: { hoveredIndex: number }) {
+  const lightTargetPositionX = -200 + 375 * props.hoveredIndex;
+  const lightRef = useRef<THREE.PointLight>(null!);
+  useFrame(() => {
+    lightRef.current.position.x = THREE.MathUtils.lerp(
+      lightRef.current.position.x,
+      lightTargetPositionX,
+      0.1
+    );
+  });
+  return (
+    <group>
+      <pointLight
+        ref={lightRef}
+        position={[-200, 100, -100]}
+        decay={0}
+        intensity={5}
+      />
+    </group>
+  );
+}
+
 export function BoxCanvas({
   currentMovies,
 }: {
   currentMovies: TMDBMovieDetails[];
 }) {
   const [camLoc, setCamLoc] = useState(375);
+  const [hoveredIndex, setHoveredIndex] = useState(0);
   return (
     <div className="flex justify-center items-center">
       <Canvas
@@ -98,16 +121,17 @@ export function BoxCanvas({
       >
         <Environment preset="sunset" background />
         <pointLight position={[250, 400, 100]} decay={0} intensity={5} />
-        <pointLight position={[-250, 100, -100]} decay={0} intensity={5} />
         <directionalLight position={[0, 100, 100]} intensity={1.5} />
+        <MovingLight hoveredIndex={hoveredIndex} />
         {currentMovies.map((movie, index) => (
-          <InteractiveCartridge
-            key={index}
-            position={[camLoc * (index - 2), 0, 0]}
-            innerIndex={index}
-            setCamLoc={setCamLoc}
-            movie={movie}
-          />
+          <mesh onPointerOver={() => setHoveredIndex(index - 2)} key={index}>
+            <InteractiveCartridge
+              position={[camLoc * (index - 2), 0, 0]}
+              innerIndex={index}
+              setCamLoc={setCamLoc}
+              movie={movie}
+            />
+          </mesh>
         ))}
       </Canvas>
     </div>
