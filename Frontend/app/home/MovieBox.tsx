@@ -6,7 +6,7 @@ import React, { useRef, useState } from 'react';
 import { Canvas, useFrame, ThreeElements } from '@react-three/fiber';
 import type { TMDBMovieDetails } from '@/types/TMDB';
 import { CartridgeModel } from './Cartridge';
-import { Environment } from '@react-three/drei';
+import { Environment, useHelper } from '@react-three/drei';
 
 export function InteractiveCartridge(
   props: ThreeElements['mesh'] & {
@@ -84,24 +84,41 @@ export function InteractiveCartridge(
 }
 
 function MovingLight(props: { hoveredIndex: number }) {
-  const lightTargetPositionX = -200 + 375 * props.hoveredIndex;
-  const lightRef = useRef<THREE.PointLight>(null!);
+  const backLightTargetPositionX = -200 + 375 * props.hoveredIndex;
+  const frontLightTargetPositionX = 250 + 375 * props.hoveredIndex;
+  const backLightRef = useRef<THREE.PointLight>(null!);
+  const frontLightRef = useRef<THREE.PointLight>(null!);
+  const speed = 0.1;
 
   useFrame(() => {
-    lightRef.current.position.x = THREE.MathUtils.lerp(
-      lightRef.current.position.x,
-      lightTargetPositionX,
-      0.1
+    backLightRef.current.position.x = THREE.MathUtils.lerp(
+      backLightRef.current.position.x,
+      backLightTargetPositionX,
+      speed
+    );
+    frontLightRef.current.position.x = THREE.MathUtils.lerp(
+      frontLightRef.current.position.x,
+      frontLightTargetPositionX,
+      speed * 0.5
     );
   });
+
+  useHelper(backLightRef, THREE.PointLightHelper, 30, 'red');
+  useHelper(frontLightRef, THREE.PointLightHelper, 30, 'red');
 
   return (
     <group>
       <pointLight
-        ref={lightRef}
+        ref={backLightRef}
         position={[-200, 100, -100]}
         decay={0}
         intensity={5}
+      />
+      <pointLight
+        ref={frontLightRef}
+        position={[250, 200, 100]}
+        decay={0}
+        intensity={7.5}
       />
     </group>
   );
@@ -122,7 +139,6 @@ export function BoxCanvas({
         orthographic
       >
         <Environment preset="sunset" background />
-        <pointLight position={[250, 400, 100]} decay={0} intensity={5} />
         <directionalLight position={[0, 100, 100]} intensity={1.5} />
         <MovingLight hoveredIndex={hoveredIndex} />
         {currentMovies.map((movie, index) => (

@@ -50,9 +50,9 @@ export function CartridgeModel(
 
   const botwMaterial = React.useMemo(() => {
     const mat = materials.BOTW.clone();
-    mat.envMapIntensity = 0.7;
-    mat.metalness = 0;
-    mat.roughness = 0.9;
+    mat.envMapIntensity = 1;
+    mat.metalness = 1;
+    mat.roughness = 0.4;
 
     return mat;
   }, [materials.BOTW]);
