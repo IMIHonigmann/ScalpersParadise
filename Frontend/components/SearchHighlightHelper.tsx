@@ -14,7 +14,7 @@ export function HighlightMatch({ text, query }: HighlightMatchProps) {
     <>
       {parts.map((part, i) =>
         regex.test(part) ? (
-          <span key={i} className="text-yellow-500 bold font-extrabold">
+          <span key={i} className="text-yellow-500 bold font-extrabold mx-0.5">
             {part}
           </span>
         ) : (
