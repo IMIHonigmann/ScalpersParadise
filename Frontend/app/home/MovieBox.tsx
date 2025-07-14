@@ -86,6 +86,7 @@ export function InteractiveCartridge(
 function MovingLight(props: { hoveredIndex: number }) {
   const lightTargetPositionX = -200 + 375 * props.hoveredIndex;
   const lightRef = useRef<THREE.PointLight>(null!);
+
   useFrame(() => {
     lightRef.current.position.x = THREE.MathUtils.lerp(
       lightRef.current.position.x,
@@ -93,6 +94,7 @@ function MovingLight(props: { hoveredIndex: number }) {
       0.1
     );
   });
+
   return (
     <group>
       <pointLight

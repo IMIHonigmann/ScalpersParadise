@@ -1,9 +1,11 @@
 import { PiTextAlignLeft } from 'react-icons/pi';
 import { HomeLogo } from './HomeLogo';
 import Link from 'next/link';
-import MovieSearcher from '@/app/[movieId]/MovieSearcher';
 import { CiSearch } from 'react-icons/ci';
 import { Oswald } from 'next/font/google';
+import dynamic from 'next/dynamic';
+
+const MovieSearcher = dynamic(() => import('@/components/MovieSearcher'));
 
 const oswald = Oswald({
   weight: ['400', '500', '700'], // Add any weights you need

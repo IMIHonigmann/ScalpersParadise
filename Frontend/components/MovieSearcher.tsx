@@ -1,7 +1,7 @@
 'use client';
 import { getSearchURLResponse } from '@/actions/TMDBSearchByName';
 import { TMDBMovieDetails } from '@/types/TMDB';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { debounce } from 'lodash';
@@ -36,6 +36,27 @@ export default function MovieSearcher() {
     };
   }, [movieQuery, debouncedSearch]);
 
+  const searchResultsRef = useRef<HTMLUListElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        inputRef.current &&
+        searchResultsRef.current &&
+        !inputRef.current.contains(event.target as Node) &&
+        !searchResultsRef.current.contains(event.target as Node)
+      ) {
+        setListIsFocused(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <>
       <input
@@ -43,16 +64,17 @@ export default function MovieSearcher() {
         placeholder="Search for movies"
         value={movieQuery}
         onChange={e => setMovieQuery(e.target.value)}
-        onBlur={() => setTimeout(() => setListIsFocused(false), 60)}
         onFocus={e => {
           setListIsFocused(true);
           e.target.select();
         }}
         className="bg-transparent border-none outline-none text-inherit placeholder-gray-400 w-full"
+        ref={inputRef}
       />
       <ul
         className={`absolute left-3.5 top-full mt-4 rounded shadow-lg max-h-[50vh] overflow-y-auto z-50 bg-zinc-900 bg-opacity-75 w-[92%] transition-opacity duration-200
         ${listIsFocused ? '' : 'opacity-0 pointer-events-none'}`}
+        ref={searchResultsRef}
       >
         {movies.map(movie => (
           <li
