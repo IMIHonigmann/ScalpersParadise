@@ -122,7 +122,7 @@ export async function MoviePreview({
               )}
               <>
                 <Header />
-                <div className="absolute bottom-0 left-0 p-12 w-full md:w-full">
+                <div className="absolute bottom-0 left-0 p-12 w-full">
                   <div
                     className="flex flex-col xl:flex-row mb-2 text-yellow-400 font-bold text-9xl text-center md:text-left"
                     style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
@@ -146,7 +146,7 @@ export async function MoviePreview({
                         : 'NR'}
                     </span>
                   </div>
-                  <div className="grid grid-cols-3 w-full md:w-1/4 gap-8 mt-4">
+                  <div className="grid grid-cols-12 grid-rows-[1fr_50px_auto] w-full gap-8 mt-4">
                     <p className="tracking-widest hidden md:inline-block">
                       {keepFirstSentence(movie.tagline)}
                     </p>
@@ -170,68 +170,72 @@ export async function MoviePreview({
                         <FaRegCirclePlay className="text-3xl" /> Trailer
                       </a>
                     </div>
+                    <div className="row-start-2 col-start-6 col-span-2 flex justify-between place-items-center gap-x-5">
+                      {credits.cast.slice(0, 3).map(actor => (
+                        <span key={actor.id}>
+                          <div className="text-lg opacity-60 mb-2" style={{}}>
+                            {actor.name.split(' ')[0]}
+                          </div>
+                          <div className="text-2xl whitespace-nowrap">
+                            {actor.name.includes(' ')
+                              ? actor.name
+                                  .substring(actor.name.indexOf(' '))
+                                  .trim()
+                              : ''}
+                          </div>
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex justify-center p-12 text-3xl row-start-2 col-start-11 col-span-2 place-items-center">
+                      <Link
+                        href={{
+                          pathname: `/${
+                            currentMovieIds[
+                              Math.max(
+                                0,
+                                currentMovieIds.indexOf(parseInt(movieId, 10)) -
+                                  1
+                              )
+                            ]
+                          }`,
+                          query: { playVideo: 'false' },
+                        }}
+                        className={`${
+                          parseInt(movieId, 10) === currentMovieIds.at(0)
+                            ? 'inline p-1 text-gray-400 cursor-default'
+                            : 'inline ml-4 border border-gray-400 rounded-full p-2 cursor-pointer grow-on-hold'
+                        }`}
+                        aria-label="Go to the last page"
+                      >
+                        <MdNavigateBefore />
+                      </Link>
+                      <Link
+                        href={{
+                          pathname: `/${
+                            currentMovieIds[
+                              Math.min(
+                                currentMovieIds.indexOf(parseInt(movieId, 10)) +
+                                  1,
+                                currentMovieIds.length - 1
+                              )
+                            ]
+                          }`,
+                          query: { playVideo: 'false' },
+                        }}
+                        className={`${
+                          parseInt(movieId, 10) === currentMovieIds.at(-1)
+                            ? 'inline p-1 text-gray-400 ml-4 cursor-default'
+                            : 'inline ml-4 border border-gray-400 rounded-full p-2 cursor-pointer grow-on-hold'
+                        }`}
+                        aria-label="Go to the next page"
+                      >
+                        <MdNavigateNext />
+                      </Link>
+                    </div>
                   </div>
-                </div>
-                <div className="absolute bottom-0 right-1/3  w-1/5 flex justify-between items-center p-4 py-8 gap-16">
-                  {credits.cast.slice(0, 3).map(actor => (
-                    <span key={actor.id}>
-                      <div className="text-lg opacity-60 mb-2">
-                        {actor.name.split(' ')[0]}
-                      </div>
-                      <div className="text-2xl whitespace-nowrap">
-                        {actor.name.includes(' ')
-                          ? actor.name.substring(actor.name.indexOf(' ')).trim()
-                          : ''}
-                      </div>
-                    </span>
-                  ))}
                 </div>
                 <div className="absolute bottom-1/2 right-8 transform translate-y-1/2 text-5xl text-gray-400">
                   <TfiPlus />
-                </div>
-                <div className="flex justify-center absolute bottom-0 right-0 p-12 text-3xl">
-                  <Link
-                    href={{
-                      pathname: `/${
-                        currentMovieIds[
-                          Math.max(
-                            0,
-                            currentMovieIds.indexOf(parseInt(movieId, 10)) - 1
-                          )
-                        ]
-                      }`,
-                      query: { playVideo: 'false' },
-                    }}
-                    className={`${
-                      parseInt(movieId, 10) === currentMovieIds.at(0)
-                        ? 'inline p-1 text-gray-400 cursor-default'
-                        : 'inline ml-4 border border-gray-400 rounded-full p-1 cursor-pointer grow-on-hold'
-                    }`}
-                    aria-label="Go to the last page"
-                  >
-                    <MdNavigateBefore />
-                  </Link>
-                  <Link
-                    href={{
-                      pathname: `/${
-                        currentMovieIds[
-                          Math.min(
-                            currentMovieIds.indexOf(parseInt(movieId, 10)) + 1,
-                            currentMovieIds.length - 1
-                          )
-                        ]
-                      }`,
-                      query: { playVideo: 'false' },
-                    }}
-                    className={`${
-                      parseInt(movieId, 10) === currentMovieIds.at(-1)
-                        ? 'inline p-1 text-gray-400 ml-4 cursor-default'
-                        : 'inline ml-4 border border-gray-400 rounded-full p-1 cursor-pointer grow-on-hold'
-                    }`}
-                    aria-label="Go to the next page"
-                  >
-                    <MdNavigateNext />
-                  </Link>
                 </div>
               </>
             </>
