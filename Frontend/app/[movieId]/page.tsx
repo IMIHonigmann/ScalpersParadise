@@ -127,7 +127,7 @@ export async function MoviePreview({
                     className="flex flex-col font-bold text-9xl text-center md:text-left"
                     style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
                   >
-                    <h1 className="text-yellow-400 font-bold min-w-3/5 max-w-full text-6xl lg:text-7xl 2xl:text-8xl pr-4">
+                    <h1 className="text-yellow-400 font-bold min-w-3/5 max-w-full text-5xl sm:text-6xl lg:text-7xl 2xl:text-8xl pr-4">
                       {movie.title}
                     </h1>
                     <span
@@ -155,17 +155,15 @@ export async function MoviePreview({
                     >
                       {movie.overview}
                     </p>
-
-                    <div className="grid grid-cols-3 gap-8 col-span-full md:col-span-2 col-start-1 md:col-start-2 row-start-2">
-                      <button className="place-self-center bg-red-600 text-white px-12 py-4 text-sm rounded col-span-2 md:col-span-1">
+                    <div className="col-span-full md:col-span-3 col-start-1 md:col-start-2 row-start-2 grid grid-cols-5 md:grid-cols-3 gap-x-2">
+                      <button className="bg-red-600 text-white px-8 py-4 text-sm rounded row-start-2 col-start-1 md:col-start-1 col-span-3 md:col-span-2 justify-self-center md:justify-self-start">
                         Take a Ticket
                       </button>
-
                       <a
                         href={`https://www.youtube.com/watch?v=${videoId}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+                        className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors row-start-2 col-start-4 md:col-start-3"
                       >
                         <FaRegCirclePlay className="text-3xl flex-shrink-0" />{' '}
                         Trailer
@@ -235,7 +233,7 @@ export async function MoviePreview({
                     </div>
                   </div>
                 </div>
-                <div className="absolute bottom-1/2 right-8 transform translate-y-1/2 text-5xl text-gray-400">
+                <div className="absolute bottom-1/2 right-8 transform translate-y-1/2 text-5xl text-gray-400 hidden md:block">
                   <TfiPlus />
                 </div>
               </>
