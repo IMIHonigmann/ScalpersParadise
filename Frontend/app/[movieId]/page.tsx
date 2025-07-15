@@ -155,8 +155,8 @@ export async function MoviePreview({
                     >
                       {movie.overview}
                     </p>
-                    <div className="col-span-full md:col-span-3 col-start-1 md:col-start-2 row-start-2 grid grid-cols-5 md:grid-cols-3 gap-x-2">
-                      <button className="bg-red-600 text-white px-8 py-4 text-sm rounded row-start-2 col-start-1 md:col-start-1 col-span-3 md:col-span-2 justify-self-center md:justify-self-start">
+                    <div className="col-span-full md:col-span-4 lg:col-span-3 col-start-2 md:col-start-2 lg:col-start-2 row-start-2 grid grid-cols-5 md:grid-cols-3 gap-x-2">
+                      <button className="bg-red-600 text-white px-12 md:px-8 xl:px-12 py-4 text-sm rounded row-start-2 col-start-1 md:col-start-1 col-span-3 md:col-span-2 justify-self-center md:justify-self-start">
                         Take a Ticket
                       </button>
                       <a
@@ -169,7 +169,7 @@ export async function MoviePreview({
                         Trailer
                       </a>
                     </div>
-                    <div className="row-start-3 md:row-start-2 col-start-1 md:col-start-6 col-span-full md:col-span-2 flex justify-between place-items-center gap-x-5">
+                    <div className="row-start-3 md:row-start-2 col-start-1 md:col-start-9 lg:col-start-6 col-span-full md:col-span-2 flex justify-between place-items-center gap-x-5">
                       {credits.cast.slice(0, 3).map(actor => (
                         <span key={actor.id}>
                           <div className="text-lg opacity-60 mb-2" style={{}}>
@@ -185,7 +185,7 @@ export async function MoviePreview({
                         </span>
                       ))}
                     </div>
-                    <div className="hidden md:flex justify-center p-12 text-3xl row-start-2 col-start-11 col-span-2 place-items-center ">
+                    <div className="hidden lg:flex justify-center p-12 text-3xl row-start-2 col-start-11 col-span-2 place-items-center ">
                       <Link
                         href={{
                           pathname: `/${
