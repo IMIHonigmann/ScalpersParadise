@@ -114,16 +114,16 @@ export async function MoviePreview({
               )}
               <>
                 <Header />
-                <div className="absolute bottom-0 left-0 px-16 py-12 w-full md:w-1/2 xl:w-1/3">
+                <div className="absolute bottom-0 left-0 p-12 w-full md:w-full">
                   <div
-                    className="flex justify-between mb-2 text-yellow-400 font-bold text-9xl"
+                    className="flex flex-col xl:flex-row mb-2 text-yellow-400 font-bold text-9xl text-center md:text-left"
                     style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
                   >
-                    <h1 className="text-yellow-400 font-bold text-9xl whitespace-nowrap">
+                    <h1 className="text-yellow-400 font-bold text-7xl md:text-8xl lg:text-9xl pr-4">
                       {movie.title}
                     </h1>
                     <span
-                      className="text-6xl px-4 whitespace-nowrap"
+                      className="text-6xl whitespace-nowrap"
                       style={{
                         color:
                           ratingColors[
@@ -138,25 +138,18 @@ export async function MoviePreview({
                         : 'NR'}
                     </span>
                   </div>
-                  <div className="grid grid-cols-3 gap-8 mt-4">
-                    <p className="tracking-widest">
+                  <div className="grid grid-cols-3 w-full md:w-1/4 gap-8 mt-4">
+                    <p className="tracking-widest hidden md:inline-block">
                       {keepFirstSentence(movie.tagline)}
                     </p>
-                    <div className="col-span-2">
-                      <p
-                        className={`text-sm text-gray-400 ${oswald.className} tracking-normal leading-relaxed`}
-                      >
-                        {movie.overview}
-                      </p>
-                    </div>
-                    <div
-                      className="col-span-2 col-start-2 row-start-2
-            grid grid-cols-3 gap-8"
+                    <p
+                      className={`text-sm text-gray-400 ${oswald.className} tracking-normal leading-relaxed col-span-3 md:col-span-2`}
                     >
-                      <button
-                        className="place-self-center bg-red-600 text-white px-12 py-4 text-sm rounded whitespace-nowrap
-              col-span-2"
-                      >
+                      {movie.overview}
+                    </p>
+
+                    <div className="grid grid-cols-3 gap-8 col-span-3 md:col-span-2 col-start-1 md:col-start-2 row-start-2">
+                      <button className="place-self-center bg-red-600 text-white px-12 py-4 text-sm rounded whitespace-nowrap col-span-2">
                         Take a Ticket
                       </button>
 
