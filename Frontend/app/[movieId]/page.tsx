@@ -124,14 +124,14 @@ export async function MoviePreview({
                 <Header />
                 <div className="absolute bottom-0 left-0 p-12 w-full">
                   <div
-                    className="flex flex-col xl:flex-row mb-2 text-yellow-400 font-bold text-9xl text-center md:text-left"
+                    className="flex flex-col font-bold text-9xl text-center md:text-left"
                     style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
                   >
-                    <h1 className="text-yellow-400 font-bold text-7xl md:text-8xl lg:text-9xl pr-4">
+                    <h1 className="text-yellow-400 font-bold min-w-3/5 max-w-full text-6xl lg:text-7xl 2xl:text-8xl pr-4">
                       {movie.title}
                     </h1>
                     <span
-                      className="text-6xl whitespace-nowrap"
+                      className="text-4xl md:text-5xl lg:text-6xl whitespace-nowrap"
                       style={{
                         color:
                           ratingColors[
@@ -146,18 +146,18 @@ export async function MoviePreview({
                         : 'NR'}
                     </span>
                   </div>
-                  <div className="grid grid-cols-12 grid-rows-[1fr_50px_auto] w-full gap-8 mt-4">
+                  <div className="grid grid-cols-12 grid-rows-[1fr_50px_50px_auto] md:grid-rows-[1fr_50px_auto] w-full gap-8 mt-4">
                     <p className="tracking-widest hidden md:inline-block">
                       {keepFirstSentence(movie.tagline)}
                     </p>
                     <p
-                      className={`text-sm text-gray-400 ${oswald.className} tracking-normal leading-relaxed col-span-3 md:col-span-2`}
+                      className={`text-sm text-gray-400 ${oswald.className} tracking-normal leading-relaxed col-span-full md:col-span-6 lg:col-span-6 xl:col-span-3`}
                     >
                       {movie.overview}
                     </p>
 
-                    <div className="grid grid-cols-3 gap-8 col-span-3 md:col-span-2 col-start-1 md:col-start-2 row-start-2">
-                      <button className="place-self-center bg-red-600 text-white px-12 py-4 text-sm rounded whitespace-nowrap col-span-2">
+                    <div className="grid grid-cols-3 gap-8 col-span-full md:col-span-2 col-start-1 md:col-start-2 row-start-2">
+                      <button className="place-self-center bg-red-600 text-white px-12 py-4 text-sm rounded col-span-2 md:col-span-1">
                         Take a Ticket
                       </button>
 
@@ -167,10 +167,11 @@ export async function MoviePreview({
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
                       >
-                        <FaRegCirclePlay className="text-3xl" /> Trailer
+                        <FaRegCirclePlay className="text-3xl flex-shrink-0" />{' '}
+                        Trailer
                       </a>
                     </div>
-                    <div className="row-start-2 col-start-6 col-span-2 flex justify-between place-items-center gap-x-5">
+                    <div className="row-start-3 md:row-start-2 col-start-1 md:col-start-6 col-span-full md:col-span-2 flex justify-between place-items-center gap-x-5">
                       {credits.cast.slice(0, 3).map(actor => (
                         <span key={actor.id}>
                           <div className="text-lg opacity-60 mb-2" style={{}}>
@@ -186,7 +187,7 @@ export async function MoviePreview({
                         </span>
                       ))}
                     </div>
-                    <div className="flex justify-center p-12 text-3xl row-start-2 col-start-11 col-span-2 place-items-center">
+                    <div className="hidden md:flex justify-center p-12 text-3xl row-start-2 col-start-11 col-span-2 place-items-center ">
                       <Link
                         href={{
                           pathname: `/${
