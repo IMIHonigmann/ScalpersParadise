@@ -15,6 +15,7 @@ import { getThisWeeksScreenings } from '@/actions/APIGetScreeningDetails';
 import Header from '@/components/Header';
 import { SingleMovieCanvas } from './MiniPreview';
 import DetailList from './DetailList';
+import { MovieDetailsProps } from '@/types/TMDB';
 
 const Background = dynamic(() => import('./Background'));
 const PlayButton = dynamic(() => import('./PlayButton'));
@@ -35,7 +36,7 @@ export async function MovieDetails({
   children,
 }: {
   movieId: string;
-  children: (data: any) => React.ReactNode;
+  children: (data: MovieDetailsProps) => React.ReactNode;
 }) {
   const [movie, credits, videos, ageRating, currentMovieIds] =
     await Promise.all([
@@ -45,6 +46,7 @@ export async function MovieDetails({
       getAgeRatingByMovieId(movieId),
       getCurrentMovieIds(),
     ]);
+
   const videoId = videos.results.find(video => video.type === 'Trailer')?.key;
   return (
     <>
@@ -94,7 +96,13 @@ export async function MoviePreview({
     >
       <Suspense fallback={<h2> Loading... </h2>}>
         <MovieDetails movieId={movieId}>
-          {({ movie, credits, videoId, ageRating, currentMovieIds }) => (
+          {({
+            movie,
+            credits,
+            videoId,
+            ageRating,
+            currentMovieIds,
+          }: MovieDetailsProps) => (
             <>
               {shouldPlayVideo ? (
                 <Background videoId={videoId} movie={movie} />

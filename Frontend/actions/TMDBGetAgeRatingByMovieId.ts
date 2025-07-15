@@ -1,5 +1,7 @@
 'use server';
 
+import type { TMDBReleaseDates } from '@/types/TMDB';
+
 export async function getAgeRatingByMovieId(movieId: string) {
   if (!movieId) return {};
 
@@ -20,7 +22,7 @@ export async function getAgeRatingByMovieId(movieId: string) {
     throw new Error(`Failed to fetch: Error Code: ${res.status}`);
   }
 
-  const data = await res.json();
+  const data: TMDBReleaseDates = await res.json();
 
   const countryRating = data.results?.find(
     country => country.iso_3166_1 === 'DE'

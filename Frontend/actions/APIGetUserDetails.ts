@@ -22,7 +22,9 @@ export async function getUserUserDetails(): Promise<UserDetails> {
   const reservationsWithMovies: Reservation[] = await Promise.all(
     userDetails.reservations.map(async reservation => ({
       ...reservation,
-      movieName: (await getMovieById(reservation.movieId)).original_title,
+      movieName: (
+        await getMovieById(reservation.movieId.toString())
+      ).original_title,
     }))
   );
 

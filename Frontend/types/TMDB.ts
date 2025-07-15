@@ -107,7 +107,42 @@ export interface TMDBRatings {
 
 export interface TMDBRating {
   iso_3166_1: string;
-  certification: string;
-  meaning: string;
-  order: number;
+  certification: string | number | 'Not Rated' | undefined;
+  meaning: string | '';
+  order: number | 0;
 }
+
+export interface TMDBReleaseDates {
+  id: number;
+  results: TMDBReleaseDatesResult[];
+}
+
+export interface TMDBReleaseDatesResult {
+  iso_3166_1: string;
+  release_dates: TMDBReleaseDate[];
+}
+
+export interface TMDBReleaseDate {
+  certification: string;
+  iso_639_1: string;
+  note: string;
+  release_date: string;
+  type: number;
+}
+
+export type MovieDetailsProps = {
+  movie: TMDBMovieDetails;
+  credits: TMDBCredits;
+  videos: TMDBVideos;
+  videoId: string | undefined;
+  ageRating:
+    | {
+        certification?: undefined;
+        fullData?: undefined;
+      }
+    | {
+        certification: string | number;
+        fullData: TMDBReleaseDates;
+      };
+  currentMovieIds: number[];
+};
