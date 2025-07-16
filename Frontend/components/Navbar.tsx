@@ -15,7 +15,7 @@ export default function Navbar({ navItems, className }: props) {
     <nav className={` ${className ?? ''}`}>
       <GiHamburgerMenu
         onClick={() => setIsOpen(prev => !prev)}
-        className={`text-6xl md:hidden transition-transform duration-300 ml-auto ${
+        className={`text-6xl md:hidden transition-transform duration-300 ml-auto mb-4 ${
           isOpen ? 'rotate-90' : 'rotate-0'
         }`}
       />

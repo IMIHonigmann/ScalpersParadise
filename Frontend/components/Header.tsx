@@ -25,17 +25,17 @@ export default function Header() {
 
   return (
     <div
-      className={`flex justify-center gap-x-2 relative mx-auto text-right items-start w-full p-8 tracking-widest`}
+      className={`grid grid-rows-[0.5fr_1fr] grid-cols-2 md:flex justify-center gap-x-2 relative mx-auto text-right items-start w-full p-8 tracking-widest`}
     >
-      <HomeLogo />
+      <HomeLogo className="justify-self-start" />
       <Navbar
         navItems={navItems}
-        className="w-1/4 lg:w-[10%] order-last md:order-1"
+        className="justify-self-end row-start-2 col-start-2 w-full md:w-1/4 lg:w-[10%] order-last md:order-1"
       />
       <div className="flex-[2] order-1" />
       <span
-        className="w-3/4
-            flex justify-between items-center relative
+        className="
+        col-span-2 col-start-1 row-start-1 w-full md:w-3/4 flex justify-between items-center relative
           after:content-[''] after:absolute after:-bottom-3 after:left-1/2 after:-translate-x-1/2 after:w-[98%] after:h-px after:bg-current order-2"
       >
         <span
