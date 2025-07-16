@@ -156,14 +156,14 @@ export async function MoviePreview({
                       {movie.overview}
                     </p>
                     <div className="col-span-full md:col-span-4 lg:col-span-3 col-start-2 md:col-start-2 lg:col-start-2 row-start-2 grid grid-cols-5 md:grid-cols-3 gap-x-2">
-                      <button className="bg-red-600 text-white px-12 md:px-8 xl:px-12 py-4 text-sm rounded row-start-2 col-start-1 md:col-start-1 col-span-3 md:col-span-2 justify-self-center md:justify-self-start">
+                      <button className="bg-red-600 text-white px-6 sm:px-12 md:px-8 xl:px-12 py-4 text-sm rounded row-start-2 col-start-1 md:col-start-1 col-span-2 md:col-span-2 justify-self-center md:justify-self-start">
                         Take a Ticket
                       </button>
                       <a
                         href={`https://www.youtube.com/watch?v=${videoId}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors row-start-2 col-start-4 md:col-start-3"
+                        className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors row-start-2 col-start-3 col-span-2 justify-center md:col-start-3"
                       >
                         <FaRegCirclePlay className="text-3xl flex-shrink-0" />{' '}
                         Trailer

@@ -9,10 +9,9 @@ import { useState } from 'react';
 export function SingleMovieCanvas({ movie }: { movie: TMDBMovieDetails }) {
   const [camLoc, setCamLoc] = useState(375);
   return (
-    <div className="flex flex-row justify-center items-center">
+    <div className="flex flex-row justify-center items-center w-full h-[30em]">
       <Canvas
         camera={{ position: [-50, -100, 500], fov: 75 }}
-        style={{ width: '30%', height: '30em' }}
         orthographic
         gl={{ alpha: true, antialias: true }}
       >

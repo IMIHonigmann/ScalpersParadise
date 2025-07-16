@@ -44,7 +44,7 @@ export default function CurrentScreeningsComponent({
                     {<span>{dayParts[0].substring(0, 3)}</span>}
                     {<span>{dayParts[1]}</span>}
                   </strong>
-                  <div className="grid grid-cols-6 gap-y-2 text-center">
+                  <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-y-2 text-center">
                     {dayScreenings.map(s => (
                       <Link
                         key={s.screeningId}
@@ -62,7 +62,9 @@ export default function CurrentScreeningsComponent({
                           hour: '2-digit',
                           minute: '2-digit',
                         })}{' '}
-                        ({s.auditoriumType}) TH{s.auditoriumId}
+                        <span className="hidden lg:inline-block">
+                          ({s.auditoriumType}) TH{s.auditoriumId}
+                        </span>
                       </Link>
                     ))}
                   </div>

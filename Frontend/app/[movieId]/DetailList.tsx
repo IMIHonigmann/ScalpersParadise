@@ -100,7 +100,7 @@ export default function DetailList({ heading, items }: DetailListProps) {
               return (
                 <div key={index} className="flex items-center">
                   <span
-                    className="detail-item text-8xl font-extrabold uppercase"
+                    className="detail-item text-7xl sm:text-8xl font-extrabold uppercase"
                     style={{
                       color: isHighlighted ? item.detail_color : 'inherit',
                       opacity: isHighlighted ? '100%' : '25%',
