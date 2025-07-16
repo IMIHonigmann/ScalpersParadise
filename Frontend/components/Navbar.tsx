@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GiHamburgerMenu } from 'react-icons/gi';
 
 type props = {
@@ -10,7 +10,8 @@ type props = {
 };
 
 export default function Navbar({ navItems, className }: props) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => setIsOpen(window.innerWidth >= 768), []);
   return (
     <nav className={` ${className ?? ''}`}>
       <GiHamburgerMenu
