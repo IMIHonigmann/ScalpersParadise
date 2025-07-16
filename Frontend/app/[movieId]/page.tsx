@@ -133,7 +133,20 @@ export async function MoviePreview({
                     className="flex flex-col font-bold text-9xl text-center md:text-left"
                     style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
                   >
-                    <h1 className="text-yellow-400 font-bold min-w-3/5 max-w-full text-6xl lg:text-7xl 2xl:text-8xl pr-4">
+                    <h1
+                      className={`text-yellow-400 font-bold min-w-3/5 max-w-full pr-4 
+                        ${
+                          movie.title.length <= 15
+                            ? 'text-9xl'
+                            : movie.title.length <= 25
+                            ? 'text-8xl lg:text-9xl'
+                            : movie.title.length <= 40
+                            ? 'text-6xl lg:text-7xl 2xl:text-8xl'
+                            : movie.title.length <= 60
+                            ? 'text-5xl lg:text-6xl 2xl:text-7xl'
+                            : 'text-xl md:text-2xl lg:text-4xl 2xl:text-5xl'
+                        }`}
+                    >
                       {movie.title}
                     </h1>
                     <span
