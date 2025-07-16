@@ -81,12 +81,18 @@ export async function MoviePreview({
     18: '#E20512',
   };
 
-  function keepFirstSentence(text: string) {
-    const idx = text.indexOf('.');
-    if (idx === -1) return text;
+  function cutAfterNthSentence(text: string, sentencesToKeep: number) {
+    let dotIndex = 0;
+    let searchStart = -1;
 
-    const firstSentence = text.substring(0, idx + 1);
-    return idx + 1 < text.length ? firstSentence + '..' : firstSentence;
+    for (let i = 0; i < sentencesToKeep; i++) {
+      dotIndex = text.indexOf('.', searchStart);
+      if (dotIndex === -1) return text;
+      searchStart = dotIndex + 1;
+    }
+
+    const firstSentence = text.substring(0, dotIndex + 1);
+    return dotIndex + 1 < text.length ? firstSentence + '..' : firstSentence;
   }
 
   return (
@@ -127,7 +133,7 @@ export async function MoviePreview({
                     className="flex flex-col font-bold text-9xl text-center md:text-left"
                     style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
                   >
-                    <h1 className="text-yellow-400 font-bold min-w-3/5 max-w-full text-5xl sm:text-6xl lg:text-7xl 2xl:text-8xl pr-4">
+                    <h1 className="text-yellow-400 font-bold min-w-3/5 max-w-full text-6xl lg:text-7xl 2xl:text-8xl pr-4">
                       {movie.title}
                     </h1>
                     <span
@@ -147,13 +153,13 @@ export async function MoviePreview({
                     </span>
                   </div>
                   <div className="grid grid-cols-12 grid-rows-[1fr_50px_50px_auto] md:grid-rows-[1fr_50px_auto] w-full gap-8 mt-4">
-                    <p className="tracking-widest hidden md:inline-block">
-                      {keepFirstSentence(movie.tagline)}
+                    <p className="tracking-widest hidden md:inline-block md:col-span-3 lg:col-span-2 xl:col-span-1">
+                      {cutAfterNthSentence(movie.tagline, 1)}
                     </p>
                     <p
                       className={`text-sm text-gray-400 ${oswald.className} tracking-normal leading-relaxed col-span-full md:col-span-6 lg:col-span-6 xl:col-span-3`}
                     >
-                      {movie.overview}
+                      {cutAfterNthSentence(movie.overview, 2)}
                     </p>
                     <div className="col-span-full md:col-span-4 lg:col-span-3 col-start-2 md:col-start-2 lg:col-start-2 row-start-2 grid grid-cols-5 md:grid-cols-3 gap-x-2">
                       <button className="bg-red-600 text-white px-6 sm:px-12 md:px-8 xl:px-12 py-4 text-sm rounded row-start-2 col-start-1 md:col-start-1 col-span-2 md:col-span-2 justify-self-center md:justify-self-start">
