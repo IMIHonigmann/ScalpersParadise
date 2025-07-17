@@ -38,17 +38,17 @@ export default function CurrentScreeningsComponent({
               return (
                 <div
                   key={day}
-                  className="grid grid-cols-[0.125fr_1fr] items-center rounded-lg border-b text-2xl px-10 py-2 bg-zinc-800"
+                  className="grid grid-cols-[0.3fr_1fr] sm:grid-cols-[0.125fr_1fr] items-center rounded-lg border-b px-5 md:px-10 py-2 bg-zinc-800"
                 >
-                  <strong className="flex flex-col mr-5">
+                  <strong className="flex flex-col mr-4 text-base md:text-2xl">
                     {<span>{dayParts[0].substring(0, 3)}</span>}
                     {<span>{dayParts[1]}</span>}
                   </strong>
-                  <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-y-2 text-center">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-y-2 text-center text-sm sm:text-lg">
                     {dayScreenings.map(s => (
                       <Link
                         key={s.screeningId}
-                        className="rounded-md mr-4 p-2.5 transition-[transition_color] scale-100 translate-y-0 hover:scale-[102.5%] hover:-translate-y-0.5 hover:saturate-[75%] ease-in-out"
+                        className="rounded-md mr-4 p-2 md:p-2 lg:px-6 transition-[transition_color] scale-100 translate-y-0 hover:scale-[102.5%] hover:-translate-y-0.5 hover:saturate-[75%] ease-in-out"
                         href={`${s.movieId}/${s.auditoriumId}`}
                         style={{
                           backgroundColor:
