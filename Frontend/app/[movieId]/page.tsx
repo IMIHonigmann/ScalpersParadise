@@ -97,7 +97,7 @@ export async function MoviePreview({
 
   return (
     <div
-      className="relative top-0 left-0 h-[115vh] md:h-screen border-0 overflow-hidden
+      className="relative bottom-0 left-0 h-[100svh] border-0 overflow-hidden
       md:aspect-auto object-cover"
     >
       <Suspense fallback={<h2> Loading... </h2>}>
@@ -128,7 +128,7 @@ export async function MoviePreview({
               )}
               <>
                 <Header />
-                <div className="absolute bottom-0 left-0 p-12 w-full">
+                <div className="absolute bottom-[-90px] md:bottom-0 left-0 px-12 lg:py-6 w-full">
                   <div
                     className="flex flex-col font-bold text-9xl text-center md:text-left"
                     style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}

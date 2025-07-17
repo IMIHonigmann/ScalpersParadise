@@ -22,10 +22,9 @@ export default function Header() {
     { label: 'Lucky', path: '/random' },
     { label: 'Rent', path: '/rent' },
   ];
-
   return (
     <div
-      className={`grid grid-rows-[0.5fr_1fr] grid-cols-2 md:flex justify-center gap-x-2 relative mx-auto text-right items-start w-full p-8 tracking-widest`}
+      className={`grid grid-rows-[0.5fr_0.5fr] grid-cols-2 md:flex justify-center gap-2 relative mx-auto text-right items-start w-full p-8 tracking-widest`}
     >
       <HomeLogo className="justify-self-start" />
       <Navbar
