@@ -170,9 +170,7 @@ public partial class ScalpersParadiseContext : DbContext
 
             entity.ToTable("userreservations");
 
-            entity.Property(e => e.ReservationId)
-                .ValueGeneratedNever()
-                .HasColumnName("reservation_id");
+            entity.Property(e => e.ReservationId).HasColumnName("reservation_id");
             entity.Property(e => e.BoughtAt)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("bought_at");
@@ -193,6 +191,7 @@ public partial class ScalpersParadiseContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("userreservations_user_id_fkey");
         });
+        modelBuilder.HasSequence("userreservations_reservation_id_seq");
 
         OnModelCreatingPartial(modelBuilder);
     }

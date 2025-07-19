@@ -5,8 +5,6 @@ namespace BackendAPI.Models;
 
 public partial class Userreservation
 {
-    public int ReservationId { get; set; }
-
     public Guid? UserId { get; set; }
 
     public int? SeatId { get; set; }
@@ -16,6 +14,8 @@ public partial class Userreservation
     public double? PricePaid { get; set; }
 
     public DateTime? BoughtAt { get; set; }
+
+    public int ReservationId { get; set; }
 
     public virtual Screening? Screening { get; set; }
 

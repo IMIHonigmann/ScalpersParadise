@@ -11,22 +11,15 @@ namespace BackendAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ReservationController : ControllerBase
+public class ReservationController(
+    ScalpersParadiseContext db,
+    IHubContext<ReservationHub> hubContext,
+    IReservationNotificationService notificationService) : ControllerBase
 {
-    private readonly ScalpersParadiseContext _db;
+    private readonly ScalpersParadiseContext _db = db;
     private readonly Guid _testUserId = Guid.Parse(Environment.GetEnvironmentVariable("TEST_USERID")!);
-    private readonly IHubContext<ReservationHub> _hubContext;
-    private readonly IReservationNotificationService _notificationService;
-
-    public ReservationController(
-        ScalpersParadiseContext db,
-        IHubContext<ReservationHub> hubContext,
-        IReservationNotificationService notificationService)
-    {
-        _db = db;
-        _hubContext = hubContext;
-        _notificationService = notificationService;
-    }
+    private readonly IHubContext<ReservationHub> _hubContext = hubContext;
+    private readonly IReservationNotificationService _notificationService = notificationService;
 
     [HttpPost("bookSeat")]
     public async Task<IActionResult> BookSeat([FromBody] BookSeatRequest request)
@@ -44,8 +37,8 @@ public class ReservationController : ControllerBase
             // Get seat with related Auditorium and SeatPrice
             var seat = await _db.Seats
                 .Include(s => s.Auditorium)
-                    .ThenInclude(a => a.AuditoriumTypeNavigation.Price)
-                .Include(s => s.SeatTypeNavigation.PriceModifier)
+                    .ThenInclude(a => a.AuditoriumTypeNavigation)
+                .Include(s => s.SeatTypeNavigation)
                 .FirstOrDefaultAsync(s => s.SeatId == request.SeatId);
 
             if (seat == null)
