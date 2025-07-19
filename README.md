@@ -69,14 +69,15 @@ dotnet restore
 
 3. Configure your environment:
 ```bash
-touch ./Frontend/.env
-touch ./BackendAPI/.env.local
+touch ./BackendAPI/.env
+touch ./Frontend/.env.local
 # Edit ./BackendAPI/.env with your PostgreSQL connection string (DEFAULT_CONNECTION)
 # Edit ./Frontend/.env.local with your TMDB API Keys (TMDB_RAT & TMDB_APIKEY)
 ```
 
 4. Run migrations
 ```bash
+cd BackendAPI
 dotnet ef database update
 ```
 
