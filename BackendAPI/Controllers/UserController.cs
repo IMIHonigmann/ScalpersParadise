@@ -1,53 +1,48 @@
 using BackendAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-using Sprache;
-using Supabase;
+using Microsoft.EntityFrameworkCore;
 
 namespace BackendAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController(Client supabase) : ControllerBase
+public class UserController : ControllerBase
 {
-    private readonly Client _supabase = supabase;
-    private readonly string _testUserId = Environment.GetEnvironmentVariable("TEST_USERID")!;
+    private readonly ScalpersParadiseContext _dbContext;
+    private readonly Guid _testUserId = Guid.Parse(Environment.GetEnvironmentVariable("TEST_USERID")!);
+
+    public UserController(ScalpersParadiseContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
     [HttpGet("profile/reservations")]
     public async Task<IActionResult> GetReservations()
     {
         try
         {
-            var reservationsTask = _supabase
-            .From<UserReservation>()
-            .Select(@"*,
-                Seat:Seats!inner(*,
-                    SeatPrice:SeatPrices!inner(*)),
-                Screening:screenings!inner(*,
-                    Auditorium:Auditoriums!inner(*,
-                        AuditoriumPrice:AuditoriumPrices(*)))")
-            .Where(x => x.UserId == _testUserId)
-            .Get();
+            var userReservations = await _dbContext.Userreservations
+                            .Include(r => r.Seat)
+                                .ThenInclude(s => s.SeatTypeNavigation.PriceModifier)
+                            .Include(r => r.Screening)
+                                .ThenInclude(s => s.Auditorium)
+                                    .ThenInclude(a => a.AuditoriumTypeNavigation)
+                                        .ThenInclude(ap => ap.Price)
+                            .Where(r => r.UserId == _testUserId)
+                            .ToArrayAsync();
 
-            var userBalanceTask = _supabase
-            .From<UserBalance>()
-            .Select("*")
-            .Where(x => x.UserId == _testUserId)
-            .Get();
+            var userBalance = await _dbContext.Userbalances
+                .FirstOrDefaultAsync(b => b.UserId == _testUserId);
 
-            await Task.WhenAll(reservationsTask, userBalanceTask);
-
-            var resultReservations = await reservationsTask;
-            var resultUserBalance = await userBalanceTask;
-
-            UserReservation[] userReservations = resultReservations.Models.ToArray();
-            UserBalance userBalance = resultUserBalance.Model!;
-
-
-            if (userReservations is null || userReservations.Length == 0)
+            if (userReservations == null || userReservations.Length == 0)
             {
                 return NotFound(new { message = "No reservations found for the current user" });
             }
 
+            if (userBalance == null)
+            {
+                return NotFound(new { message = "User balance not found" });
+            }
 
             var reservationsDTO = new
             {
@@ -70,7 +65,7 @@ public class UserController(Client supabase) : ControllerBase
 
                     reservation.Screening.Auditorium.AuditoriumType,
 
-                    TicketValue = reservation.Screening.Auditorium.AuditoriumPrice.Price * reservation.Seat.SeatPrice.PriceModifier,
+                    TicketValue = reservation.Screening.Auditorium.AuditoriumTypeNavigation.Price * reservation.Seat.SeatTypeNavigation.PriceModifier,
                 })
             };
 

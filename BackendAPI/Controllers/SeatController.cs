@@ -1,46 +1,33 @@
 using BackendAPI.Models;
 using BackendAPI.Models.DataTransferObjects;
 using Microsoft.AspNetCore.Mvc;
-using Supabase;
-using static Supabase.Postgrest.Constants;
+using Microsoft.EntityFrameworkCore;
 
 namespace BackendAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class SeatController(Client supabase) : ControllerBase
+public class SeatController(ScalpersParadiseContext context) : ControllerBase
 {
-    private readonly Client _supabase = supabase;
+    private readonly ScalpersParadiseContext _context = context;
 
     [HttpGet("getSeat")]
     public async Task<IActionResult> GetSeat(
         [FromQuery] int auditoriumId,
-        [FromQuery] string rowNumber,
+        [FromQuery] int rowNumber,
         [FromQuery] int seatNumber)
     {
-        var result = await _supabase
-            .From<Seat>()
-            .Filter("auditorium_id", Operator.Equals, auditoriumId.ToString())
-            .Filter("row_number", Operator.Equals, rowNumber)
-            .Filter("seat_number", Operator.Equals, seatNumber.ToString())
-            .Get();
-
-        Seat? seat = result.Models.FirstOrDefault();
+        var seat = await _context.Seats
+            .FirstOrDefaultAsync(s =>
+                s.AuditoriumId == auditoriumId &&
+                s.RowNumber == rowNumber &&
+                s.SeatNumber == seatNumber);
 
         if (seat is null)
         {
             return NotFound();
         }
 
-        SeatDTO seatsResponse = new()
-        {
-            SeatId = seat.SeatId,
-            AuditoriumId = seat.AuditoriumId,
-            RowNumber = seat.RowNumber,
-            SeatNumber = seat.SeatNumber,
-            SeatType = seat.SeatType,
-        };
-
-        return Ok(seatsResponse);
+        return Ok(seat);
     }
 }

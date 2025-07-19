@@ -1,19 +1,20 @@
 using BackendAPI.Hubs;
+using BackendAPI.Models;
 using BackendAPI.Services;
 using DotNetEnv;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
 
-var supabaseUrl = Environment.GetEnvironmentVariable("SUPABASE_URL")!;
-var supabaseKey = Environment.GetEnvironmentVariable("SUPABASE_KEY")!;
 
-var supabaseOptions = new Supabase.SupabaseOptions { AutoConnectRealtime = true };
-var supabase = new Supabase.Client(supabaseUrl, supabaseKey, supabaseOptions);
-await supabase.InitializeAsync();
+var CONNECTION_STRING = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION")!;
 
-builder.Services.AddSingleton(supabase);
+builder.Services.AddControllers();
+builder.Services.AddDbContext<ScalpersParadiseContext>(options =>
+options.UseNpgsql(CONNECTION_STRING));
+
 builder.Services.AddControllers();
 builder.Services.AddScoped<IReservationNotificationService, ReservationNotificationService>();
 

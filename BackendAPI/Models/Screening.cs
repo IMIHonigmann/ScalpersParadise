@@ -1,19 +1,21 @@
-using Supabase.Postgrest.Attributes;
-using Supabase.Postgrest.Models;
+﻿using System;
+using System.Collections.Generic;
 
-namespace BackendAPI.Models
+namespace BackendAPI.Models;
+
+public partial class Screening
 {
-    [Table("screenings")]
-    public class Screening : BaseModel
-    {
-        [PrimaryKey("screening_id", false)]
-        public int ScreeningId { get; set; }
-        [Column("movie_id")]
-        public int MovieId { get; set; }
-        [Column("auditorium_id")]
-        public int AuditoriumId { get; set; }
-        [Column("screening_time")]
-        public DateTime ScreeningTime { get; set; }
-        public Auditorium Auditorium { get; set; } = new();
-    }
+    public long ScreeningId { get; set; }
+
+    public int? MovieId { get; set; }
+
+    public int? AuditoriumId { get; set; }
+
+    public DateTime? ScreeningTime { get; set; }
+
+    public double? DynamicPricingModifier { get; set; }
+
+    public virtual Auditorium? Auditorium { get; set; }
+
+    public virtual ICollection<Userreservation> Userreservations { get; set; } = new List<Userreservation>();
 }

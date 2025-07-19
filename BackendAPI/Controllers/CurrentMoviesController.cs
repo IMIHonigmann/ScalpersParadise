@@ -1,33 +1,29 @@
 using BackendAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-using Supabase;
+using Microsoft.EntityFrameworkCore;
 
 namespace BackendAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CurrentMoviesController(Client supabase) : ControllerBase
+public class CurrentMoviesController(ScalpersParadiseContext db) : ControllerBase
 {
-    private readonly Client _supabase = supabase;
+    private readonly ScalpersParadiseContext _db = db;
 
     [HttpGet(nameof(GetCurrentMovieIds))]
     public async Task<IActionResult> GetCurrentMovieIds()
     {
-        var result = await _supabase
-            .From<UniqueMovieIds>()
-            .Select("*")
-            .Order(x => x.MovieId, Supabase.Postgrest.Constants.Ordering.Descending)
-            .Get();
-
-        var ids = result.Models.ToArray();
+        var ids = await _db.Screenings
+                    .OrderByDescending(x => x.MovieId)
+                    .Select(x => x.MovieId)
+                    .Distinct()
+                    .ToArrayAsync();
 
         if (ids.Length == 0)
         {
             return NotFound("No movies are currently displayed.");
         }
 
-        var movieIds = ids.Select(s => s.MovieId).ToArray();
-
-        return Ok(movieIds);
+        return Ok(ids);
     }
 }

@@ -1,28 +1,23 @@
-using Supabase.Postgrest.Attributes;
-using Supabase.Postgrest.Models;
+﻿using System;
+using System.Collections.Generic;
 
-namespace BackendAPI.Models
+namespace BackendAPI.Models;
+
+public partial class Seat
 {
-    [Table("Seats")]
-    public class Seat : BaseModel
-    {
-        [PrimaryKey("seat_id", true)]
-        public int SeatId { get; set; }
+    public int SeatId { get; set; }
 
-        [Column("auditorium_id")]
-        public int AuditoriumId { get; set; }
+    public int? AuditoriumId { get; set; }
 
-        [Column("row_number")]
-        public string RowNumber { get; set; } = string.Empty;
+    public int? RowNumber { get; set; }
 
-        [Column("seat_number")]
-        public int SeatNumber { get; set; }
+    public int? SeatNumber { get; set; }
 
-        [Column("seat_type")]
-        public string SeatType { get; set; } = string.Empty;
-        public Screening Screening { get; set; } = new();
-        public Auditorium Auditorium { get; set; } = new();
-        public SeatPrice SeatPrice { get; set; } = new();
-        public ICollection<UserReservation>? UserReservation { get; set; }
-    }
+    public string? SeatType { get; set; }
+
+    public virtual Auditorium? Auditorium { get; set; }
+
+    public virtual Seatprice? SeatTypeNavigation { get; set; }
+
+    public virtual ICollection<Userreservation> Userreservations { get; set; } = new List<Userreservation>();
 }

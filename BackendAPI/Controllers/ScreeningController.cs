@@ -1,29 +1,24 @@
 using BackendAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-using Supabase;
+using Microsoft.EntityFrameworkCore;
 
 namespace BackendAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ScreeningController(Client supabase) : ControllerBase
+public class ScreeningController(ScalpersParadiseContext context) : ControllerBase
 {
-    private readonly Client _supabase = supabase;
+    private readonly ScalpersParadiseContext _context = context;
 
     [HttpGet("getScreeningsByMovieId")]
-    public async Task<IActionResult> GetScreeningsByMovieId(
-    [FromQuery] int movieId
-    )
+    public async Task<IActionResult> GetScreeningsByMovieId([FromQuery] int movieId)
     {
-        var result = await _supabase
-            .From<Screening>()
-            .Select("*, Auditorium:Auditoriums!inner(*)")
-            .Where(x => x.MovieId == movieId)
-            .Get();
+        var screenings = await _context.Screenings
+            .Include(s => s.Auditorium)
+            .Where(s => s.MovieId == movieId)
+            .ToListAsync();
 
-        Screening[] screenings = result.Models.ToArray();
-
-        if (screenings is null || screenings.Length == 0)
+        if (screenings == null || screenings.Count == 0)
         {
             return NotFound($"No screenings found for movie ID {movieId}");
         }
@@ -34,46 +29,38 @@ public class ScreeningController(Client supabase) : ControllerBase
             s.MovieId,
             s.AuditoriumId,
             s.ScreeningTime,
-            s.Auditorium.AuditoriumType,
+            s.Auditorium?.AuditoriumType,
         }).ToArray();
 
         return Ok(screeningDTO);
     }
 
     [HttpGet("getScreeningSeatingDetails")]
-    public async Task<IActionResult> GetScreeningSeatingDetails(
-    [FromQuery] int screeningId
-    )
+    public async Task<IActionResult> GetScreeningSeatingDetails([FromQuery] int screeningId)
     {
-        var result = await _supabase
-            .From<Screening>()
-            .Select("*, Auditorium:Auditoriums!inner(*)")
-            .Where(x => x.ScreeningId == screeningId)
-            .Get();
+        var selectedScreening = await _context.Screenings
+           .Include(s => s.Auditorium)
+           .FirstOrDefaultAsync(s => s.ScreeningId == screeningId);
 
-        Screening? selectedScreening = result.Models.FirstOrDefault();
-
-        if (selectedScreening is null)
+        if (selectedScreening == null)
         {
             return NotFound($"Screening {screeningId} doesn't exist");
         }
 
-        var seatsResult = await _supabase
-        .From<Seat>()
-        .Select(@"*,
-                UserReservation:userreservations!left(*),
-                Auditorium:Auditoriums!inner(*, 
-                    AuditoriumPrice:AuditoriumPrices!inner(*)),
-                SeatPrice:SeatPrices!inner(*)")
-        .Where(x => x.AuditoriumId == selectedScreening.AuditoriumId)
-        .Get();
+        var seats = await _context.Seats
+            .Include(seat => seat.Userreservations)
+            .Include(seat => seat.Auditorium)
+                .ThenInclude(a => a.AuditoriumTypeNavigation)
+            .Include(seat => seat.SeatTypeNavigation)
+            .Where(seat => seat.AuditoriumId == selectedScreening.AuditoriumId)
+            .ToListAsync();
 
-        Seat[] seats = seatsResult.Models.ToArray();
-
-        if (seats is null || seats.Length == 0)
+        if (seats == null || seats.Count == 0)
         {
             return NotFound($"No seats found for screeningID {selectedScreening.AuditoriumId}");
         }
+
+        var auditoriumPrice = selectedScreening.Auditorium.AuditoriumTypeNavigation.Price ?? 0;
 
         var screeningSeatsDTO = new
         {
@@ -90,11 +77,10 @@ public class ScreeningController(Client supabase) : ControllerBase
                 xSeat.RowNumber,
                 xSeat.SeatNumber,
                 xSeat.SeatType,
-                SeatPrice = xSeat.Auditorium.AuditoriumPrice.Price * xSeat.SeatPrice.PriceModifier,
-                xSeat.UserReservation?.FirstOrDefault()?.ReservationId,
+                SeatPrice = auditoriumPrice * (xSeat.SeatTypeNavigation?.PriceModifier ?? 1),
+                xSeat.Userreservations?.FirstOrDefault()?.ReservationId,
             })
         };
-
 
         return Ok(screeningSeatsDTO);
     }

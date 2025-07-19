@@ -1,15 +1,13 @@
-using Supabase.Postgrest.Attributes;
-using Supabase.Postgrest.Models;
+﻿using System;
+using System.Collections.Generic;
 
-namespace BackendAPI.Models
+namespace BackendAPI.Models;
+
+public partial class Userbalance
 {
-    [Table("UserBalances")]
-    public class UserBalance : BaseModel
-    {
-        [PrimaryKey("user_id", false)]
-        public string UserId { get; set; } = string.Empty;
+    public Guid UserId { get; set; }
 
-        [Column("balance")]
-        public float Balance { get; set; }
-    }
+    public double? Balance { get; set; }
+
+    public virtual User User { get; set; } = null!;
 }

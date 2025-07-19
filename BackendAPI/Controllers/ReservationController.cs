@@ -5,66 +5,72 @@ using BackendAPI.Models.RequestModels;
 using BackendAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Supabase;
+using Microsoft.EntityFrameworkCore;
 
 namespace BackendAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ReservationController(Client supabase, IHubContext<ReservationHub> hubContext, IReservationNotificationService notificationService) : ControllerBase
+public class ReservationController : ControllerBase
 {
-    private readonly Client _supabase = supabase;
-    private readonly string _testUserId = Environment.GetEnvironmentVariable("TEST_USERID")!;
-    private readonly IHubContext<ReservationHub> _hubContext = hubContext;
-    private readonly IReservationNotificationService _notificationService = notificationService;
+    private readonly ScalpersParadiseContext _db;
+    private readonly Guid _testUserId = Guid.Parse(Environment.GetEnvironmentVariable("TEST_USERID")!);
+    private readonly IHubContext<ReservationHub> _hubContext;
+    private readonly IReservationNotificationService _notificationService;
+
+    public ReservationController(
+        ScalpersParadiseContext db,
+        IHubContext<ReservationHub> hubContext,
+        IReservationNotificationService notificationService)
+    {
+        _db = db;
+        _hubContext = hubContext;
+        _notificationService = notificationService;
+    }
 
     [HttpPost("bookSeat")]
     public async Task<IActionResult> BookSeat([FromBody] BookSeatRequest request)
     {
-
         try
         {
-            var existingReservation = await _supabase
-            .From<UserReservation>()
-            .Select("*")
-            .Where(x => x.SeatId == request.SeatId)
-            .Get();
+            var existingReservation = await _db.Userreservations
+                .FirstOrDefaultAsync(x => x.SeatId == request.SeatId);
 
-            if (existingReservation.Model != null)
+            if (existingReservation != null)
             {
                 return Conflict(new { message = "This seat is already booked" });
             }
 
-            var seatWithPriceProperties = await _supabase.
-            From<Seat>()
-            .Select(@"*, Auditorium:Auditoriums!inner(*, 
-                            AuditoriumPrice:AuditoriumPrices!inner(*)),
-                         SeatPrice:SeatPrices!inner(*)")
-            .Where(x => x.SeatId == request.SeatId)
-            .Limit(1)
-            .Get();
+            // Get seat with related Auditorium and SeatPrice
+            var seat = await _db.Seats
+                .Include(s => s.Auditorium)
+                    .ThenInclude(a => a.AuditoriumTypeNavigation.Price)
+                .Include(s => s.SeatTypeNavigation.PriceModifier)
+                .FirstOrDefaultAsync(s => s.SeatId == request.SeatId);
 
-            if (seatWithPriceProperties.Model == null)
+            if (seat == null)
             {
                 return NotFound(new { message = "Seat cannot be found" });
             }
 
-            var userBalance = await _supabase
-            .From<UserBalance>()
-            .Select("*")
-            .Where(ub => ub.UserId == _testUserId)
-            .Limit(1)
-            .Get();
+            // Get user balance
+            var userBalance = await _db.Userbalances
+                .FirstOrDefaultAsync(ub => ub.UserId == _testUserId);
 
-            float calculatedSeatPrice = seatWithPriceProperties.Model.Auditorium.AuditoriumPrice.Price *
-                                        seatWithPriceProperties.Model.SeatPrice.PriceModifier;
+            if (userBalance == null)
+            {
+                return StatusCode(422, new { message = "User balance not found" });
+            }
 
-            if (userBalance.Model!.Balance < calculatedSeatPrice)
+            double? calculatedSeatPrice = seat.Auditorium.AuditoriumTypeNavigation.Price * seat.SeatTypeNavigation.PriceModifier;
+
+            if (userBalance.Balance < calculatedSeatPrice)
             {
                 return StatusCode(422, new { message = "Insufficient balance to complete this reservation" });
             }
 
-            UserReservationInsertionDTO insertedReservation = new()
+            // Insert reservation
+            Userreservation newReservation = new()
             {
                 SeatId = request.SeatId,
                 UserId = _testUserId,
@@ -73,15 +79,14 @@ public class ReservationController(Client supabase, IHubContext<ReservationHub> 
                 BoughtAt = DateTime.Now
             };
 
-            float newBalance = userBalance.Model!.Balance - calculatedSeatPrice;
-            var update = await _supabase
-                .From<UserBalance>()
-                .Where(x => x.UserId == _testUserId)
-                .Set(x => x.Balance, newBalance)
-                .Update();
+            _db.Userreservations.Add(newReservation);
 
-            await _supabase.From<UserReservationInsertionDTO>().Insert(insertedReservation);
-            await _notificationService.NotifyNewReservation(insertedReservation);
+            userBalance.Balance -= calculatedSeatPrice;
+            _db.Userbalances.Update(userBalance);
+
+            await _db.SaveChangesAsync();
+
+            await _notificationService.NotifyNewReservation(newReservation);
 
             return Ok(new { message = "Seat booked successfully" });
         }
@@ -91,3 +96,4 @@ public class ReservationController(Client supabase, IHubContext<ReservationHub> 
         }
     }
 }
+

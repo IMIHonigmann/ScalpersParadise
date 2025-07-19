@@ -1,15 +1,13 @@
-using Supabase.Postgrest.Attributes;
-using Supabase.Postgrest.Models;
+﻿using System;
+using System.Collections.Generic;
 
-namespace BackendAPI.Models
+namespace BackendAPI.Models;
+
+public partial class Seatprice
 {
-    [Table("SeatPrices")]
-    public class SeatPrice : BaseModel
-    {
-        [PrimaryKey("seat_type", false)]
-        public string SeatType { get; set; } = string.Empty;
+    public string SeatType { get; set; } = null!;
 
-        [Column("price_modifier")]
-        public float PriceModifier { get; set; }
-    }
+    public double? PriceModifier { get; set; }
+
+    public virtual ICollection<Seat> Seats { get; set; } = new List<Seat>();
 }
