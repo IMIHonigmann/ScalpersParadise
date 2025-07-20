@@ -41,9 +41,7 @@ public partial class ScalpersParadiseContext : DbContext
 
             entity.ToTable("auditoriums");
 
-            entity.Property(e => e.AuditoriumId)
-                .ValueGeneratedNever()
-                .HasColumnName("auditorium_id");
+            entity.Property(e => e.AuditoriumId).HasColumnName("auditorium_id");
             entity.Property(e => e.AuditoriumType)
                 .HasColumnType("character varying")
                 .HasColumnName("auditorium_type");
@@ -80,9 +78,7 @@ public partial class ScalpersParadiseContext : DbContext
 
             entity.ToTable("screenings");
 
-            entity.Property(e => e.ScreeningId)
-                .ValueGeneratedNever()
-                .HasColumnName("screening_id");
+            entity.Property(e => e.ScreeningId).HasColumnName("screening_id");
             entity.Property(e => e.AuditoriumId).HasColumnName("auditorium_id");
             entity.Property(e => e.DynamicPricingModifier).HasColumnName("dynamic_pricing_modifier");
             entity.Property(e => e.MovieId).HasColumnName("movie_id");
@@ -101,9 +97,7 @@ public partial class ScalpersParadiseContext : DbContext
 
             entity.ToTable("seats");
 
-            entity.Property(e => e.SeatId)
-                .ValueGeneratedNever()
-                .HasColumnName("seat_id");
+            entity.Property(e => e.SeatId).HasColumnName("seat_id");
             entity.Property(e => e.AuditoriumId).HasColumnName("auditorium_id");
             entity.Property(e => e.RowNumber).HasColumnName("row_number");
             entity.Property(e => e.SeatNumber).HasColumnName("seat_number");
