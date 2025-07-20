@@ -3,5 +3,5 @@ export interface Screening {
   auditoriumId: number;
   movieId: number;
   screeningTime: string;
-  auditoriumType: string;
+  auditoriumType: 'IMAX' | 'Classic' | '4DX';
 }

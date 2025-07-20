@@ -1,11 +1,18 @@
-export function generateRowsWithBoxes() {
-  const rowStructure = [
-    { rowId: 1, cols: 7 },
-    { rowId: 2, cols: 6 },
-    { rowId: 3, cols: 9 },
-    { rowId: 4, cols: 6 },
-    { rowId: 5, cols: 3 },
-  ];
+export function generateRowsWithBoxes(
+  auditoriumType: 'IMAX' | 'Classic' | '4DX'
+) {
+  const auditoriumSeatCount = {
+    IMAX: [15, 20],
+    Classic: [10, 10],
+    '4DX': [8, 8],
+  };
+  const seatCount = auditoriumSeatCount[auditoriumType];
+  const rowStructure = [];
+  console.log(auditoriumType);
+  for (let i = 1; i < seatCount[0]; i++) {
+    rowStructure.push({ rowId: i, cols: seatCount[1] });
+  }
+
   let id = 1;
   const rows = rowStructure.map(row => {
     const rowBoxes = [];

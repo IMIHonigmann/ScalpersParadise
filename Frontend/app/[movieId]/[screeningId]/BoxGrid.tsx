@@ -20,8 +20,6 @@ export default function BoxGrid() {
   const [seatThatsBookingNow, setSeatThatsBookingNow] = useState(-1);
   const [isLoading, setIsLoading] = useState(true);
   const [hoveredSeatPrice, setHoveredSeatPrice] = useState('0.00');
-  const rows = generateRowsWithBoxes();
-  const boxSize = 80;
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -53,13 +51,17 @@ export default function BoxGrid() {
     );
   }
 
+  if (!screeningDetails) return;
+  const rows = generateRowsWithBoxes(screeningDetails.auditoriumType);
+  const boxSize = 80;
+
   const isSeatBooked = (boxId: number) => {
-    if (!screeningDetails?.seats?.length) return;
-    return screeningDetails?.seats[boxId].reservationId !== null;
+    if (!screeningDetails.seats.length) return;
+    return screeningDetails.seats[boxId].reservationId !== null;
   };
 
   const handleSeatBooking = async (boxId: number) => {
-    if (!screeningDetails?.seats?.length) return;
+    if (!screeningDetails.seats.length) return;
 
     try {
       const seatId = screeningDetails.seats[0].seatId + boxId;
@@ -84,15 +86,7 @@ export default function BoxGrid() {
   }
 
   return (
-    <ReservationProvider>
-      <div
-        className="box-container"
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
+    <div className="flex box-container flex-col items-center">
         <div className="w-full flex flex-col items-center mb-8 mt-16">
           <div className="w-3/4 h-3 bg-gray-300 rounded-t-full shadow-lg shadow-white mb-4" />
           <div className="text-sm text-gray-600 font-semibold">SCREEN</div>
