@@ -49,6 +49,7 @@ export default function BoxGrid() {
     gsap.to(button, {
       x: `random(-100,100)`,
       y: `random(-100,100)`,
+      rotateZ: `random(-50,50)`,
       duration: '0.005',
       repeat: -1,
       repeatRefresh: true,
@@ -79,6 +80,7 @@ export default function BoxGrid() {
     gsap.to(button, {
       x: 0,
       y: 0,
+      rotateZ: 0,
       duration: 0.01,
     });
     gsap.to(button, {
