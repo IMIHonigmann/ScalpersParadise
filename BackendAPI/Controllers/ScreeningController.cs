@@ -50,7 +50,7 @@ public class ScreeningController(ScalpersParadiseContext context) : ControllerBa
         var seats = await _context.Seats
             .Include(seat => seat.Userreservations)
             .Include(seat => seat.Auditorium)
-                .ThenInclude(a => a.AuditoriumTypeNavigation)
+                .ThenInclude(a => a!.AuditoriumTypeNavigation)
             .Include(seat => seat.SeatTypeNavigation)
             .Where(seat => seat.AuditoriumId == selectedScreening.AuditoriumId)
             .ToListAsync();
@@ -59,8 +59,12 @@ public class ScreeningController(ScalpersParadiseContext context) : ControllerBa
         {
             return NotFound($"No seats found for screeningID {selectedScreening.AuditoriumId}");
         }
+        if (selectedScreening.Auditorium?.AuditoriumTypeNavigation == null)
+        {
+            return StatusCode(422, new { message = "Unable to calculate auditorium price due to missing data" });
+        }
 
-        var auditoriumPrice = selectedScreening.Auditorium.AuditoriumTypeNavigation.Price ?? 0;
+        var auditoriumPrice = selectedScreening.Auditorium.AuditoriumTypeNavigation.Price ?? 30;
 
         var screeningSeatsDTO = new
         {

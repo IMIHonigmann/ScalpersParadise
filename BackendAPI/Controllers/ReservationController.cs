@@ -34,16 +34,19 @@ public class ReservationController(
                 return Conflict(new { message = "This seat is already booked" });
             }
 
-            // Get seat with related Auditorium and SeatPrice
             var seat = await _db.Seats
                 .Include(s => s.Auditorium)
-                    .ThenInclude(a => a.AuditoriumTypeNavigation)
+                    .ThenInclude(a => a!.AuditoriumTypeNavigation)
                 .Include(s => s.SeatTypeNavigation)
                 .FirstOrDefaultAsync(s => s.SeatId == request.SeatId);
 
             if (seat == null)
             {
                 return NotFound(new { message = "Seat cannot be found" });
+            }
+            if (seat.Auditorium?.AuditoriumTypeNavigation == null || seat.SeatTypeNavigation == null)
+            {
+                return StatusCode(422, new { message = "Unable to calculate seat price due to missing data" });
             }
 
             // Get user balance

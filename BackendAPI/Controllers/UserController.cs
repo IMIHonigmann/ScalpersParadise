@@ -23,11 +23,10 @@ public class UserController : ControllerBase
         {
             var userReservations = await _dbContext.Userreservations
                             .Include(r => r.Seat)
-                                .ThenInclude(s => s.SeatTypeNavigation.PriceModifier)
+                                .ThenInclude(s => s!.SeatTypeNavigation)
                             .Include(r => r.Screening)
-                                .ThenInclude(s => s.Auditorium)
-                                    .ThenInclude(a => a.AuditoriumTypeNavigation)
-                                        .ThenInclude(ap => ap.Price)
+                                .ThenInclude(s => s!.Auditorium)
+                                    .ThenInclude(a => a!.AuditoriumTypeNavigation)
                             .Where(r => r.UserId == _testUserId)
                             .ToArrayAsync();
 
@@ -44,6 +43,17 @@ public class UserController : ControllerBase
                 return NotFound(new { message = "User balance not found" });
             }
 
+
+            var invalidReservation = userReservations.FirstOrDefault(r =>
+                r.Seat == null ||
+                r.Seat.SeatTypeNavigation == null ||
+                r.Screening?.Auditorium?.AuditoriumTypeNavigation == null);
+
+            if (invalidReservation != null)
+            {
+                return StatusCode(422, new { message = "Unable to calculate values due to missing data" });
+            }
+
             var reservationsDTO = new
             {
                 userReservations[0].UserId,
@@ -56,16 +66,16 @@ public class UserController : ControllerBase
                     reservation.BoughtAt,
                     reservation.PricePaid,
 
-                    reservation.Seat.RowNumber,
+                    reservation.Seat!.RowNumber,
                     reservation.Seat.SeatNumber,
                     reservation.Seat.SeatType,
 
-                    reservation.Screening.MovieId,
+                    reservation.Screening!.MovieId,
                     reservation.Screening.AuditoriumId,
 
-                    reservation.Screening.Auditorium.AuditoriumType,
+                    reservation.Screening.Auditorium!.AuditoriumType,
 
-                    TicketValue = reservation.Screening.Auditorium.AuditoriumTypeNavigation.Price * reservation.Seat.SeatTypeNavigation.PriceModifier,
+                    TicketValue = reservation.Screening.Auditorium.AuditoriumTypeNavigation!.Price * reservation.Seat.SeatTypeNavigation!.PriceModifier,
                 })
             };
 
