@@ -4,6 +4,7 @@ import { getScreeningDetails } from '@/actions/APIGetScreeningDetails';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import gsap from 'gsap';
 import { generateRowsWithBoxes } from './helpers';
 import { useReservation } from '@/context/ReservationContext';
 
@@ -42,6 +43,56 @@ export default function BoxGrid() {
     updateDetails();
   }, [lastReservation, screeningId]);
 
+  const startShakingAnimation = (button: HTMLButtonElement) => {
+    button.style.zIndex = '100';
+
+    gsap.to(button, {
+      x: `random(-100,100)`,
+      y: `random(-100,100)`,
+      duration: '0.005',
+      repeat: -1,
+      repeatRefresh: true,
+      ease: 'sine.inOut',
+      yoyo: true,
+    });
+    gsap.to(button, {
+      scale: '2',
+      duration: 2,
+      repeatRefresh: true,
+      ease: 'sine.out',
+      yoyo: true,
+    });
+    gsap.to(button, {
+      background: `linear-gradient(0deg, #ff7b00 0%, ${button.dataset.originalColor} 100%)`,
+      duration: 1.5,
+      ease: 'power1.in',
+    });
+  };
+  const stopShakingAnimation = (
+    button: HTMLButtonElement,
+    box: { id: number; color: string; value: string },
+    bookAfterwards = true
+  ) => {
+    button.style.zIndex = '1';
+    button.style.cursor = 'auto';
+    gsap.killTweensOf(button);
+    gsap.to(button, {
+      x: 0,
+      y: 0,
+      duration: 0.01,
+    });
+    gsap.to(button, {
+      scale: '1',
+      duration: '0.1',
+      background: button.dataset.originalColor,
+      repeatRefresh: true,
+      ease: 'sine.inOut',
+      onComplete: () => {
+        if (bookAfterwards) handleSeatBooking(box.id, box.color, button);
+      },
+    });
+  };
+
   function getSeatByBoxId(boxId: number) {
     return screeningDetails?.seats.find(
       seat => seat.seatId === screeningDetails.seats[0].seatId + boxId
@@ -57,21 +108,19 @@ export default function BoxGrid() {
     return screeningDetails.seats[boxId].reservationId !== null;
   };
 
-  const handleSeatBooking = async (boxId: number) => {
+  const handleSeatBooking = async (
+    boxId: number,
+    boxColor: string,
+    button: HTMLButtonElement
+  ) => {
     if (!screeningDetails.seats.length) return;
 
     try {
       const seatId = screeningDetails.seats[0].seatId + boxId;
       setSeatThatsBookingNow(boxId);
-      const isSeatBookedResult = await checkAndBookSeatIfEmpty(
-        screeningId,
-        seatId
-      );
-      const message = isSeatBookedResult
-        ? `Seat ${boxId} booked successfully!`
-        : `Seat ${boxId} is already reserved by someone else!`;
-      alert(message);
+      await checkAndBookSeatIfEmpty(screeningId, seatId);
       setSeatThatsBookingNow(-1);
+      button.style.background = `linear-gradient(0deg, #ff7b00 0%, ${boxColor} 100%)`;
     } catch (error) {
       console.error('Failed to book seat:', error);
       alert('Failed to book seat. Please try again.');
@@ -111,11 +160,20 @@ export default function BoxGrid() {
 
               return (
                 <button
-                  className={isBooked ? 'booked' : 'notbooked'}
-                  onClick={() => {
+                  onMouseDown={e => {
                     if (isBooked) return;
-                    handleSeatBooking(box.id);
+                    e.currentTarget.dataset.originalColor =
+                      e.currentTarget.style.backgroundColor;
+                    startShakingAnimation(e.currentTarget);
                   }}
+                  onMouseUp={e => {
+                    if (isBooked) return;
+                    stopShakingAnimation(e.currentTarget, box, true);
+                  }}
+                  onMouseLeave={e => {
+                    stopShakingAnimation(e.currentTarget, box, false);
+                  }}
+                  className={`${isBooked ? 'booked' : 'notbooked'}`}
                   key={box.id}
                   style={{
                     width: `${boxSize}px`,
@@ -128,7 +186,7 @@ export default function BoxGrid() {
                     fontWeight: 'bold',
                     borderRadius: '4px',
                     boxShadow: '0 3px 5px rgba(0,0,0,0.2)',
-                    transition: 'transform 0.2s, box-shadow 0.2s',
+                    transition: 'all 0.2s, box-shadow 0.2s',
                     cursor: 'auto',
                   }}
                   onMouseEnter={e => {
@@ -141,12 +199,6 @@ export default function BoxGrid() {
                     setHoveredSeatPrice(
                       seatByBoxId?.seatPrice.toFixed(2) || '0.00'
                     );
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.cursor = 'auto';
-                    e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.boxShadow =
-                      '0 3px 5px rgba(0,0,0,0.2)';
                   }}
                 >
                   <div
