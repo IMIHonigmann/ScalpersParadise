@@ -5,7 +5,6 @@ namespace BackendAPI.Hubs;
 
 public class ReservationHub : Hub
 {
-    // Methods clients can call to join/leave notification groups
     public async Task JoinReservationUpdates()
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, "ReservationUpdates");

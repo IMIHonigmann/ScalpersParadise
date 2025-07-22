@@ -5,10 +5,7 @@ import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { generateRowsWithBoxes } from './helpers';
-import {
-  ReservationProvider,
-  useReservation,
-} from '@/context/ReservationContext';
+import { useReservation } from '@/context/ReservationContext';
 
 export default function BoxGrid() {
   const { lastReservation } = useReservation();
@@ -87,104 +84,103 @@ export default function BoxGrid() {
 
   return (
     <div className="flex box-container flex-col items-center">
-        <div className="w-full flex flex-col items-center mb-8 mt-16">
-          <div className="w-3/4 h-3 bg-gray-300 rounded-t-full shadow-lg shadow-white mb-4" />
-          <div className="text-sm text-gray-600 font-semibold">SCREEN</div>
-        </div>
-        {rows.map(row => (
+      <div className="w-full flex flex-col items-center mb-8 mt-16">
+        <div className="w-3/4 h-3 bg-gray-300 rounded-t-full shadow-lg shadow-white mb-4" />
+        <div className="text-sm text-gray-600 font-semibold">SCREEN</div>
+      </div>
+      {rows.map(row => (
+        <div
+          key={row.rowId}
+          style={{
+            marginBottom: '10px',
+            display: 'flex',
+            justifyContent: 'center',
+            width: '100%',
+          }}
+        >
           <div
-            key={row.rowId}
             style={{
-              marginBottom: '10px',
-              display: 'flex',
-              justifyContent: 'center',
-              width: '100%',
+              display: 'grid',
+              gridTemplateColumns: `repeat(${row.cols}, ${boxSize}px)`,
+              gap: '10px',
             }}
           >
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: `repeat(${row.cols}, ${boxSize}px)`,
-                gap: '10px',
-              }}
-            >
-              {row.boxes.map(box => {
-                const isBooked = isSeatBooked(box.id);
-                const seatByBoxId = getSeatByBoxId(box.id);
+            {row.boxes.map(box => {
+              const isBooked = isSeatBooked(box.id);
+              const seatByBoxId = getSeatByBoxId(box.id);
 
-                return (
-                  <button
-                    className={isBooked ? 'booked' : 'notbooked'}
-                    onClick={() => {
-                      if (isBooked) return;
-                      handleSeatBooking(box.id);
-                    }}
-                    key={box.id}
+              return (
+                <button
+                  className={isBooked ? 'booked' : 'notbooked'}
+                  onClick={() => {
+                    if (isBooked) return;
+                    handleSeatBooking(box.id);
+                  }}
+                  key={box.id}
+                  style={{
+                    width: `${boxSize}px`,
+                    height: `${boxSize}px`,
+                    backgroundColor: box.color,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    borderRadius: '4px',
+                    boxShadow: '0 3px 5px rgba(0,0,0,0.2)',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                    cursor: 'auto',
+                  }}
+                  onMouseEnter={e => {
+                    if (isBooked) return;
+                    e.currentTarget.style.cursor = 'pointer';
+                    e.currentTarget.style.transform =
+                      'scale(1.05) translateY(-0.25rem)';
+                    e.currentTarget.style.boxShadow =
+                      '0 5px 10px rgba(0,0,0,0.3)';
+                    setHoveredSeatPrice(
+                      seatByBoxId?.seatPrice.toFixed(2) || '0.00'
+                    );
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.cursor = 'auto';
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.style.boxShadow =
+                      '0 3px 5px rgba(0,0,0,0.2)';
+                  }}
+                >
+                  <div
                     style={{
-                      width: `${boxSize}px`,
-                      height: `${boxSize}px`,
-                      backgroundColor: box.color,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'white',
-                      fontWeight: 'bold',
-                      borderRadius: '4px',
-                      boxShadow: '0 3px 5px rgba(0,0,0,0.2)',
-                      transition: 'transform 0.2s, box-shadow 0.2s',
-                      cursor: 'auto',
-                    }}
-                    onMouseEnter={e => {
-                      if (isBooked) return;
-                      e.currentTarget.style.cursor = 'pointer';
-                      e.currentTarget.style.transform =
-                        'scale(1.05) translateY(-0.25rem)';
-                      e.currentTarget.style.boxShadow =
-                        '0 5px 10px rgba(0,0,0,0.3)';
-                      setHoveredSeatPrice(
-                        seatByBoxId?.seatPrice.toFixed(2) || '0.00'
-                      );
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.cursor = 'auto';
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.boxShadow =
-                        '0 3px 5px rgba(0,0,0,0.2)';
+                      position: 'relative',
+                      width: '50%',
+                      height: '50%',
                     }}
                   >
-                    <div
-                      style={{
-                        position: 'relative',
-                        width: '50%',
-                        height: '50%',
-                      }}
-                    >
-                      {seatThatsBookingNow == box.id && !isBooked ? (
-                        'Booking...'
-                      ) : (
-                        <Image
-                          src="/userreserved.svg"
-                          alt="Seat"
-                          fill
-                          style={{
-                            objectFit: 'contain',
-                            transform: isBooked ? 'scale(1)' : 'scale(0)',
-                          }}
-                        />
-                      )}
-                    </div>
-                    <div style={{ fontSize: '0.7rem', marginTop: '2px' }}>
-                      {seatByBoxId?.seatType}
-                      {box.id}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+                    {seatThatsBookingNow == box.id && !isBooked ? (
+                      'Booking...'
+                    ) : (
+                      <Image
+                        src="/userreserved.svg"
+                        alt="Seat"
+                        fill
+                        style={{
+                          objectFit: 'contain',
+                          transform: isBooked ? 'scale(1)' : 'scale(0)',
+                        }}
+                      />
+                    )}
+                  </div>
+                  <div style={{ fontSize: '0.7rem', marginTop: '2px' }}>
+                    {seatByBoxId?.seatType}
+                    {box.id}
+                  </div>
+                </button>
+              );
+            })}
           </div>
-        ))}
-        <p> {hoveredSeatPrice} </p>
-      </div>
-    </ReservationProvider>
+        </div>
+      ))}
+      <p> {hoveredSeatPrice} </p>
+    </div>
   );
 }

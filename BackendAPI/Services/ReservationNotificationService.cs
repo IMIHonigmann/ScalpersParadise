@@ -1,6 +1,5 @@
 using BackendAPI.Hubs;
 using BackendAPI.Models;
-using BackendAPI.Models.DataTransferObjects;
 using Microsoft.AspNetCore.SignalR;
 
 namespace BackendAPI.Services
@@ -17,7 +16,7 @@ namespace BackendAPI.Services
         private readonly IHubContext<ReservationHub> _hubContext = hubContext;
         private readonly ILogger<ReservationNotificationService> _logger = logger;
 
-        public async Task NotifyNewReservation(UserReservationInsertionDTO reservation)
+        public async Task NotifyNewReservation(Userreservation reservation)
         {
             try
             {
@@ -34,11 +33,6 @@ namespace BackendAPI.Services
             {
                 _logger.LogError(ex, "Failed to send reservation notification");
             }
-        }
-
-        public Task NotifyNewReservation(Userreservation reservation)
-        {
-            throw new NotImplementedException();
         }
     }
 }
