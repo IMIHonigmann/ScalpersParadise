@@ -10,7 +10,7 @@ export default async function Home() {
   const currentMovies = await getCurrentMovies();
   const highlightedMovies = [
     currentMovies[0],
-    currentMovies[1],
+    currentMovies[7],
     currentMovies[2],
   ];
   return (

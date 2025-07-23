@@ -6,10 +6,18 @@ import { Canvas } from '@react-three/fiber';
 import { TMDBMovieDetails } from '@/types/TMDB';
 import { useState } from 'react';
 
-export function SingleMovieCanvas({ movie }: { movie: TMDBMovieDetails }) {
+export function SingleMovieCanvas({
+  movie,
+  className,
+}: {
+  movie: TMDBMovieDetails;
+  className?: string;
+}) {
   const [camLoc, setCamLoc] = useState(375);
   return (
-    <div className="flex flex-row justify-center items-center w-full h-[30em]">
+    <div
+      className={`flex flex-row justify-center items-center w-full ${className}`}
+    >
       <Canvas
         camera={{ position: [-50, -100, 500], fov: 75 }}
         orthographic

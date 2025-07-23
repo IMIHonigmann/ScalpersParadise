@@ -308,7 +308,7 @@ export default async function Page({
             }}
           >
             <div className="col-start-1 row-start-1 w-full relative">
-              <SingleMovieCanvas movie={movie} />
+              <SingleMovieCanvas movie={movie} className="h-[30em]" />
               <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent pointer-events-none" />
             </div>
             <div className="col-start-1 row-start-1 -rotate-3 pointer-events-none">
