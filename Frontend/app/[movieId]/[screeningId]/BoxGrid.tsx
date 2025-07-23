@@ -162,21 +162,12 @@ export default function BoxGrid() {
         <div className="text-sm text-gray-600 font-semibold">SCREEN</div>
       </div>
       {rows.map(row => (
-        <div
-          key={row.rowId}
-          style={{
-            marginBottom: '10px',
-            display: 'flex',
-            justifyContent: 'center',
-            width: '100%',
-          }}
-        >
+        <div key={row.rowId} className="flex justify-center w-full mb-2.5">
           <div
             style={{
-              display: 'grid',
               gridTemplateColumns: `repeat(${row.cols}, ${boxSize}px)`,
-              gap: '10px',
             }}
+            className="grid gap-2.5"
           >
             {row.boxes.map(box => {
               const isBooked = isSeatBooked(box.id);
@@ -197,20 +188,15 @@ export default function BoxGrid() {
                   onMouseLeave={e => {
                     stopShakingAnimation(e.currentTarget);
                   }}
-                  className={`${isBooked ? 'booked' : 'notbooked'}`}
+                  className={`flex justify-center items-center text-white font-bold rounded-md ${
+                    isBooked ? 'booked' : 'notbooked'
+                  }`}
                   key={box.id}
                   style={{
                     width: `${boxSize}px`,
                     height: `${boxSize}px`,
                     backgroundColor: box.color,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontWeight: 'bold',
-                    borderRadius: '4px',
-                    boxShadow: '0 3px 5px rgba(0,0,0,0.2)',
-                    transition: 'all 0.2s, box-shadow 0.2s',
+                    transition: 'all 0.2s',
                     cursor: 'auto',
                   }}
                   onMouseEnter={e => {
@@ -225,13 +211,7 @@ export default function BoxGrid() {
                     );
                   }}
                 >
-                  <div
-                    style={{
-                      position: 'relative',
-                      width: '50%',
-                      height: '50%',
-                    }}
-                  >
+                  <div className="relative w-1/2 h-1/2">
                     {seatThatsBookingNow == box.id && !isBooked ? (
                       'Booking...'
                     ) : (
@@ -242,6 +222,7 @@ export default function BoxGrid() {
                         style={{
                           objectFit: 'contain',
                           transform: isBooked ? 'scale(1)' : 'scale(0)',
+                          transition: 'all 0.1s',
                         }}
                       />
                     )}
