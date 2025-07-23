@@ -43,7 +43,11 @@ export default function BoxGrid() {
     updateDetails();
   }, [lastReservation, screeningId]);
 
-  const startShakingAnimation = (button: HTMLButtonElement) => {
+  const startShakingAnimation = (
+    button: HTMLButtonElement,
+    box: { id: number; color: string; value: string },
+    bookAfterwards: boolean
+  ) => {
     button.style.zIndex = '100';
 
     gsap.to(button, {
@@ -62,6 +66,9 @@ export default function BoxGrid() {
       repeatRefresh: true,
       ease: 'sine.out',
       yoyo: true,
+      onComplete: () => {
+        if (bookAfterwards) handleSeatBooking(box.id, box.color, button);
+      },
     });
     gsap.to(button, {
       background: `linear-gradient(0deg, #ff7b00 0%, ${button.dataset.originalColor} 100%)`,
@@ -69,11 +76,7 @@ export default function BoxGrid() {
       ease: 'power1.in',
     });
   };
-  const stopShakingAnimation = (
-    button: HTMLButtonElement,
-    box: { id: number; color: string; value: string },
-    bookAfterwards = true
-  ) => {
+  const stopShakingAnimation = (button: HTMLButtonElement) => {
     button.style.zIndex = '1';
     button.style.cursor = 'auto';
     gsap.killTweensOf(button);
@@ -89,9 +92,6 @@ export default function BoxGrid() {
       background: button.dataset.originalColor,
       repeatRefresh: true,
       ease: 'sine.inOut',
-      onComplete: () => {
-        if (bookAfterwards) handleSeatBooking(box.id, box.color, button);
-      },
     });
   };
 
@@ -120,9 +120,13 @@ export default function BoxGrid() {
     try {
       const seatId = screeningDetails.seats[0].seatId + boxId;
       setSeatThatsBookingNow(boxId);
-      await checkAndBookSeatIfEmpty(screeningId, seatId);
+      const isSeatEmpty = await checkAndBookSeatIfEmpty(screeningId, seatId);
       setSeatThatsBookingNow(-1);
+      if (!isSeatEmpty) return;
       button.style.background = `linear-gradient(0deg, #ff7b00 0%, ${boxColor} 100%)`;
+      setTimeout(() => {
+        button.style.pointerEvents = 'none';
+      }, 5);
     } catch (error) {
       console.error('Failed to book seat:', error);
       alert('Failed to book seat. Please try again.');
@@ -166,14 +170,14 @@ export default function BoxGrid() {
                     if (isBooked) return;
                     e.currentTarget.dataset.originalColor =
                       e.currentTarget.style.backgroundColor;
-                    startShakingAnimation(e.currentTarget);
+                    startShakingAnimation(e.currentTarget, box, true);
                   }}
                   onMouseUp={e => {
                     if (isBooked) return;
-                    stopShakingAnimation(e.currentTarget, box, true);
+                    stopShakingAnimation(e.currentTarget);
                   }}
                   onMouseLeave={e => {
-                    stopShakingAnimation(e.currentTarget, box, false);
+                    stopShakingAnimation(e.currentTarget);
                   }}
                   className={`${isBooked ? 'booked' : 'notbooked'}`}
                   key={box.id}
