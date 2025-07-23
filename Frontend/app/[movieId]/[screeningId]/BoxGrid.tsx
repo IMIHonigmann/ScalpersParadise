@@ -3,7 +3,7 @@ import { checkAndBookSeatIfEmpty } from '@/actions/APIBookSeat';
 import { getScreeningDetails } from '@/actions/APIGetScreeningDetails';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { generateRowsWithBoxes } from './helpers';
 import { useReservation } from '@/context/ReservationContext';
@@ -18,6 +18,7 @@ export default function BoxGrid() {
   const [seatThatsBookingNow, setSeatThatsBookingNow] = useState(-1);
   const [isLoading, setIsLoading] = useState(true);
   const [hoveredSeatPrice, setHoveredSeatPrice] = useState('0.00');
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -122,11 +123,28 @@ export default function BoxGrid() {
       setSeatThatsBookingNow(boxId);
       const isSeatEmpty = await checkAndBookSeatIfEmpty(screeningId, seatId);
       setSeatThatsBookingNow(-1);
-      if (!isSeatEmpty) return;
-      button.style.background = `linear-gradient(0deg, #ff7b00 0%, ${boxColor} 100%)`;
-      setTimeout(() => {
-        button.style.pointerEvents = 'none';
-      }, 5);
+      if (isSeatEmpty) {
+        setTimeout(() => (button.style.pointerEvents = 'none'), 100);
+        button.style.background = `linear-gradient(0deg, #ff7b00 0%, ${boxColor} 100%)`;
+        gsap
+          .timeline({ delay: 0.2 })
+          .to(buttonRefs.current, {
+            x: `random(-15,15)`,
+            y: `random(-15,15)`,
+            rotateZ: `random(-10,10)`,
+            duration: '0.04',
+            repeat: 4,
+            repeatRefresh: true,
+            ease: 'sine.inOut',
+            yoyo: true,
+          })
+          .to(buttonRefs.current, {
+            x: 0,
+            y: 0,
+            rotateZ: 0,
+            duration: 0.01,
+          });
+      }
     } catch (error) {
       console.error('Failed to book seat:', error);
       alert('Failed to book seat. Please try again.');
@@ -166,6 +184,9 @@ export default function BoxGrid() {
 
               return (
                 <button
+                  ref={e => {
+                    buttonRefs.current[box.id] = e;
+                  }}
                   onMouseDown={e => {
                     if (isBooked) return;
                     e.currentTarget.dataset.originalColor =
