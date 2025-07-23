@@ -18,7 +18,7 @@ export default function BoxGrid() {
   const [seatThatsBookingNow, setSeatThatsBookingNow] = useState(-1);
   const [isLoading, setIsLoading] = useState(true);
   const [hoveredSeatPrice, setHoveredSeatPrice] = useState('0.00');
-  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const divRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -54,7 +54,7 @@ export default function BoxGrid() {
     gsap.to(button, {
       x: `random(-100,100)`,
       y: `random(-100,100)`,
-      rotateZ: `random(-50,50)`,
+      rotate: `random(-50,50)`,
       duration: '0.005',
       repeat: -1,
       repeatRefresh: true,
@@ -84,7 +84,7 @@ export default function BoxGrid() {
     gsap.to(button, {
       x: 0,
       y: 0,
-      rotateZ: 0,
+      rotate: 0,
       duration: 0.01,
     });
     gsap.to(button, {
@@ -124,25 +124,25 @@ export default function BoxGrid() {
       const isSeatEmpty = await checkAndBookSeatIfEmpty(screeningId, seatId);
       setSeatThatsBookingNow(-1);
       if (isSeatEmpty) {
-        setTimeout(() => (button.style.pointerEvents = 'none'), 100);
         button.style.background = `linear-gradient(0deg, #ff7b00 0%, ${boxColor} 100%)`;
         gsap
           .timeline({ delay: 0.2 })
-          .to(buttonRefs.current, {
-            x: `random(-15,15)`,
-            y: `random(-15,15)`,
-            rotateZ: `random(-10,10)`,
-            duration: '0.04',
-            repeat: 4,
+          .to(divRef.current, {
+            x: `random(-50,50)`,
+            y: `random(-50,50)`,
+            rotate: `random(-5,5)`,
+            duration: '0.02',
+            repeat: 10,
             repeatRefresh: true,
             ease: 'sine.inOut',
             yoyo: true,
           })
-          .to(buttonRefs.current, {
+          .to(divRef.current, {
             x: 0,
             y: 0,
-            rotateZ: 0,
-            duration: 0.01,
+            rotate: 0,
+            duration: 0.1,
+            ease: 'sine.out',
           });
       }
     } catch (error) {
@@ -156,7 +156,7 @@ export default function BoxGrid() {
   }
 
   return (
-    <div className="flex box-container flex-col items-center">
+    <div className="flex box-container flex-col items-center" ref={divRef}>
       <div className="w-full flex flex-col items-center mb-8 mt-16">
         <div className="w-3/4 h-3 bg-gray-300 rounded-t-full shadow-lg shadow-white mb-4" />
         <div className="text-sm text-gray-600 font-semibold">SCREEN</div>
@@ -184,9 +184,6 @@ export default function BoxGrid() {
 
               return (
                 <button
-                  ref={e => {
-                    buttonRefs.current[box.id] = e;
-                  }}
                   onMouseDown={e => {
                     if (isBooked) return;
                     e.currentTarget.dataset.originalColor =
