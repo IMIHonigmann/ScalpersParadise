@@ -2,11 +2,12 @@
 
 import { useRouter } from 'next/navigation';
 import * as THREE from 'three';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, ThreeElements } from '@react-three/fiber';
 import type { TMDBMovieDetails } from '@/types/TMDB';
 import { CartridgeModel } from './Cartridge';
 import { Environment, useHelper } from '@react-three/drei';
+import gsap from 'gsap';
 
 export function InteractiveCartridge(
   props: ThreeElements['mesh'] & {
@@ -15,38 +16,69 @@ export function InteractiveCartridge(
     reverseHover?: boolean;
     restRotation?: number;
     innerIndex?: number;
-  }
+  } & (
+      | { rotationDirection?: undefined; setRotationDirection?: undefined }
+      | {
+          rotationDirection: number;
+          setRotationDirection: React.Dispatch<
+            React.SetStateAction<number>
+          > | null;
+        }
+    )
 ) {
   const meshRef = useRef<THREE.Mesh>(null!);
   const reverseHover = props.reverseHover ?? false;
   const innerIndex = props.innerIndex ?? 0;
-  const restRotation = props.restRotation ?? 0.25;
+  const restRotation = props.restRotation ?? 0.3;
+  const rotationDirection = props.rotationDirection ?? 0;
+  const setRotationDirection = props.setRotationDirection ?? null;
 
   const [hovered, setHover] = useState(reverseHover);
-  const [active, setActive] = useState(false);
+  const [rotating, setRotating] = useState(false);
   const timeOutsideHover = useRef(0);
   const floatHeight = 4;
   const offsetDifference = 0.75;
+
+  useEffect(() => {
+    if (!meshRef.current) return;
+    setRotating(true);
+    const rotation = meshRef.current.rotation;
+    gsap.timeline().to(rotation, {
+      y: Math.PI * 2 * rotationDirection + restRotation,
+      duration: 1,
+      ease: 'power4.out',
+      onComplete: () => {
+        meshRef.current.rotation.y = restRotation;
+        if (setRotationDirection !== null) setRotationDirection(0);
+        setRotating(false);
+      },
+    });
+
+    return () => gsap.killTweensOf(rotation);
+  }, [restRotation, rotationDirection, setRotationDirection]);
+
   useFrame((state, delta) => {
     timeOutsideHover.current += delta;
 
     meshRef.current.position.y =
       Math.sin(timeOutsideHover.current * 2 + innerIndex * offsetDifference) *
       floatHeight;
-    if (hovered) {
-      meshRef.current.rotation.y += delta * 0.5;
-      const targetScale = 1.15;
-      meshRef.current.scale.lerp(
-        new THREE.Vector3(targetScale, targetScale, targetScale),
-        0.1
-      );
-    } else {
-      meshRef.current.rotation.y = THREE.MathUtils.lerp(
-        meshRef.current.rotation.y,
-        restRotation,
-        0.1
-      );
-      meshRef.current.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
+    if (!rotating) {
+      if (hovered) {
+        meshRef.current.rotation.y += delta * 0.5;
+        const targetScale = 1.15;
+        meshRef.current.scale.lerp(
+          new THREE.Vector3(targetScale, targetScale, targetScale),
+          0.1
+        );
+      } else {
+        meshRef.current.rotation.y = THREE.MathUtils.lerp(
+          meshRef.current.rotation.y,
+          restRotation,
+          0.1
+        );
+        meshRef.current.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
+      }
     }
   });
   const router = useRouter();
@@ -62,14 +94,13 @@ export function InteractiveCartridge(
         setHover(reverseHover);
       }}
       onClick={() => {
-        setActive(!active);
         props.setCamLoc((prev: number) => prev + 0.1);
         router.push(props.movie.id.toString());
       }}
     >
       <boxGeometry args={[370, 700, 500]} />
       <meshStandardMaterial color={'red'} opacity={0} transparent={true} />
-      <mesh ref={meshRef} scale={active ? 0.9 : 1}>
+      <mesh ref={meshRef}>
         <CartridgeModel
           poster_path={
             props.movie.poster_path
@@ -148,6 +179,7 @@ export function BoxCanvas({
               innerIndex={index}
               setCamLoc={setCamLoc}
               movie={movie}
+              restRotation={0.3}
             />
           </mesh>
         ))}
