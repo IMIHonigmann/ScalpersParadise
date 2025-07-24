@@ -66,18 +66,12 @@ export function InteractiveCartridge(
     if (!rotating) {
       if (hovered) {
         meshRef.current.rotation.y += delta * 0.5;
-        const targetScale = 1.15;
-        meshRef.current.scale.lerp(
-          new THREE.Vector3(targetScale, targetScale, targetScale),
-          0.1
-        );
       } else {
         meshRef.current.rotation.y = THREE.MathUtils.lerp(
           meshRef.current.rotation.y,
           restRotation,
           0.1
         );
-        meshRef.current.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
       }
     }
   });
@@ -88,12 +82,43 @@ export function InteractiveCartridge(
       onPointerOver={() => {
         document.body.style.cursor = 'pointer';
         setHover(!reverseHover);
+        gsap.to(meshRef.current.scale, {
+          x: 1.1,
+          y: 1.1,
+          z: 1.1,
+          duration: 0.3,
+          ease: 'back.out',
+        });
       }}
       onPointerOut={() => {
         document.body.style.cursor = 'default';
         setHover(reverseHover);
+        gsap.to(meshRef.current.scale, {
+          x: 1.0,
+          y: 1.0,
+          z: 1.0,
+          duration: 0.6,
+          ease: 'back.out',
+        });
       }}
       onClick={() => {
+        setRotating(false);
+        gsap
+          .timeline()
+          .to(meshRef.current.scale, {
+            x: 0.5,
+            y: 0.5,
+            z: 0.5,
+            duration: 0.08,
+            ease: 'power2.in',
+          })
+          .to(meshRef.current.scale, {
+            x: 1,
+            y: 1,
+            z: 1,
+            duration: 0.3,
+            ease: 'elastic.out(1, 0.3)',
+          });
         props.setCamLoc((prev: number) => prev + 0.1);
         router.push(props.movie.id.toString());
       }}
