@@ -159,9 +159,6 @@ function MovingLight(props: { hoveredIndex: number }) {
     );
   });
 
-  useHelper(backLightRef, THREE.PointLightHelper, 30, 'red');
-  useHelper(frontLightRef, THREE.PointLightHelper, 30, 'red');
-
   return (
     <group>
       <pointLight

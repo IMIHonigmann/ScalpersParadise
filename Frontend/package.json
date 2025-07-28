@@ -20,6 +20,8 @@
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
     "react-window": "^1.8.11",
+    "stripe": "^18.3.0",
+    "swiper": "^11.2.10",
     "three": "^0.178.0"
   },
   "devDependencies": {

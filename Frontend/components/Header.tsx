@@ -17,10 +17,10 @@ const oswald = Oswald({
 
 export default function Header() {
   const navItems = [
-    { label: 'Shop', path: '/shop' },
-    { label: 'Unlimited', path: '/unlimited' },
-    { label: 'Lucky', path: '/random' },
-    { label: 'Rent', path: '/rent' },
+    { label: 'Shop', path: '/home' },
+    { label: 'Unlimited', path: '/home' },
+    { label: 'Lucky', path: '/home' },
+    { label: 'Rent', path: '/home' },
   ];
   return (
     <div
