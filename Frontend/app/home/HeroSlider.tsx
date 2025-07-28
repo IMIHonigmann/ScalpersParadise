@@ -9,8 +9,13 @@ import {
 import { SliderCartridgeCanvas } from './SliderCartridgePreview';
 import Image from 'next/image';
 import Link from 'next/link';
+import { TMDBMovieDetails } from '@/types/TMDB';
 
-export default function HeroSlider({ highlightedMovies }) {
+type props = {
+  highlightedMovies: TMDBMovieDetails[];
+};
+
+export default function HeroSlider({ highlightedMovies }: props) {
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const [rotationDirection, setRotationDirection] = useState(0);
   const [fade, setFade] = useState(true);

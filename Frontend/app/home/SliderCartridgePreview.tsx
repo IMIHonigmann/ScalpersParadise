@@ -17,7 +17,7 @@ export function SliderCartridgeCanvas({
   rotationDirection: number;
   setRotationDirection: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const [camLoc, setCamLoc] = useState(375);
+  const [, setCamLoc] = useState(375);
   return (
     <div
       className={`flex flex-row justify-center items-center w-full ${className}`}

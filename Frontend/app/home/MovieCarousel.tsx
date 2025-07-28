@@ -7,8 +7,13 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 import { MdOutlinePlayCircle } from 'react-icons/md';
+import { TMDBMovieDetails } from '@/types/TMDB';
 
-export default function MovieCarousel({ movies }: { movies: any[] }) {
+export default function MovieCarousel({
+  movies,
+}: {
+  movies: TMDBMovieDetails[];
+}) {
   return (
     <div className="px-8 py-4">
       <Swiper

@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, ThreeElements } from '@react-three/fiber';
 import type { TMDBMovieDetails } from '@/types/TMDB';
 import { CartridgeModel } from './Cartridge';
-import { Environment, useHelper } from '@react-three/drei';
+import { Environment } from '@react-three/drei';
 import gsap from 'gsap';
 
 export function InteractiveCartridge(
