@@ -1,5 +1,6 @@
 using BackendAPI.Models;
 using BackendAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendAPI.Controllers
@@ -8,8 +9,6 @@ namespace BackendAPI.Controllers
     [Route("api/[controller]")]
     public class AuthController(IAuthService authService) : ControllerBase
     {
-        private readonly string jwtToken = Environment.GetEnvironmentVariable("JWT_TOKEN")!;
-
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDto request)
         {
@@ -32,6 +31,14 @@ namespace BackendAPI.Controllers
             }
 
             return Ok(token);
+        }
+
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult AuthenticatedOnlyEndpoint()
+        {
+            return Ok("You are authenticated!");
         }
     }
 }

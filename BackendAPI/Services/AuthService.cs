@@ -11,6 +11,9 @@ namespace BackendAPI.Services
     public class AuthService(ScalpersParadiseContext context) : IAuthService
     {
         private readonly string jwtToken = Environment.GetEnvironmentVariable("JWT_TOKEN")!;
+        private readonly string validIssuer = Environment.GetEnvironmentVariable("VALID_ISSUER")!;
+        private readonly string validAudience = Environment.GetEnvironmentVariable("VALID_AUDIENCE")!;
+
         public async Task<User?> RegisterAsync(UserDto request)
         {
             if (await context.Users.AnyAsync(u => u.Username == request.Username))
@@ -39,12 +42,10 @@ namespace BackendAPI.Services
             var user = await context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
             if (user is null)
             {
-                Console.WriteLine("User doesn't exist");
                 return null;
             }
             if (new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, request.Password) == PasswordVerificationResult.Failed)
             {
-                Console.WriteLine("hashing failed");
                 return null;
             }
 
@@ -65,8 +66,8 @@ namespace BackendAPI.Services
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
 
             var tokenDescriptor = new JwtSecurityToken(
-                issuer: "MyAwesomeApp",
-                audience: "MyAwesomeAudience",
+                issuer: validIssuer,
+                audience: validAudience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddDays(1),
                 signingCredentials: creds
