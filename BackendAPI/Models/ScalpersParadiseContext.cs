@@ -135,9 +135,9 @@ public partial class ScalpersParadiseContext : DbContext
                 .HasColumnName("user_id");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("timestamp without time zone")
                 .HasColumnName("created_at");
             entity.Property(e => e.Email).HasColumnName("email");
+            entity.Property(e => e.PasswordHash).HasDefaultValueSql("''::text");
             entity.Property(e => e.Username).HasColumnName("username");
         });
 

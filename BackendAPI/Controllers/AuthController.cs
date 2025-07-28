@@ -1,41 +1,35 @@
 using BackendAPI.Models;
-using Microsoft.AspNetCore.Identity;
+using BackendAPI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace BackendAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+    public class AuthController(IAuthService authService) : ControllerBase
     {
-        public static TestUser user = new();
+        private readonly string jwtToken = Environment.GetEnvironmentVariable("JWT_TOKEN")!;
 
         [HttpPost("register")]
-        public ActionResult<TestUser> Register(UserDto request)
+        public async Task<ActionResult<User>> Register(UserDto request)
         {
-            var hashedPassword = new PasswordHasher<TestUser>()
-                .HashPassword(user, request.Password);
-
-            user.Username = request.Username;
-            user.PasswordHash = hashedPassword;
-
+            var user = await authService.RegisterAsync(request);
+            if (user is null)
+            {
+                return BadRequest("User already exists.");
+            }
             return Ok(user);
         }
 
         [HttpPost("login")]
-        public ActionResult<string> Login(UserDto request)
+        public async Task<ActionResult<string>> Login(UserDto request)
         {
-            if (user.Username != request.Username)
-            {
-                return BadRequest("User not found");
-            }
-            if (new PasswordHasher<TestUser>().VerifyHashedPassword(user, user.PasswordHash, request.Password) == PasswordVerificationResult.Failed)
-            {
-                return BadRequest("Wrong password");
-            }
+            var token = await authService.LoginAsync(request);
 
-            string token = "success";
+            if (token is null)
+            {
+                return BadRequest("Invalid username or password");
+            }
 
             return Ok(token);
         }

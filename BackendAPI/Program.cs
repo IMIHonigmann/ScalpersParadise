@@ -31,6 +31,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSignalR();
 
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 var app = builder.Build();
 app.UseCors("AllowSignalR");
 app.MapHub<ReservationHub>("/hubs/reservations");

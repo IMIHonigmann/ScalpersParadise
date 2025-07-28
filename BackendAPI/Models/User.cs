@@ -13,6 +13,8 @@ public partial class User
 
     public DateTime? CreatedAt { get; set; }
 
+    public string PasswordHash { get; set; } = null!;
+
     public virtual Userbalance? Userbalance { get; set; }
 
     public virtual ICollection<Userreservation> Userreservations { get; set; } = new List<Userreservation>();
