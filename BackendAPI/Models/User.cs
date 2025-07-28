@@ -15,6 +15,10 @@ public partial class User
 
     public string PasswordHash { get; set; } = null!;
 
+    public string Role { get; set; } = string.Empty;
+    public string RefreshToken { get; set; } = string.Empty;
+    public DateTime? RefreshTokenExpiryTime { get; set; }
+
     public virtual Userbalance? Userbalance { get; set; }
 
     public virtual ICollection<Userreservation> Userreservations { get; set; } = new List<Userreservation>();
