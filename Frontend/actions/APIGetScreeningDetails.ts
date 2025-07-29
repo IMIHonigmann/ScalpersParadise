@@ -34,13 +34,18 @@ export async function getThisWeeksScreenings(
   movieId: string
 ): Promise<Screening[] | string> {
   const JWT = ``; // Authentication isn't implemented yet
-  const url = `http://https://scalpersparadise-production.up.railway.app:/Screening/getScreeningsByMovieId?movieId=${movieId}`;
-  const res = await fetch(url, {
-    headers: {
-      accept: 'application/json',
-      Authorization: `Bearer ${JWT}`,
-    },
-  });
+  let URL = process.env.DEPLOYED_SERVER_ADDRESS;
+  if (process.env.NODE_ENV === 'production')
+    URL = process.env.DEPLOYED_SERVER_ADDRESS;
+  const res = await fetch(
+    `${URL}/Screening/getScreeningsByMovieId?movieId=${movieId}`,
+    {
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${JWT}`,
+      },
+    }
+  );
 
   if (res.status === 404) {
     return 'This movie has no screenings scheduled this week';
