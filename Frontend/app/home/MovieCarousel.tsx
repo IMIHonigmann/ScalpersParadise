@@ -31,7 +31,7 @@ export default function MovieCarousel({
         {movies.map((movie, index: number) => (
           <SwiperSlide key={movie.id}>
             <Link href={`/${movie.id}`} className="text-center group block">
-              <div className="relative overflow-hidden w-[200px] h-[300px] mx-auto flex items-center justify-center">
+              <div className="text-xl relative overflow-hidden w-[200px] h-[300px] mx-auto flex items-center justify-center">
                 <Image
                   src={
                     movie.poster_path

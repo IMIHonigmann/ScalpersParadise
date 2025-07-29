@@ -28,7 +28,6 @@ export default async function Home() {
       <br />
       <MovieCarousel movies={currentMovies} />
 
-      {/* You can keep BoxCanvas if you want */}
       <BoxCanvas currentMovies={highlightedMovies} />
     </div>
   );
