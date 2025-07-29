@@ -5,7 +5,10 @@ import { getMovieById } from './TMDBGetMovieById';
 
 export async function getUserUserDetails(): Promise<UserDetails> {
   const JWT = ``;
-  const res = await fetch(`http://localhost:5118/User/profile/reservations`, {
+  let URL = process.env.DEV_SERVER_ADDRESS;
+  if (process.env.NODE_ENV === 'production')
+    URL = process.env.DEPLOYED_SERVER_ADDRESS;
+  const res = await fetch(`${URL}/User/profile/reservations`, {
     method: 'GET',
     headers: {
       accept: 'application/json',

@@ -5,17 +5,17 @@ import { getMovieById } from './TMDBGetMovieById';
 
 export async function getCurrentMovies() {
   const JWT = ``;
-  const res = await fetch(
-    `http://localhost:5118/CurrentMovies/GetCurrentMovieIds`,
-    {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: `Bearer ${JWT}`,
-      },
-      next: { revalidate: 86400 },
-    }
-  );
+  let URL = process.env.DEV_SERVER_ADDRESS;
+  if (process.env.NODE_ENV === 'production')
+    URL = process.env.DEPLOYED_SERVER_ADDRESS;
+  const res = await fetch(`${URL}/CurrentMovies/GetCurrentMovieIds`, {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: `Bearer ${JWT}`,
+    },
+    next: { revalidate: 86400 },
+  });
 
   if (!res.ok) {
     throw new Error(`Failed to fetch: Error Code: ${res.status}`);
@@ -24,7 +24,7 @@ export async function getCurrentMovies() {
   const currentMovieIds: number[] = await res.json();
 
   const movieDetailsResults = await Promise.allSettled(
-    currentMovieIds.map(async id => await getMovieById(id))
+    currentMovieIds.map(async id => await getMovieById(id.toString()))
   );
   const TMDBMovieDetails: TMDBMovieDetails[] = movieDetailsResults
     .filter(result => result.status === 'fulfilled')
@@ -36,7 +36,7 @@ export async function getCurrentMovies() {
 export async function getCurrentMovieIds() {
   const JWT = ``;
   const res = await fetch(
-    `http://localhost:5118/CurrentMovies/GetCurrentMovieIds`,
+    `http://https://scalpersparadise-production.up.railway.app:/CurrentMovies/GetCurrentMovieIds`,
     {
       method: 'GET',
       headers: {

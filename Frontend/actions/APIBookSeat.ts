@@ -5,7 +5,10 @@ export async function checkAndBookSeatIfEmpty(
   seatId: number
 ) {
   const JWT = ``;
-  const res = await fetch(`http://localhost:5118/Reservation/bookSeat`, {
+  let URL = process.env.DEV_SERVER_ADDRESS;
+  if (process.env.NODE_ENV === 'production')
+    URL = process.env.DEPLOYED_SERVER_ADDRESS;
+  const res = await fetch(`${URL}/Reservation/bookSeat`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -9,8 +9,11 @@ export async function getScreeningDetails(
   if (!screeningId) return {} as ScreeningDetails;
 
   const JWT = ``;
+  let URL = process.env.DEV_SERVER_ADDRESS;
+  if (process.env.NODE_ENV === 'production')
+    URL = process.env.DEPLOYED_SERVER_ADDRESS;
   const res = await fetch(
-    `http://localhost:5118/Screening/getScreeningSeatingDetails?screeningId=${screeningId}`,
+    `${URL}/Screening/getScreeningSeatingDetails?screeningId=${screeningId}`,
     {
       method: 'GET',
       headers: {
@@ -31,7 +34,7 @@ export async function getThisWeeksScreenings(
   movieId: string
 ): Promise<Screening[] | string> {
   const JWT = ``; // Authentication isn't implemented yet
-  const url = `http://localhost:5118/Screening/getScreeningsByMovieId?movieId=${movieId}`;
+  const url = `http://https://scalpersparadise-production.up.railway.app:/Screening/getScreeningsByMovieId?movieId=${movieId}`;
   const res = await fetch(url, {
     headers: {
       accept: 'application/json',

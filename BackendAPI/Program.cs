@@ -16,6 +16,7 @@ string CONNECTION_STRING = Environment.GetEnvironmentVariable("DEFAULT_CONNECTIO
 string jwtToken = Environment.GetEnvironmentVariable("JWT_TOKEN")!;
 string validIssuer = Environment.GetEnvironmentVariable("VALID_ISSUER")!;
 string validAudience = Environment.GetEnvironmentVariable("VALID_AUDIENCE")!;
+string CORS_ORIGIN = Environment.GetEnvironmentVariable("CORS_ORIGIN")!;
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ScalpersParadiseContext>(options =>
@@ -28,7 +29,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSignalR", policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
+        policy.WithOrigins(CORS_ORIGIN)
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();

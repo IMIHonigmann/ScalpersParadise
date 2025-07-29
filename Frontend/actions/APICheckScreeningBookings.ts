@@ -2,8 +2,11 @@
 
 export async function getScreeningBookings(screeningId: number) {
   const JWT = ``;
+  let URL = process.env.DEV_SERVER_ADDRESS;
+  if (process.env.NODE_ENV === 'production')
+    URL = process.env.DEPLOYED_SERVER_ADDRESS;
   const res = await fetch(
-    `http://localhost:5118/Reservation/checkBookedSeatsOfRoom?screeningId=${screeningId}`,
+    `${URL}/Reservation/checkBookedSeatsOfRoom?screeningId=${screeningId}`,
     {
       method: 'GET',
       headers: {

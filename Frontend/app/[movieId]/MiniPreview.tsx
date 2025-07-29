@@ -13,7 +13,7 @@ export function SingleMovieCanvas({
   movie: TMDBMovieDetails;
   className?: string;
 }) {
-  const [camLoc, setCamLoc] = useState(375);
+  const [, setCamLoc] = useState(375);
   return (
     <div
       className={`flex flex-row justify-center items-center w-full ${className}`}

@@ -15,8 +15,11 @@ export function useReservationSignalR(
   const [messageHistory, setMessageHistory] = useState<SeatWSResponse[]>([]);
 
   useEffect(() => {
+    let URL = process.env.NEXT_PUBLIC_DEV_SERVER_ADDRESS;
+    if (process.env.NEXT_PUBLIC_NODE_ENV === 'production')
+      URL = process.env.NEXT_PUBLIC_DEPLOYED_SERVER_ADDRESS;
     const newConnection = new signalR.HubConnectionBuilder()
-      .withUrl('http://localhost:5118/hubs/reservations')
+      .withUrl(`${URL}/hubs/reservations`)
       .withAutomaticReconnect()
       .build();
 
