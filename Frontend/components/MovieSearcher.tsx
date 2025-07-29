@@ -12,6 +12,7 @@ export default function MovieSearcher() {
   const [movies, setMovies] = useState<TMDBMovieDetails[]>([]);
   const [movieQuery, setMovieQuery] = useState('');
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
     debounce((query: string) => {
       if (!query) return;

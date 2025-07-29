@@ -7,6 +7,8 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import MovieCarousel from './MovieCarousel';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const currentMovies = await getCurrentMovies();
   const highlightedMovies = [

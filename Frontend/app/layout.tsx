@@ -13,7 +13,6 @@ export const metadata: Metadata = {
   title: "Relax, don't forget",
   description:
     'Watching movies should be memorable and not lonely. Chat with some people!',
-  viewport: 'width=device-width, initial-scale=1',
 };
 
 export default function RootLayout({

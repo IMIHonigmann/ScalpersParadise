@@ -35,17 +35,17 @@ export async function getCurrentMovies() {
 
 export async function getCurrentMovieIds() {
   const JWT = ``;
-  const res = await fetch(
-    `http://https://scalpersparadise-production.up.railway.app:/CurrentMovies/GetCurrentMovieIds`,
-    {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: `Bearer ${JWT}`,
-      },
-      next: { revalidate: 86400 }, // 24h
-    }
-  );
+  let URL = process.env.DEV_SERVER_ADDRESS;
+  if (process.env.NODE_ENV === 'production')
+    URL = process.env.DEPLOYED_SERVER_ADDRESS;
+  const res = await fetch(`${URL}/CurrentMovies/GetCurrentMovieIds`, {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: `Bearer ${JWT}`,
+    },
+    next: { revalidate: 86400 }, // 24h
+  });
 
   if (!res.ok) {
     throw new Error(`Failed to fetch: Error Code: ${res.status}`);
