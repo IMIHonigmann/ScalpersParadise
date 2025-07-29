@@ -14,6 +14,7 @@ import { Suspense } from 'react';
 import { FaRegCirclePlay } from 'react-icons/fa6';
 import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
 import { TfiPlus } from 'react-icons/tfi';
+import ScrollDownButton from './ScrollDownButton';
 
 const Background = dynamic(() => import('./Background'));
 const PlayButton = dynamic(() => import('./PlayButton'));
@@ -200,9 +201,7 @@ export async function MoviePreview({
                       {cutAfterNthSentence(movie.overview, 2)}
                     </p>
                     <div className="col-span-full md:col-span-4 lg:col-span-3 col-start-2 md:col-start-2 lg:col-start-2 row-start-2 grid grid-cols-5 md:grid-cols-3 gap-x-2">
-                      <button className="bg-red-600 text-white px-6 sm:px-12 md:px-8 xl:px-12 py-4 text-sm rounded row-start-2 col-start-1 md:col-start-1 col-span-2 md:col-span-2 justify-self-center md:justify-self-start">
-                        Take a Ticket
-                      </button>
+                      <ScrollDownButton />
                       <a
                         href={`https://www.youtube.com/watch?v=${videoId}`}
                         target="_blank"
