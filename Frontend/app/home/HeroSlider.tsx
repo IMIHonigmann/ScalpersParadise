@@ -65,7 +65,7 @@ export default function HeroSlider({ highlightedMovies }: props) {
             style={{ pointerEvents: 'none' }}
           />
         </Link>
-        <div className="text-3xl grid grid-rows-[0.1fr_0.9fr] gap-4 h-full text-center">
+        <div className="text-2xl grid grid-rows-[0.1fr_0.9fr] gap-4 h-full text-center">
           <span
             key={highlightedMovies[highlightedIndex].title}
             className={`transition-opacity duration-300 ${
