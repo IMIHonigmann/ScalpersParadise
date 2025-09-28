@@ -34,7 +34,7 @@ export async function getThisWeeksScreenings(
   movieId: string
 ): Promise<Screening[] | string> {
   const JWT = ``; // Authentication isn't implemented yet
-  let URL = process.env.DEPLOYED_SERVER_ADDRESS;
+  let URL = process.env.DEV_SERVER_ADDRESS;
   if (process.env.NODE_ENV === 'production')
     URL = process.env.DEPLOYED_SERVER_ADDRESS;
   const res = await fetch(

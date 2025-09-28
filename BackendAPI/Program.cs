@@ -19,6 +19,7 @@ string validAudience = Environment.GetEnvironmentVariable("VALID_AUDIENCE")!;
 string CORS_ORIGIN = Environment.GetEnvironmentVariable("CORS_ORIGIN")!;
 
 builder.Services.AddControllers();
+builder.Services.AddHealthChecks();
 builder.Services.AddDbContext<ScalpersParadiseContext>(options =>
 options.UseNpgsql(CONNECTION_STRING));
 
@@ -59,6 +60,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 var app = builder.Build();
 app.UseAuthorization();
 app.UseCors("AllowSignalR");
+app.MapHealthChecks("/health");
 app.MapHub<ReservationHub>("/hubs/reservations");
 app.MapControllers();
 

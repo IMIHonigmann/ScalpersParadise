@@ -123,8 +123,7 @@ export async function MoviePreview({
 
   return (
     <div
-      className="relative bottom-0 left-0 h-[100svh] border-0 overflow-hidden
-      md:aspect-auto object-cover"
+      className={`relative bottom-0 left-0 h-[100svh] border-0 overflow-hidden md:aspect-auto object-cover`}
     >
       <Suspense fallback={<h2> Loading... </h2>}>
         <MovieDetails movieId={movieId}>
